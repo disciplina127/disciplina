@@ -170,7 +170,6 @@
         .content { padding: 12px; }
         .hidden { display: none; }
 
-        /* ПОСТЫ */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
@@ -196,7 +195,6 @@
             padding: 5px 0;
         }
 
-        /* ТРИ ТОЧКИ */
         .post-menu { position: relative; }
         .menu-dots {
             background: none;
@@ -261,7 +259,6 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        /* КОММЕНТАРИИ */
         .comments-section { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
         .comment { background: var(--comment-bg); border-radius: 16px; padding: 10px 14px; margin: 8px 0; }
         .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -273,7 +270,6 @@
         .comment-input input { flex: 1; padding: 12px; border-radius: 30px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); }
         .comment-input button { width: auto; padding: 8px 20px; border-radius: 30px; }
 
-        /* ПРОФИЛЬ */
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -288,17 +284,27 @@
         .stat-label { font-size: 11px; color: var(--text-secondary); }
         .profile-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
 
-        /* Кнопка загрузки фото */
         .upload-btn { position: relative; margin: 8px 0; }
         .upload-btn input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
-        .upload-label { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); border-radius: 14px; padding: 14px; cursor: pointer; color: white; font-size: 14px; font-weight: 600; }
+        .upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 14px;
+            padding: 14px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
         .file-name { font-size: 12px; color: var(--accent); margin-top: 8px; display: block; text-align: center; }
 
         .edit-form { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); text-align: left; }
         .profile-posts-title { font-size: 15px; font-weight: 600; margin: 16px 0 12px 0; color: var(--text-primary); }
         .back-btn { background: var(--bg-input); width: auto; padding: 8px 16px; border-radius: 30px; color: var(--text-primary); }
 
-        /* Плавающая кнопка + */
         .fab {
             position: fixed;
             bottom: 20px;
@@ -319,7 +325,6 @@
         }
         .fab:active { transform: scale(0.95); }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -346,7 +351,6 @@
         .modal-buttons button { flex: 1; }
         .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
 
-        /* ИГРА */
         .game-card { background: var(--bg-card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
         .game-header { text-align: center; margin-bottom: 20px; }
         .game-icon { font-size: 48px; margin-bottom: 10px; }
@@ -422,7 +426,7 @@
             <h3>Новый пост</h3>
             <textarea id="modalPostText" rows="3" placeholder="Что у тебя нового?"></textarea>
             <div class="upload-btn">
-                <input type="file" id="modalPostPhoto" accept="image/*" onchange="updateFileName(this)">
+                <input type="file" id="modalPostPhoto" accept="image/*" capture="environment">
                 <div class="upload-label"><span>📷</span><span>Выбрать фото</span></div>
                 <span id="fileNameDisplay" class="file-name"></span>
             </div>
@@ -458,11 +462,55 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    // ========== СЖАТИЕ ИЗОБРАЖЕНИЙ ==========
+    function compressImage(file, maxSizeMB = 1, maxWidth = 800) {
+        return new Promise((resolve, reject) => {
+            if (!file.type.match(/image.*/)) {
+                resolve(file);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    let quality = 0.7;
+                    let result = canvas.toDataURL('image/jpeg', quality);
+                    
+                    while (result.length > maxSizeMB * 1024 * 1024 && quality > 0.3) {
+                        quality -= 0.1;
+                        result = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    
+                    resolve(result);
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     function updateFileName(input) {
         const fileName = input.files[0]?.name || '';
         const display = document.getElementById('fileNameDisplay');
-        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
+        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 40)}${fileName.length > 40 ? '...' : ''}` : '';
     }
 
     function formatDate(date) {
@@ -481,7 +529,6 @@
         return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    // ========== ЗАГРУЗКА ДАННЫХ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -491,12 +538,11 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
-    // ========== ПОСТЫ ==========
-    async function savePost(text, photoUrl) {
+    async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
             text: text,
-            photo: photoUrl || null,
+            photo: photoDataUrl || null,
             likes: [],
             comments: [],
             date: firebase.firestore.FieldValue.serverTimestamp()
@@ -525,6 +571,8 @@
         commentsVisible[postId] = true;
         renderFeed();
     }
+    
+    window.addComment = addComment;
 
     async function deletePost(postId) {
         if (confirm('Удалить пост?')) {
@@ -544,7 +592,6 @@
         }
     }
 
-    // ========== ПРОФИЛЬ ==========
     async function updateUserProfile(userId, data) {
         await db.collection('users').doc(userId).update(data);
         await loadData();
@@ -583,7 +630,7 @@
         alert(rolled >= 0 ? `🎉 +${rolled} очков!\nВсего: ${newTotal}` : `😢 ${rolled} очков.\nВсего: ${newTotal}`);
     }
 
-    // ========== РЕНДЕР ЛЕНТЫ (С ТОЧКАМИ И КОММЕНТАРИЯМИ) ==========
+    // ========== РЕНДЕР ЛЕНТЫ ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -703,7 +750,7 @@
                         <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
                         <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
                         <div class="upload-btn">
-                            <input type="file" id="editAvatar" accept="image/*" onchange="updateAvatarPreview(this)">
+                            <input type="file" id="editAvatar" accept="image/*">
                             <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
                             <span id="avatarFileNameDisplay" class="file-name"></span>
                         </div>
@@ -743,6 +790,13 @@
                 }
                 const newBio = document.getElementById('editBio').value.trim();
                 await updateUserProfile(currentUser.uid, { bio: newBio });
+                
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                if (avatarFile) {
+                    const compressed = await compressImage(avatarFile, 0.5, 200);
+                    await updateUserProfile(currentUser.uid, { avatar: compressed });
+                }
+                
                 document.getElementById('editProfileForm').classList.add('hidden');
                 alert('Профиль обновлён!');
             });
@@ -750,22 +804,16 @@
                 document.getElementById('editProfileForm').classList.add('hidden');
             });
             document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
+            
+            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name || '';
+                const display = document.getElementById('avatarFileNameDisplay');
+                if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
+            });
         }
     }
 
-    function updateAvatarPreview(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const display = document.getElementById('avatarFileNameDisplay');
-        display.textContent = `📎 ${file.name.substring(0, 30)}${file.name.length > 30 ? '...' : ''}`;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            await updateUserProfile(currentUser.uid, { avatar: e.target.result });
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // ========== ИГРА ==========
+    // ========== ИГРА (рендер) ==========
     async function renderGameTab() {
         const container = document.getElementById('gameContainer');
         const stats = gameStats.find(s => s.userId === currentUser.uid);
@@ -919,13 +967,12 @@
         document.querySelector('.tab[data-tab="profile"]').click();
     };
     window.toggleLike = toggleLike;
-    window.addComment = addComment;
     window.toggleComments = toggleComments;
     window.deletePost = deletePost;
     window.editPost = editPost;
     window.toggleMenu = window.toggleMenu;
 
-    // ========== СОЗДАНИЕ ПОСТА ==========
+    // ========== СОЗДАНИЕ ПОСТА (С СЖАТИЕМ ФОТО) ==========
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
 
@@ -946,11 +993,22 @@
         if (!text) { alert('Напишите текст'); return; }
         
         const file = document.getElementById('modalPostPhoto').files[0];
+        
         if (file) {
-            if (file.size > 2 * 1024 * 1024) { alert('Файл слишком большой! Не более 2 МБ'); return; }
-            const reader = new FileReader();
-            reader.onload = async (e) => { await savePost(text, e.target.result); modal.style.display = 'none'; };
-            reader.readAsDataURL(file);
+            try {
+                document.getElementById('modalPublishBtn').textContent = 'Загрузка...';
+                document.getElementById('modalPublishBtn').disabled = true;
+                
+                const compressedImage = await compressImage(file, 1, 800);
+                await savePost(text, compressedImage);
+                
+                modal.style.display = 'none';
+            } catch (error) {
+                alert('Ошибка при загрузке фото: ' + error.message);
+            } finally {
+                document.getElementById('modalPublishBtn').textContent = 'Опубликовать';
+                document.getElementById('modalPublishBtn').disabled = false;
+            }
         } else {
             await savePost(text, null);
             modal.style.display = 'none';
@@ -990,6 +1048,17 @@
     function initTheme() {
         if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
     }
+
+    // ========== ОБРАБОТЧИК ФАЙЛА ДЛЯ ПОСТА ==========
+    document.getElementById('modalPostPhoto').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Файл слишком большой! Максимум 5 МБ. Фото будет сжато автоматически.');
+            }
+            updateFileName(this);
+        }
+    });
 
     initTheme();
     auth.onAuthStateChanged(async (user) => {
