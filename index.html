@@ -2,8 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="theme-color" content="#0a0c12">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Дисциплина | Социальная сеть</title>
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -15,7 +19,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Убирает серый фон при нажатии */
         }
 
         :root {
@@ -30,63 +34,41 @@
             --border: #252c38;
             --like: #ff3b5c;
             --comment-bg: #0d1119;
-            --comment-hover: #151b26;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-        }
-
-        body.light-theme {
-            --bg-primary: #f5f7fb;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --bg-input: #f0f2f6;
-            --text-primary: #1a1f2e;
-            --text-secondary: #5a6278;
-            --accent: #ff5722;
-            --accent-hover: #ff7043;
-            --border: #e2e6ed;
-            --like: #ff3b5c;
-            --comment-bg: #f8f9fc;
-            --comment-hover: #f0f2f6;
         }
 
         body {
             background: var(--bg-primary);
-            transition: all 0.2s ease;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* Auth screen */
         .auth-screen {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #0a0c12 0%, #141820 100%);
-            padding: 20px;
-        }
-
-        body.light-theme .auth-screen {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
         }
 
         .auth-card {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 32px;
+            border-radius: 24px;
+            padding: 24px;
             width: 100%;
             max-width: 380px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
             border: 1px solid var(--border);
         }
 
         .auth-card h1 {
             text-align: center;
-            margin-bottom: 8px;
             background: linear-gradient(135deg, #ff5722, #ff8a4c);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             font-size: 34px;
+            margin-bottom: 8px;
         }
 
         .auth-card .sub {
@@ -98,83 +80,45 @@
 
         input, textarea {
             width: 100%;
-            padding: 11px 14px;
+            padding: 14px;
             margin: 8px 0;
             border: 1px solid var(--border);
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 16px;
             background: var(--bg-input);
             color: var(--text-primary);
-            transition: all 0.2s;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255,87,34,0.15);
         }
 
         textarea {
             resize: none;
+            font-family: inherit;
         }
 
         button {
             width: 100%;
-            padding: 11px;
+            padding: 14px;
             background: var(--accent);
             color: white;
             border: none;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: opacity 0.2s;
         }
 
-        button:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
+        button:active {
+            opacity: 0.8;
+            transform: scale(0.98);
         }
 
-        .file-input-wrapper {
-            position: relative;
-            margin: 8px 0;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .file-input-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 11px 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .file-input-label:hover {
-            border-color: var(--accent);
-            background: var(--border);
-        }
-
-        .file-name {
-            font-size: 12px;
+        .switch-btn {
+            text-align: center;
+            margin-top: 16px;
             color: var(--accent);
-            margin-top: 4px;
-            display: block;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 8px;
         }
 
         .error {
@@ -184,27 +128,19 @@
             text-align: center;
         }
 
-        .switch-btn {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 13px;
-        }
-
+        /* Main app */
         .main-app {
             display: none;
-            max-width: 680px;
+            max-width: 600px;
             margin: 0 auto;
             background: var(--bg-primary);
             min-height: 100vh;
-            position: relative;
             padding-bottom: 80px;
         }
 
         .header {
             background: var(--bg-secondary);
-            padding: 10px 16px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -221,20 +157,14 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            cursor: pointer;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
         }
 
         .logout-btn {
             background: var(--accent);
             width: auto;
-            padding: 6px 16px;
-            font-size: 13px;
-            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 30px;
         }
 
         .tabs {
@@ -246,7 +176,9 @@
         }
 
         .tab {
-            padding: 8px 20px;
+            flex: 1;
+            text-align: center;
+            padding: 10px;
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
@@ -268,200 +200,30 @@
             display: none;
         }
 
-        .game-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .game-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .game-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .game-description {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .dice-container {
-            background: linear-gradient(135deg, var(--bg-input), var(--bg-card));
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            margin: 20px 0;
-            border: 2px solid var(--border);
-        }
-
-        .dice-value {
-            font-size: 80px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .dice-value.positive {
-            color: var(--success);
-        }
-
-        .dice-value.negative {
-            color: var(--danger);
-        }
-
-        .roll-button {
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            font-size: 18px;
-            padding: 15px 30px;
-            border-radius: 50px;
-            margin: 20px 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: var(--bg-input);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--accent);
-        }
-
-        .leaderboard {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .leaderboard-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .leaderboard-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .leaderboard-item:hover {
-            background: var(--bg-input);
-            transform: translateX(5px);
-        }
-
-        .leaderboard-rank {
-            font-weight: bold;
-            font-size: 18px;
-            min-width: 40px;
-            color: var(--accent);
-        }
-
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-
-        .leaderboard-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--border);
-        }
-
-        .leaderboard-info {
-            flex: 1;
-        }
-
-        .leaderboard-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .leaderboard-stats {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .leaderboard-score {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        /* POST styles with 3-dots menu */
+        /* Post card - увеличенные кнопки для пальцев */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
             padding: 14px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .post:hover {
-            border-color: var(--accent);
         }
 
         .post-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
         }
 
         .post-author {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--accent);
             cursor: pointer;
             background: none;
             border: none;
-            padding: 0;
+            padding: 5px 0;
         }
 
         .post-menu {
@@ -471,25 +233,25 @@
         .menu-dots {
             background: none;
             width: auto;
-            padding: 4px 8px;
-            font-size: 16px;
+            padding: 8px 12px;
+            font-size: 18px;
             color: var(--text-secondary);
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 30px;
         }
 
-        .menu-dots:hover {
+        .menu-dots:active {
             background: var(--bg-input);
         }
 
         .menu-dropdown {
             position: absolute;
             right: 0;
-            top: 30px;
+            top: 40px;
             background: var(--bg-card);
             border-radius: 14px;
-            padding: 6px 0;
-            min-width: 130px;
+            padding: 8px 0;
+            min-width: 140px;
             z-index: 50;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             border: 1px solid var(--border);
@@ -499,13 +261,13 @@
             background: none;
             width: 100%;
             text-align: left;
-            padding: 8px 14px;
+            padding: 12px 16px;
             border-radius: 0;
             color: var(--text-primary);
-            font-size: 13px;
+            font-size: 14px;
         }
 
-        .menu-dropdown button:hover {
+        .menu-dropdown button:active {
             background: var(--accent);
             color: white;
         }
@@ -514,7 +276,7 @@
             margin: 8px 0;
             color: var(--text-primary);
             line-height: 1.45;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .post-photo {
@@ -522,6 +284,7 @@
             border-radius: 16px;
             margin: 8px 0;
             max-height: 300px;
+            object-fit: cover;
         }
 
         .post-footer {
@@ -535,25 +298,24 @@
 
         .post-actions {
             display: flex;
-            gap: 6px;
+            gap: 16px;
         }
 
         .like-btn, .comment-toggle-btn {
             cursor: pointer;
             background: none;
             border: none;
-            padding: 4px 8px;
-            border-radius: 20px;
+            padding: 8px 12px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 14px;
         }
 
-        .like-btn:hover, .comment-toggle-btn:hover {
+        .like-btn:active, .comment-toggle-btn:active {
             background: var(--bg-input);
-            color: var(--accent);
         }
 
         .like-btn.liked {
@@ -561,10 +323,11 @@
         }
 
         .post-time-footer {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-secondary);
         }
 
+        /* Comments */
         .comments-section {
             margin-top: 12px;
             padding-top: 8px;
@@ -587,7 +350,7 @@
 
         .comment-author {
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
             color: var(--accent);
             cursor: pointer;
             background: none;
@@ -598,36 +361,12 @@
         .comment-date {
             font-size: 10px;
             color: var(--text-secondary);
-            background: var(--bg-input);
-            padding: 2px 8px;
-            border-radius: 20px;
         }
 
         .comment-text {
             color: var(--text-primary);
             font-size: 13px;
-            margin: 6px 0 4px 0;
-        }
-
-        .comment-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .edit-comment-btn, .delete-comment-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        .edit-comment-btn:hover, .delete-comment-btn:hover {
-            background: var(--border);
-            color: var(--accent);
+            margin: 4px 0;
         }
 
         .comment-input {
@@ -638,8 +377,9 @@
 
         .comment-input input {
             flex: 1;
-            padding: 8px 12px;
-            border-radius: 24px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 30px;
             background: var(--bg-input);
             border: 1px solid var(--border);
             color: var(--text-primary);
@@ -648,8 +388,10 @@
         .comment-input button {
             width: auto;
             padding: 8px 20px;
+            border-radius: 30px;
         }
 
+        /* Profile */
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -672,7 +414,7 @@
         .stats {
             display: flex;
             justify-content: center;
-            gap: 32px;
+            gap: 24px;
             margin: 16px 0;
         }
 
@@ -694,47 +436,33 @@
             margin-top: 12px;
         }
 
-        .profile-buttons button {
-            width: auto;
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-
-        .profile-posts-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin: 16px 0 12px 0;
-            color: var(--text-primary);
-        }
-
-        .back-btn {
-            background: var(--bg-input);
-            width: auto;
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 30px;
-            color: var(--text-primary);
-        }
-
+        /* Floating Action Button - увеличенный для пальцев */
         .fab {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: var(--accent);
             color: white;
-            font-size: 28px;
+            font-size: 30px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255,87,34,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 200;
             border: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal - оптимизирован для телефона */
         .modal {
             display: none;
             position: fixed;
@@ -742,17 +470,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.85);
             z-index: 300;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .modal-content {
             background: var(--bg-card);
             border-radius: 28px;
             padding: 24px;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             border: 1px solid var(--border);
         }
@@ -761,12 +490,13 @@
             margin-bottom: 16px;
             color: var(--text-primary);
             font-size: 20px;
+            text-align: center;
         }
 
         .modal-content textarea {
             margin: 0 0 12px 0;
             min-height: 100px;
-            resize: none;
+            font-size: 16px;
         }
 
         .modal-buttons {
@@ -776,7 +506,6 @@
         }
 
         .modal-buttons button {
-            width: auto;
             flex: 1;
         }
 
@@ -785,19 +514,197 @@
             color: var(--text-primary);
         }
 
-        @keyframes rollAnimation {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1); }
+        /* Game styles */
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
         }
 
-        .rolling-dice {
-            animation: rollAnimation 0.5s ease;
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .game-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .dice-container {
+            background: linear-gradient(135deg, var(--bg-input), var(--bg-card));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+
+        .dice-value {
+            font-size: 70px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .dice-value.positive {
+            color: #4caf50;
+        }
+
+        .dice-value.negative {
+            color: #f44336;
+        }
+
+        .roll-button {
+            font-size: 18px;
+            padding: 14px;
+            border-radius: 50px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-input);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .leaderboard {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leaderboard-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 35px;
+            color: var(--accent);
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .leaderboard-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .leaderboard-score {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .file-input-wrapper {
+            margin: 8px 0;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .file-name {
+            font-size: 11px;
+            color: var(--accent);
+            margin-top: 6px;
+            display: block;
+            text-align: center;
+        }
+
+        .back-btn {
+            background: var(--bg-input);
+            width: auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 30px;
+            color: var(--text-primary);
         }
 
         @media (max-width: 500px) {
-            .content { padding: 8px; }
-            .fab { width: 50px; height: 50px; font-size: 26px; }
-            .stats { gap: 20px; }
+            .content {
+                padding: 8px;
+            }
+            .fab {
+                bottom: 16px;
+                right: 16px;
+                width: 55px;
+                height: 55px;
+                font-size: 28px;
+            }
+            .post-actions {
+                gap: 8px;
+            }
+            .like-btn, .comment-toggle-btn {
+                padding: 6px 10px;
+            }
         }
     </style>
 </head>
@@ -808,8 +715,8 @@
         <h1>Дисциплина</h1>
         <div class="sub">Делай каждый день</div>
         <div id="authForm">
-            <input type="text" id="regName" placeholder="Имя">
-            <input type="email" id="regEmail" placeholder="Email">
+            <input type="text" id="regName" placeholder="Имя" inputmode="text">
+            <input type="email" id="regEmail" placeholder="Email" inputmode="email">
             <input type="password" id="regPassword" placeholder="Пароль">
             <button id="submitAuthBtn">Зарегистрироваться</button>
             <div class="switch-btn" id="switchModeBtn">Уже есть аккаунт? Войти</div>
@@ -870,7 +777,7 @@
 </div>
 
 <script>
-    // ========== FIREBASE КОНФИГУРАЦИЯ ==========
+    // ========== FIREBASE ==========
     const firebaseConfig = {
         apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
         authDomain: "disciplina-8ac49.firebaseapp.com",
@@ -883,7 +790,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     // Глобальные переменные
     let currentUser = null;
@@ -894,14 +800,11 @@
     let openMenus = {};
     let viewingUserId = null;
     let isLoginMode = false;
-    let cooldownInterval = null;
 
     function updateFileName(input) {
         const fileName = input.files[0]?.name || '';
         const display = document.getElementById('fileNameDisplay');
-        if (display) {
-            display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
-        }
+        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
     }
 
     function formatDate(date) {
@@ -920,18 +823,6 @@
         return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    function initTheme() {
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-theme');
-        }
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('light-theme');
-        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-    }
-
-    // --- ЗАГРУЗКА ДАННЫХ ---
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -943,7 +834,6 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
-    // --- ПОСТЫ ---
     async function savePost(text, photoUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -965,7 +855,6 @@
         await db.collection('posts').doc(postId).update({ likes: likes });
         await loadData();
         renderFeed();
-        if (document.getElementById('profilePosts')) renderProfile();
     }
 
     async function addComment(postId, text) {
@@ -981,8 +870,6 @@
         await loadData();
         commentsVisible[postId] = true;
         renderFeed();
-        if (document.getElementById(`commentInput-${postId}`)) 
-            document.getElementById(`commentInput-${postId}`).value = '';
     }
 
     async function deletePost(postId) {
@@ -990,7 +877,6 @@
             await db.collection('posts').doc(postId).delete();
             await loadData();
             renderFeed();
-            if (document.getElementById('profilePosts')) renderProfile();
         }
     }
 
@@ -1001,7 +887,6 @@
             await db.collection('posts').doc(postId).update({ text: newText.trim() });
             await loadData();
             renderFeed();
-            if (document.getElementById('profilePosts')) renderProfile();
         }
     }
 
@@ -1047,7 +932,7 @@
         }, 300);
     }
 
-    // --- РЕНДЕР ЛЕНТЫ (С ТОЧКАМИ) ---
+    // --- РЕНДЕР ЛЕНТЫ ---
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (posts.length === 0) {
@@ -1071,8 +956,8 @@
                                 <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
                                 ${showMenu ? `
                                     <div class="menu-dropdown">
-                                        <button onclick="editPost('${post.id}')">Редактировать</button>
-                                        <button onclick="deletePost('${post.id}')">Удалить</button>
+                                        <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
+                                        <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
                                     </div>
                                 ` : ''}
                             </div>
@@ -1102,7 +987,7 @@
                                 `;
                             }).join('')}
                             <div class="comment-input">
-                                <input type="text" placeholder="Написать комментарий..." id="commentInput-${post.id}">
+                                <input type="text" placeholder="Написать комментарий..." id="commentInput-${post.id}" enterkeyhint="send">
                                 <button onclick="addComment('${post.id}', document.getElementById('commentInput-${post.id}').value)">→</button>
                             </div>
                         </div>
@@ -1127,7 +1012,6 @@
         renderFeed();
     };
 
-    // --- Закрытие меню при клике вне ---
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.post-menu')) {
             openMenus = {};
@@ -1159,33 +1043,17 @@
                     <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
                 </div>
                 <div class="stats" style="margin-top: 5px;">
-                    <div><div class="stat-value" style="color: var(--success);">${userGameStats.totalPoints}</div><div class="stat-label">очков в игре</div></div>
-                    <div><div class="stat-value" style="color: var(--warning);">${userGameStats.bestRoll >= 0 ? '+' : ''}${userGameStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
+                    <div><div class="stat-value" style="color: #4caf50;">${userGameStats.totalPoints}</div><div class="stat-label">очков</div></div>
+                    <div><div class="stat-value" style="color: #ff9800;">${userGameStats.bestRoll >= 0 ? '+' : ''}${userGameStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
                 </div>
                 <div class="profile-buttons">
                     ${!isOwn ? `
-                        <button class="follow-btn" onclick="alert('Подписки в разработке')">Подписаться</button>
+                        <button class="follow-btn" style="background:var(--bg-input);color:var(--accent);border:1px solid var(--accent);" onclick="alert('Подписки в разработке')">Подписаться</button>
                     ` : `
                         <button id="editProfileBtn">✏️ Редактировать</button>
                         <button id="themeBtn">🌓 Тема</button>
                     `}
                 </div>
-                ${isOwn ? `
-                    <div id="editProfileForm" class="edit-form hidden">
-                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
-                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="editAvatar" accept="image/*" onchange="updateAvatarFileName(this)">
-                            <div class="file-input-label">
-                                <span>📷</span>
-                                <span>Выбрать аватар</span>
-                            </div>
-                            <span id="avatarFileNameDisplay" class="file-name"></span>
-                        </div>
-                        <button id="saveProfileBtn">Сохранить</button>
-                        <button id="cancelProfileBtn">Отмена</button>
-                    </div>
-                ` : ''}
             </div>
             <div class="profile-posts-title">📝 Посты</div>
             <div id="profilePosts"></div>
@@ -1207,44 +1075,19 @@
         }
         
         if (isOwn) {
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.remove('hidden');
-            });
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => alert('Редактирование профиля в разработке'));
             document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newName = document.getElementById('editName').value.trim();
-                if (newName) {
-                    await db.collection('users').doc(currentUser.uid).update({ name: newName });
-                }
-                const newBio = document.getElementById('editBio').value.trim();
-                await db.collection('users').doc(currentUser.uid).update({ bio: newBio });
-                
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                if (avatarFile) {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        await db.collection('users').doc(currentUser.uid).update({ avatar: e.target.result });
-                        await loadData();
-                        await renderProfile();
-                    };
-                    reader.readAsDataURL(avatarFile);
-                } else {
-                    await loadData();
-                    await renderProfile();
-                }
-                document.getElementById('editProfileForm').classList.add('hidden');
-            });
-            document.getElementById('cancelProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.add('hidden');
-            });
         }
     }
 
-    function updateAvatarFileName(input) {
-        const fileName = input.files[0]?.name || '';
-        const display = document.getElementById('avatarFileNameDisplay');
-        if (display) {
-            display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
+    function toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    }
+
+    function initTheme() {
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
         }
     }
 
@@ -1262,10 +1105,10 @@
                 <div class="game-header">
                     <div class="game-icon">🎲</div>
                     <div class="game-title">Пиписа бот</div>
-                    <div class="game-description">Бросай кубик каждый день! Число от -5 до +10</div>
+                    <div class="game-description" style="color:var(--text-secondary);font-size:13px;">Бросай кубик каждый день! Число от -5 до +10</div>
                 </div>
                 <div class="dice-container">
-                    <div class="dice-label">Твой бросок</div>
+                    <div class="dice-label" style="color:var(--text-secondary);">Твой бросок</div>
                     <div id="diceValue" class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
                         ${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}
                     </div>
@@ -1276,13 +1119,13 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Всего очков</div>
-                        <div class="stat-value" style="color: ${stats?.totalPoints >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                        <div class="stat-value" style="color: ${stats?.totalPoints >= 0 ? '#4caf50' : '#f44336'}">
                             ${stats?.totalPoints || 0}
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Лучший бросок</div>
-                        <div class="stat-value" style="color: var(--warning)">
+                        <div class="stat-value" style="color: #ff9800">
                             ${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}
                         </div>
                     </div>
@@ -1308,7 +1151,7 @@
             .slice(0, 20);
         
         if (leaderboardData.length === 0) {
-            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div><div class="leaderboard-icon">🏆</div></div><div style="padding:40px;text-align:center;">Пока нет участников</div></div>`;
+            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="padding:40px;text-align:center;color:var(--text-secondary);">Пока нет участников</div></div>`;
             return;
         }
         
@@ -1318,7 +1161,6 @@
             <div class="leaderboard">
                 <div class="leaderboard-header">
                     <div class="leaderboard-title">🏆 Лидерборд</div>
-                    <div class="leaderboard-icon">🎲</div>
                 </div>
                 ${leaderboardData.map((item, index) => {
                     const user = usersMap.get(item.userId);
@@ -1327,11 +1169,7 @@
                             <div class="leaderboard-rank ${index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : ''}">
                                 ${index + 1}
                             </div>
-                            <img class="leaderboard-avatar" src="${user?.avatar || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' fill=\'%23252c38\'/%3E%3Ctext x=\'20\' y=\'26\' text-anchor=\'middle\' font-size=\'20\' fill=\'%238a91a8\'%3E?%3C/text%3E%3C/svg%3E'}">
-                            <div class="leaderboard-info">
-                                <div class="leaderboard-name">${escapeHtml(user?.name || '?')}</div>
-                                <div class="leaderboard-stats">🎲 Лучший: ${item.bestRoll >= 0 ? '+' : ''}${item.bestRoll}</div>
-                            </div>
+                            <div class="leaderboard-name">${escapeHtml(user?.name || '?')}</div>
                             <div class="leaderboard-score">${item.totalPoints}</div>
                         </div>
                     `;
@@ -1440,7 +1278,7 @@
         renderProfile();
     };
 
-    // --- ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ onclick ---
+    // --- ГЛОБАЛЬНЫЕ ФУНКЦИИ ---
     window.toggleLike = toggleLike;
     window.addComment = addComment;
     window.toggleComments = toggleComments;
@@ -1454,16 +1292,19 @@
     window.editPost = editPost;
     window.toggleMenu = window.toggleMenu;
 
-    // --- СОЗДАНИЕ ПОСТА ---
+    // --- СОЗДАНИЕ ПОСТА (ОПТИМИЗИРОВАНО ДЛЯ ТЕЛЕФОНА) ---
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
+    const modalText = document.getElementById('modalPostText');
+    const modalPhoto = document.getElementById('modalPostPhoto');
 
     fabBtn.onclick = () => {
         modal.style.display = 'flex';
-        document.getElementById('modalPostText').value = '';
-        document.getElementById('modalPostPhoto').value = '';
+        modalText.value = '';
+        modalPhoto.value = '';
         const fileNameDisplay = document.getElementById('fileNameDisplay');
         if (fileNameDisplay) fileNameDisplay.textContent = '';
+        modalText.focus();
     };
 
     document.getElementById('modalCancelBtn').onclick = () => {
@@ -1475,13 +1316,14 @@
     };
 
     document.getElementById('modalPublishBtn').onclick = async () => {
-        const text = document.getElementById('modalPostText').value.trim();
+        const text = modalText.value.trim();
         if (!text) {
             alert('Напишите текст');
+            modalText.focus();
             return;
         }
         
-        const file = document.getElementById('modalPostPhoto').files[0];
+        const file = modalPhoto.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = async (e) => {
@@ -1529,9 +1371,6 @@
             showMainApp();
         }
     });
-    
-    // Функция для обновления имени файла в профиле
-    window.updateAvatarFileName = updateAvatarFileName;
 </script>
 </body>
 </html>
