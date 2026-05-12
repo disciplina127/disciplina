@@ -259,16 +259,59 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        .comments-section { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border); }
-        .comment { background: var(--comment-bg); border-radius: 16px; padding: 10px 14px; margin: 8px 0; }
-        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .comment-author { font-weight: 600; font-size: 13px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; }
+        /* КОММЕНТАРИИ - ПОЛНОСТЬЮ ПЕРЕПИСАНЫ */
+        .comments-wrapper { margin-top: 12px; }
+        .comments-list { margin-bottom: 10px; }
+        .comment {
+            background: var(--comment-bg);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .comment-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
         .comment-date { font-size: 10px; color: var(--text-secondary); }
-        .comment-text { color: var(--text-primary); font-size: 13px; margin: 4px 0; }
+        .comment-text { color: var(--text-primary); font-size: 13px; margin: 4px 0; line-height: 1.4; }
 
-        .comment-input { display: flex; gap: 8px; margin-top: 12px; }
-        .comment-input input { flex: 1; padding: 12px; border-radius: 30px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); }
-        .comment-input button { width: auto; padding: 8px 20px; border-radius: 30px; }
+        .comment-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .comment-form input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .comment-form button {
+            width: auto;
+            padding: 8px 20px;
+            border-radius: 30px;
+            margin: 0;
+        }
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 12px;
+            font-size: 13px;
+        }
 
         .profile-card {
             background: var(--bg-card);
@@ -278,7 +321,7 @@
             border: 1px solid var(--border);
             margin-bottom: 16px;
         }
-        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; background: var(--border); border: 2px solid var(--accent); }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
         .stats { display: flex; justify-content: center; gap: 24px; margin: 16px 0; }
         .stat-value { font-size: 18px; font-weight: 700; color: var(--accent); }
         .stat-label { font-size: 11px; color: var(--text-secondary); }
@@ -378,6 +421,8 @@
             .content { padding: 8px; }
             .fab { width: 55px; height: 55px; font-size: 28px; }
             .post-actions { gap: 8px; }
+            .like-btn, .comment-toggle-btn { padding: 6px 10px; }
+            .comment-form button { padding: 8px 14px; }
         }
     </style>
 </head>
@@ -426,7 +471,7 @@
             <h3>Новый пост</h3>
             <textarea id="modalPostText" rows="3" placeholder="Что у тебя нового?"></textarea>
             <div class="upload-btn">
-                <input type="file" id="modalPostPhoto" accept="image/*" capture="environment">
+                <input type="file" id="modalPostPhoto" accept="image/*">
                 <div class="upload-label"><span>📷</span><span>Выбрать фото</span></div>
                 <span id="fileNameDisplay" class="file-name"></span>
             </div>
@@ -457,16 +502,32 @@
     let posts = [];
     let users = [];
     let gameStats = [];
-    let commentsVisible = {};
+    let openComments = {};
     let openMenus = {};
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== СЖАТИЕ ИЗОБРАЖЕНИЙ ==========
-    function compressImage(file, maxSizeMB = 1, maxWidth = 800) {
+    function formatDate(date) {
+        if (!date) return 'только что';
+        const d = date.toDate ? date.toDate() : new Date(date);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'только что';
+        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
+        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    // ========== СЖАТИЕ ФОТО (5 МБ ДОПУСКАЕТСЯ) ==========
+    function compressImage(file, maxWidth = 900) {
         return new Promise((resolve, reject) => {
             if (!file.type.match(/image.*/)) {
-                resolve(file);
+                resolve(null);
                 return;
             }
             
@@ -489,10 +550,10 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    let quality = 0.7;
+                    let quality = 0.8;
                     let result = canvas.toDataURL('image/jpeg', quality);
                     
-                    while (result.length > maxSizeMB * 1024 * 1024 && quality > 0.3) {
+                    while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
                         quality -= 0.1;
                         result = canvas.toDataURL('image/jpeg', quality);
                     }
@@ -507,28 +568,6 @@
         });
     }
 
-    function updateFileName(input) {
-        const fileName = input.files[0]?.name || '';
-        const display = document.getElementById('fileNameDisplay');
-        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 40)}${fileName.length > 40 ? '...' : ''}` : '';
-    }
-
-    function formatDate(date) {
-        if (!date) return 'только что';
-        const d = date.toDate ? date.toDate() : new Date(date);
-        const now = new Date();
-        const diff = Math.floor((now - d) / 1000);
-        if (diff < 60) return 'только что';
-        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
-        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
-        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -538,6 +577,7 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
+    // ========== ПОСТЫ ==========
     async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -561,18 +601,51 @@
         renderFeed();
     }
 
-    async function addComment(postId, text) {
-        if (!text.trim()) return;
+    // ========== КОММЕНТАРИИ - ПОЛНОСТЬЮ ПЕРЕПИСАНЫ ==========
+    async function addComment(postId, commentText) {
+        if (!commentText || !commentText.trim()) return;
+        
         const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        
         const comments = post.comments || [];
-        comments.push({ userId: currentUser.uid, text: text, date: new Date().toISOString() });
+        comments.push({
+            userId: currentUser.uid,
+            text: commentText.trim(),
+            date: new Date().toISOString()
+        });
+        
         await db.collection('posts').doc(postId).update({ comments });
         await loadData();
-        commentsVisible[postId] = true;
+        
+        // Автоматически открываем комментарии после добавления
+        openComments[postId] = true;
         renderFeed();
     }
     
-    window.addComment = addComment;
+    async function deleteComment(postId, commentIndex) {
+        if (!confirm('Удалить комментарий?')) return;
+        
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments) return;
+        
+        post.comments.splice(commentIndex, 1);
+        await db.collection('posts').doc(postId).update({ comments: post.comments });
+        await loadData();
+        renderFeed();
+    }
+    
+    async function editComment(postId, commentIndex, newText) {
+        if (!newText || !newText.trim()) return;
+        
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments || !post.comments[commentIndex]) return;
+        
+        post.comments[commentIndex].text = newText.trim();
+        await db.collection('posts').doc(postId).update({ comments: post.comments });
+        await loadData();
+        renderFeed();
+    }
 
     async function deletePost(postId) {
         if (confirm('Удалить пост?')) {
@@ -585,7 +658,7 @@
     async function editPost(postId) {
         const post = posts.find(p => p.id === postId);
         const newText = prompt('Редактировать пост:', post?.text);
-        if (newText?.trim()) {
+        if (newText && newText.trim()) {
             await db.collection('posts').doc(postId).update({ text: newText.trim() });
             await loadData();
             renderFeed();
@@ -641,9 +714,10 @@
         container.innerHTML = posts.map(post => {
             const author = users.find(u => u.id === post.userId);
             const isLiked = post.likes?.includes(currentUser.uid);
-            const showComments = commentsVisible[post.id];
             const isAuthor = post.userId === currentUser.uid;
+            const showComments = openComments[post.id] || false;
             const showMenu = openMenus[post.id];
+            const comments = post.comments || [];
             
             return `
                 <div class="post" data-post-id="${post.id}">
@@ -666,53 +740,108 @@
                     <div class="post-footer">
                         <div class="post-actions">
                             <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${JSON.stringify(post).replace(/"/g, '&quot;')})">❤️ ${post.likes?.length || 0}</button>
-                            <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${post.comments?.length || 0}</button>
+                            <button class="comment-toggle-btn" onclick="toggleCommentsSection('${post.id}')">💬 ${comments.length}</button>
                         </div>
                         <div class="post-time-footer">${formatDate(post.date)}</div>
                     </div>
-                    ${showComments ? `
-                        <div class="comments-section" id="comments-section-${post.id}">
-                            ${(post.comments || []).map(c => {
-                                const commentAuthor = users.find(u => u.id === c.userId);
-                                return `
-                                    <div class="comment">
-                                        <div class="comment-header">
-                                            <button class="comment-author" onclick="viewProfile('${c.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
-                                            <span class="comment-date">${formatDate(c.date)}</span>
-                                        </div>
-                                        <div class="comment-text">${escapeHtml(c.text)}</div>
-                                    </div>
-                                `;
-                            }).join('')}
-                            <div class="comment-input">
-                                <input type="text" placeholder="Написать комментарий..." id="commentInput-${post.id}">
-                                <button onclick="addComment('${post.id}', document.getElementById('commentInput-${post.id}').value)">→</button>
-                            </div>
-                        </div>
-                    ` : ''}
+                    ${showComments ? renderCommentsSection(post.id, comments) : ''}
                 </div>
             `;
         }).join('');
     }
-
-    function toggleComments(postId) {
-        commentsVisible[postId] = !commentsVisible[postId];
+    
+    function renderCommentsSection(postId, comments) {
+        if (!comments || comments.length === 0) {
+            return `
+                <div class="comments-wrapper">
+                    <div class="comments-list">
+                        <div class="no-comments">✨ Нет комментариев. Будь первым!</div>
+                    </div>
+                    <div class="comment-form">
+                        <input type="text" id="commentInput-${postId}" placeholder="Написать комментарий..." maxlength="500">
+                        <button onclick="submitComment('${postId}')">→</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="comments-wrapper">
+                <div class="comments-list">
+                    ${comments.map((comment, idx) => {
+                        const commentAuthor = users.find(u => u.id === comment.userId);
+                        const isCommentAuthor = comment.userId === currentUser.uid;
+                        return `
+                            <div class="comment" id="comment-${postId}-${idx}">
+                                <div class="comment-header">
+                                    <button class="comment-author" onclick="viewProfile('${comment.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
+                                    <span class="comment-date">${formatDate(comment.date)}</span>
+                                </div>
+                                <div class="comment-text" id="commentText-${postId}-${idx}">${escapeHtml(comment.text)}</div>
+                                ${isCommentAuthor ? `
+                                    <div style="display: flex; gap: 12px; margin-top: 6px;">
+                                        <button onclick="editCommentUI('${postId}', ${idx})" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer;">✏️ Ред.</button>
+                                        <button onclick="deleteComment('${postId}', ${idx})" style="background:none; border:none; color:var(--text-secondary); font-size:11px; cursor:pointer;">🗑️ Удалить</button>
+                                    </div>
+                                    <div id="editCommentForm-${postId}-${idx}" style="display:none; margin-top:8px;">
+                                        <input type="text" id="editCommentInput-${postId}-${idx}" value="${escapeHtml(comment.text)}" style="width:100%; padding:8px; border-radius:20px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-primary);">
+                                        <div style="display:flex; gap:8px; margin-top:6px;">
+                                            <button onclick="saveCommentEdit('${postId}', ${idx})" style="width:auto; padding:6px 12px; font-size:12px;">Сохранить</button>
+                                            <button onclick="cancelCommentEdit('${postId}', ${idx})" style="width:auto; padding:6px 12px; font-size:12px;">Отмена</button>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="comment-form">
+                    <input type="text" id="commentInput-${postId}" placeholder="Написать комментарий..." maxlength="500">
+                    <button onclick="submitComment('${postId}')">→</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    function toggleCommentsSection(postId) {
+        openComments[postId] = !openComments[postId];
         renderFeed();
     }
-
-    window.toggleMenu = function(postId) {
-        if (openMenus[postId]) delete openMenus[postId];
-        else { openMenus = {}; openMenus[postId] = true; }
-        renderFeed();
-    };
-
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.post-menu')) {
-            openMenus = {};
-            renderFeed();
+    
+    window.submitComment = async function(postId) {
+        const input = document.getElementById(`commentInput-${postId}`);
+        const text = input?.value;
+        if (!text || !text.trim()) {
+            alert('Напишите комментарий');
+            return;
         }
-    });
-
+        await addComment(postId, text);
+        input.value = '';
+    };
+    
+    window.editCommentUI = function(postId, idx) {
+        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
+        const textSpan = document.getElementById(`commentText-${postId}-${idx}`);
+        if (form) form.style.display = 'block';
+        if (textSpan) textSpan.style.display = 'none';
+    };
+    
+    window.saveCommentEdit = async function(postId, idx) {
+        const input = document.getElementById(`editCommentInput-${postId}-${idx}`);
+        const newText = input?.value;
+        if (!newText || !newText.trim()) return;
+        await editComment(postId, idx, newText);
+    };
+    
+    window.cancelCommentEdit = function(postId, idx) {
+        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
+        const textSpan = document.getElementById(`commentText-${postId}-${idx}`);
+        if (form) form.style.display = 'none';
+        if (textSpan) textSpan.style.display = 'block';
+    };
+    
+    window.deleteComment = deleteComment;
+    
     // ========== ПРОФИЛЬ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
@@ -728,8 +857,8 @@
         container.innerHTML = `
             <div class="profile-card">
                 <img class="avatar" src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" id="profileAvatar">
-                <h3 style="color:var(--text-primary);" id="profileName">${escapeHtml(profileUser.name)}</h3>
-                <p style="color:var(--text-secondary); font-size:13px; margin-top:6px;" id="profileBioText">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <h3 style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
+                <p style="color:var(--text-secondary); font-size:13px; margin-top:6px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
                     <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
                     <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
@@ -793,8 +922,8 @@
                 
                 const avatarFile = document.getElementById('editAvatar').files[0];
                 if (avatarFile) {
-                    const compressed = await compressImage(avatarFile, 0.5, 200);
-                    await updateUserProfile(currentUser.uid, { avatar: compressed });
+                    const compressed = await compressImage(avatarFile, 400);
+                    if (compressed) await updateUserProfile(currentUser.uid, { avatar: compressed });
                 }
                 
                 document.getElementById('editProfileForm').classList.add('hidden');
@@ -827,7 +956,7 @@
                 <div class="game-header">
                     <div class="game-icon">🎲</div>
                     <div class="game-title">Пиписа бот</div>
-                    <div style="color:var(--text-secondary);font-size:13px;margin-top:8px;">Бросай кубик каждый день! -5 до +10</div>
+                    <div style="color:var(--text-secondary);font-size:13px;margin-top:8px;">Бросай кубик каждый день! от -5 до +10</div>
                 </div>
                 <div class="dice-container">
                     <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
@@ -855,7 +984,7 @@
         
         const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
         if (!data.length) {
-            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;">Пока нет участников</div></div>`;
+            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;color:var(--text-secondary);">Пока нет участников</div></div>`;
             return;
         }
         
@@ -960,6 +1089,20 @@
         renderProfile();
     };
 
+    // ========== МЕНЮ ТОЧЕК ==========
+    window.toggleMenu = function(postId) {
+        if (openMenus[postId]) delete openMenus[postId];
+        else { openMenus = {}; openMenus[postId] = true; }
+        renderFeed();
+    };
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.post-menu')) {
+            openMenus = {};
+            renderFeed();
+        }
+    });
+
     // ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ==========
     window.viewProfile = (userId) => {
         viewingUserId = userId;
@@ -967,12 +1110,11 @@
         document.querySelector('.tab[data-tab="profile"]').click();
     };
     window.toggleLike = toggleLike;
-    window.toggleComments = toggleComments;
     window.deletePost = deletePost;
     window.editPost = editPost;
-    window.toggleMenu = window.toggleMenu;
+    window.toggleCommentsSection = toggleCommentsSection;
 
-    // ========== СОЗДАНИЕ ПОСТА (С СЖАТИЕМ ФОТО) ==========
+    // ========== СОЗДАНИЕ ПОСТА ==========
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
 
@@ -999,9 +1141,12 @@
                 document.getElementById('modalPublishBtn').textContent = 'Загрузка...';
                 document.getElementById('modalPublishBtn').disabled = true;
                 
-                const compressedImage = await compressImage(file, 1, 800);
-                await savePost(text, compressedImage);
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Файл слишком большой! Максимум 5 МБ. Фото будет сжато.');
+                }
                 
+                const compressedImage = await compressImage(file, 900);
+                await savePost(text, compressedImage);
                 modal.style.display = 'none';
             } catch (error) {
                 alert('Ошибка при загрузке фото: ' + error.message);
@@ -1014,6 +1159,17 @@
             modal.style.display = 'none';
         }
     };
+
+    document.getElementById('modalPostPhoto').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) updateFileName(this);
+    });
+
+    function updateFileName(input) {
+        const fileName = input.files[0]?.name || '';
+        const display = document.getElementById('fileNameDisplay');
+        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 40)}${fileName.length > 40 ? '...' : ''}` : '';
+    }
 
     // ========== ТАБЫ ==========
     document.querySelectorAll('.tab').forEach(tab => {
@@ -1048,17 +1204,6 @@
     function initTheme() {
         if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
     }
-
-    // ========== ОБРАБОТЧИК ФАЙЛА ДЛЯ ПОСТА ==========
-    document.getElementById('modalPostPhoto').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Файл слишком большой! Максимум 5 МБ. Фото будет сжато автоматически.');
-            }
-            updateFileName(this);
-        }
-    });
 
     initTheme();
     auth.onAuthStateChanged(async (user) => {
