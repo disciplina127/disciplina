@@ -6,7 +6,6 @@
     <title>Дисциплина | Социальная сеть</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ВЕСЬ ВАШ СУЩЕСТВУЮЩИЙ CSS ОСТАЁТСЯ БЕЗ ИЗМЕНЕНИЙ */
         * {
             margin: 0;
             padding: 0;
@@ -49,7 +48,6 @@
             transition: all 0.2s ease;
         }
 
-        /* Auth screen */
         .auth-screen {
             min-height: 100vh;
             display: flex;
@@ -130,7 +128,6 @@
             transform: translateY(-1px);
         }
 
-        /* Красивая кнопка выбора файла */
         .file-input-wrapper {
             position: relative;
             margin: 8px 0;
@@ -165,10 +162,6 @@
             background: var(--border);
         }
 
-        .file-input-label span:first-child {
-            font-size: 18px;
-        }
-
         .file-name {
             font-size: 12px;
             color: var(--accent);
@@ -191,7 +184,6 @@
             font-size: 13px;
         }
 
-        /* Main app */
         .main-app {
             display: none;
             max-width: 680px;
@@ -268,7 +260,6 @@
             display: none;
         }
 
-        /* Post card */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
@@ -406,7 +397,6 @@
             color: var(--text-secondary);
         }
 
-        /* Красивые комментарии */
         .comments-section {
             margin-top: 12px;
             padding-top: 8px;
@@ -514,7 +504,6 @@
             border-radius: 24px;
         }
 
-        /* Profile */
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -598,7 +587,6 @@
             color: var(--text-primary);
         }
 
-        /* Floating action button */
         .fab {
             position: fixed;
             bottom: 20px;
@@ -625,7 +613,6 @@
             background: var(--accent-hover);
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -677,29 +664,9 @@
         }
 
         @media (max-width: 500px) {
-            .content {
-                padding: 8px;
-            }
-            .stats {
-                gap: 20px;
-            }
-            .fab {
-                bottom: 16px;
-                right: 16px;
-                width: 50px;
-                height: 50px;
-                font-size: 26px;
-            }
-            .post-actions {
-                gap: 4px;
-            }
-            .like-btn, .comment-toggle-btn {
-                padding: 3px 6px;
-                font-size: 11px;
-            }
-            .comment {
-                padding: 8px 10px;
-            }
+            .content { padding: 8px; }
+            .stats { gap: 20px; }
+            .fab { bottom: 16px; right: 16px; width: 50px; height: 50px; font-size: 26px; }
         }
     </style>
 </head>
@@ -738,7 +705,6 @@
         <div id="feedTab">
             <div id="postsList"></div>
         </div>
-
         <div id="profileTab" class="hidden">
             <div id="profileContainer"></div>
         </div>
@@ -767,11 +733,10 @@
 </div>
 
 <script>
-    // ========== ПОДКЛЮЧЕНИЕ К SUPABASE ==========
-    // ⚠️ ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА ВАШИ ИЗ SUPABASE!
-    const SUPABASE_URL = "sb_publishable_ynLEwfGjO_cR7CX4satbHg_dc0IE8eN";     // Вставьте ваш Project URL
-    const SUPABASE_KEY = "sb_secret_krD-Iagp1LMy9_-Tr8x7qA_WxnY6UBx";  // Вставьте ваш anon public key
-
+    // ========== ПОДКЛЮЧЕНИЕ К SUPABASE (НОВАЯ ВЕРСИЯ) ==========
+    const SUPABASE_URL = "https://vhzmcgrpackukvyzqpgi.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_ynLEwfGjO_cR7CX4satbHg_dc0IE8eN";
+    
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let users = [];
@@ -785,21 +750,16 @@
     function updateFileName(input) {
         const fileName = input.files[0]?.name || '';
         const display = document.getElementById('fileNameDisplay');
-        if (display) {
-            display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
-        }
+        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
     }
 
     async function loadDataFromSupabase() {
-        // Загружаем пользователей
         const { data: usersData } = await supabase.from('users').select('*');
         if (usersData) users = usersData;
         
-        // Загружаем посты
         const { data: postsData } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
         if (postsData) posts = postsData;
         
-        // Загружаем лайки
         const { data: likesData } = await supabase.from('likes').select('*');
         if (likesData) {
             posts.forEach(post => {
@@ -807,7 +767,6 @@
             });
         }
         
-        // Загружаем комментарии
         const { data: commentsData } = await supabase.from('comments').select('*').order('created_at', { ascending: true });
         if (commentsData) {
             posts.forEach(post => {
@@ -815,7 +774,6 @@
             });
         }
         
-        // Загружаем подписки
         const { data: followsData } = await supabase.from('follows').select('*');
         if (followsData) {
             users.forEach(user => {
@@ -852,7 +810,6 @@
         localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
     }
 
-    // Auth
     const submitBtn = document.getElementById('submitAuthBtn');
     const switchBtn = document.getElementById('switchModeBtn');
     const authError = document.getElementById('authError');
@@ -893,14 +850,12 @@
                 return;
             }
             
-            // Проверяем, существует ли пользователь
             const { data: existing } = await supabase.from('users').select('id').eq('email', email).single();
             if (existing) {
                 authError.textContent = 'Email уже зарегистрирован';
                 return;
             }
             
-            // Создаём нового пользователя
             const { data: newUser, error } = await supabase.from('users').insert([{
                 id: Date.now(),
                 name: name,
@@ -911,14 +866,13 @@
             }]).select().single();
             
             if (error) {
-                authError.textContent = 'Ошибка регистрации';
+                authError.textContent = 'Ошибка регистрации: ' + error.message;
                 return;
             }
             currentUser = newUser;
             await loadDataFromSupabase();
             showMainApp();
         } else {
-            // Вход
             const { data: user, error } = await supabase.from('users').select('*').eq('email', email).eq('password', password).single();
             if (user) {
                 currentUser = user;
@@ -956,7 +910,6 @@
         renderProfile();
     };
 
-    // Follow system
     async function toggleFollow(targetId) {
         const isFollow = currentUser.following?.includes(targetId);
         
@@ -975,13 +928,12 @@
         return currentUser?.following?.includes(userId);
     }
 
-    function viewProfile(userId) {
+    window.viewProfile = function(userId) {
         viewingUserId = userId;
         renderProfile();
         document.querySelector('.tab[data-tab="profile"]').click();
-    }
+    };
 
-    // Render profile
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
@@ -1033,15 +985,9 @@
                     </div>
                 ` : ''}
             </div>
-            
             <div class="profile-posts-title">📝 Посты</div>
             <div id="profilePosts"></div>
         `;
-        
-        if (!isOwn) {
-            const followBtn = document.querySelector('.follow-btn');
-            if (followBtn) followBtn.style.cssText = 'width:100%';
-        }
         
         if (isOwn) {
             document.getElementById('editProfileBtn')?.addEventListener('click', () => {
@@ -1051,7 +997,8 @@
             document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
                 const newName = document.getElementById('editName').value.trim();
                 if (newName && newName !== currentUser.name) {
-                    if (users.find(u => u.name === newName && u.id !== currentUser.id)) {
+                    const nameTaken = users.find(u => u.name === newName && u.id !== currentUser.id);
+                    if (nameTaken) {
                         alert('Имя занято');
                         return;
                     }
@@ -1076,6 +1023,7 @@
                     await loadDataFromSupabase();
                     await renderProfile();
                 }
+                document.getElementById('editProfileForm').classList.add('hidden');
             });
             document.getElementById('cancelProfileBtn')?.addEventListener('click', () => {
                 document.getElementById('editProfileForm').classList.add('hidden');
@@ -1088,9 +1036,7 @@
     function updateAvatarFileName(input) {
         const fileName = input.files[0]?.name || '';
         const display = document.getElementById('avatarFileNameDisplay');
-        if (display) {
-            display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
-        }
+        if (display) display.textContent = fileName ? `📎 ${fileName.substring(0, 30)}${fileName.length > 30 ? '...' : ''}` : '';
     }
 
     function renderProfilePosts(userPosts) {
@@ -1128,7 +1074,6 @@
         });
     }
 
-    // Render feed
     async function renderFeed() {
         const container = document.getElementById('postsList');
         const feedPosts = [...posts].reverse();
@@ -1238,7 +1183,6 @@
         }).join('');
     }
 
-    // Comments actions
     window.addComment = async function(postId) {
         const input = document.getElementById(`commentInput-${postId}`);
         const text = input.value.trim();
@@ -1247,7 +1191,8 @@
         await supabase.from('comments').insert([{
             post_id: postId,
             user_id: currentUser.id,
-            text: text
+            text: text,
+            created_at: new Date().toISOString()
         }]);
         
         await loadDataFromSupabase();
@@ -1323,7 +1268,6 @@
         }
     };
 
-    // Modal create post
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
 
@@ -1376,7 +1320,6 @@
         await renderFeed();
     }
 
-    // Tabs
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = async () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
