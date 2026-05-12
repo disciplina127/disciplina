@@ -257,7 +257,6 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        /* КОММЕНТАРИИ - ПРОСТЫЕ И НАДЁЖНЫЕ */
         .comments-area {
             margin-top: 12px;
             border-top: 1px solid var(--border);
@@ -307,9 +306,6 @@
             border-radius: 12px;
             width: auto;
         }
-        .comment-item-actions button:hover {
-            background: var(--border);
-        }
         .comment-input-area {
             display: flex;
             gap: 8px;
@@ -351,7 +347,7 @@
             border: 1px solid var(--border);
             margin-bottom: 16px;
         }
-        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; background: var(--border); border: 2px solid var(--accent); }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
         .stats { display: flex; justify-content: center; gap: 24px; margin: 16px 0; }
         .stat-value { font-size: 18px; font-weight: 700; color: var(--accent); }
         .stat-label { font-size: 11px; color: var(--text-secondary); }
@@ -444,6 +440,17 @@
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
         .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); }
+
+        .follow-btn {
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            transition: all 0.2s;
+        }
+        .follow-btn.following {
+            background: var(--accent);
+            color: white;
+        }
 
         @media (max-width: 500px) {
             .content { padding: 8px; }
@@ -619,7 +626,6 @@
         renderFeed();
     }
 
-    // ========== КОММЕНТАРИИ ==========
     async function addComment(postId, commentText) {
         if (!commentText || !commentText.trim()) return;
         
@@ -638,10 +644,7 @@
         openComments[postId] = true;
         renderFeed();
         
-        // Прокрутка к комментариям
         setTimeout(() => {
-            const commentsDiv = document.getElementById(`comments-panel-${postId}`);
-            if (commentsDiv) commentsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.value = '';
         }, 100);
@@ -689,7 +692,50 @@
         }
     }
 
-    // ========== РЕНДЕР ЛЕНТЫ ==========
+    // ========== ПОДПИСКИ ==========
+    async function toggleFollow(targetUserId) {
+        const currentUserDoc = users.find(u => u.id === currentUser.uid);
+        const following = currentUserDoc?.following || [];
+        const isFollowing = following.includes(targetUserId);
+        
+        if (isFollowing) {
+            await db.collection('users').doc(currentUser.uid).update({
+                following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
+            });
+            await db.collection('users').doc(targetUserId).update({
+                followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+            });
+        } else {
+            await db.collection('users').doc(currentUser.uid).update({
+                following: firebase.firestore.FieldValue.arrayUnion(targetUserId)
+            });
+            await db.collection('users').doc(targetUserId).update({
+                followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+            });
+        }
+        
+        await loadData();
+        await renderProfile();
+        renderFeed();
+    }
+
+    // ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ==========
+    async function updateProfile(newName, newBio, newAvatar) {
+        const updates = {};
+        if (newName && newName !== currentUser.name) updates.name = newName;
+        if (newBio !== undefined) updates.bio = newBio;
+        if (newAvatar) updates.avatar = newAvatar;
+        
+        if (Object.keys(updates).length > 0) {
+            await db.collection('users').doc(currentUser.uid).update(updates);
+            await loadData();
+            await renderProfile();
+            renderFeed();
+            return true;
+        }
+        return false;
+    }
+
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -770,7 +816,6 @@
         }).join('');
     }
     
-    // Глобальные функции для комментариев
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
@@ -812,7 +857,6 @@
         }
     }
     
-    // Отправка по Enter
     document.addEventListener('keypress', function(e) {
         if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
             if (e.key === 'Enter') {
@@ -823,7 +867,6 @@
         }
     });
     
-    // Меню
     window.toggleMenu = function(postId) {
         if (openMenus[postId]) delete openMenus[postId];
         else { openMenus = {}; openMenus[postId] = true; }
@@ -837,12 +880,13 @@
         }
     });
 
-    // Профиль
     window.viewProfile = function(userId) {
         viewingUserId = userId;
         renderProfile();
         document.querySelector('.tab[data-tab="profile"]').click();
     };
+    
+    window.toggleFollow = toggleFollow;
 
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
@@ -935,20 +979,23 @@
         `;
     }
 
+    // ========== ПРОФИЛЬ С РЕДАКТИРОВАНИЕМ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
         if (!profileUser) return;
+        
         const isOwn = viewingUserId === currentUser.uid;
         document.getElementById('backBtn').classList.toggle('hidden', isOwn);
+        
         const userPosts = posts.filter(p => p.userId === viewingUserId);
         const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
         
         container.innerHTML = `
             <div class="profile-card">
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="avatar">
-                <h3 style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
-                <p style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="avatar" id="profileAvatar">
+                <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
+                <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
                     <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
                     <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
@@ -959,8 +1006,28 @@
                     <div><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
                 </div>
                 <div class="profile-buttons">
-                    ${!isOwn ? `<button onclick="alert('Подписки в разработке')">Подписаться</button>` : `<button id="editProfileBtn">✏️ Редактировать</button><button id="themeBtn">🌓 Тема</button>`}
+                    ${!isOwn ? `
+                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
+                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
+                        </button>
+                    ` : `
+                        <button id="editProfileBtn">✏️ Редактировать</button>
+                        <button id="themeBtn">🌓 Тема</button>
+                    `}
                 </div>
+                ${isOwn ? `
+                    <div id="editProfileForm" class="edit-form hidden">
+                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
+                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
+                        <div class="upload-btn">
+                            <input type="file" id="editAvatar" accept="image/*">
+                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
+                            <span id="avatarFileNameDisplay" class="file-name"></span>
+                        </div>
+                        <button id="saveProfileBtn">Сохранить</button>
+                        <button id="cancelEditBtn">Отмена</button>
+                    </div>
+                ` : ''}
             </div>
             <div class="profile-posts-title">📝 Посты</div>
             <div id="profilePosts"></div>
@@ -980,10 +1047,39 @@
         }
         
         if (isOwn) {
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => alert('Редактирование в разработке'));
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.remove('hidden');
+            });
+            
+            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+                const newName = document.getElementById('editName').value.trim();
+                const newBio = document.getElementById('editBio').value.trim();
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                let avatarBase64 = null;
+                
+                if (avatarFile) {
+                    avatarBase64 = await compressImage(avatarFile, 400);
+                }
+                
+                await updateProfile(newName, newBio, avatarBase64);
+                document.getElementById('editProfileForm').classList.add('hidden');
+                alert('Профиль обновлён!');
+            });
+            
+            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.add('hidden');
+            });
+            
             document.getElementById('themeBtn')?.addEventListener('click', () => {
                 document.body.classList.toggle('light-theme');
                 localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            });
+            
+            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
+                }
             });
         }
     }
@@ -1079,6 +1175,7 @@
         modal.style.display = 'flex';
         document.getElementById('modalPostText').value = '';
         document.getElementById('modalPostPhoto').value = '';
+        document.getElementById('fileNameDisplay').textContent = '';
         document.getElementById('modalPostText').focus();
     };
     document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
@@ -1100,8 +1197,7 @@
     document.getElementById('modalPostPhoto')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            const display = document.getElementById('fileNameDisplay');
-            if (display) display.textContent = `📎 ${file.name}`;
+            document.getElementById('fileNameDisplay').textContent = `📎 ${file.name}`;
         }
     });
 
