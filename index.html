@@ -541,6 +541,94 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
+    // Общая функция рендера поста (используется и в ленте, и в профиле)
+    function renderPostCard(post, isInProfile) {
+        const author = users.find(u => u.id === post.userId);
+        const isLiked = post.likes?.includes(currentUser.uid);
+        const isAuthor = post.userId === currentUser.uid;
+        const showComments = openComments[post.id] || false;
+        const showMenu = openMenus[post.id];
+        const comments = post.comments || [];
+        
+        return `
+            <div class="post" id="post-${post.id}">
+                <div class="post-header">
+                    <button class="post-author" onclick="viewProfile('${post.userId}')">${escapeHtml(author?.name || '?')}</button>
+                    ${isAuthor ? `
+                        <div class="post-menu">
+                            <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
+                            ${showMenu ? `
+                                <div class="menu-dropdown">
+                                    <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
+                                    <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="post-text">${escapeHtml(post.text)}</div>
+                ${post.photo ? `<img src="${post.photo}" class="post-photo" onclick="window.open(this.src)">` : ''}
+                <div class="post-footer">
+                    <div class="post-actions">
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${JSON.stringify(post).replace(/"/g, '&quot;')})">❤️ ${post.likes?.length || 0}</button>
+                        <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
+                    </div>
+                    <div class="post-time-footer">${formatDate(post.date)}</div>
+                </div>
+                ${showComments ? renderCommentsSection(post.id, comments) : ''}
+            </div>
+        `;
+    }
+
+    function renderCommentsSection(postId, comments) {
+        if (!comments || comments.length === 0) {
+            return `
+                <div class="comments-area" id="comments-panel-${postId}">
+                    <div class="no-comments-text">✨ Нет комментариев</div>
+                    <div class="comment-input-area">
+                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off">
+                        <button onclick="submitComment('${postId}')">→</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="comments-area" id="comments-panel-${postId}">
+                ${comments.map((c, idx) => {
+                    const commentAuthor = users.find(u => u.id === c.userId);
+                    const isCommentOwner = c.userId === currentUser.uid;
+                    return `
+                        <div class="comment-item" id="comment-${postId}-${idx}">
+                            <div class="comment-item-header">
+                                <button class="comment-item-author" onclick="viewProfile('${c.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
+                                <span class="comment-item-date">${formatDate(c.date)}</span>
+                            </div>
+                            <div class="comment-item-text" id="comment-text-${postId}-${idx}">${escapeHtml(c.text)}</div>
+                            ${isCommentOwner ? `
+                                <div class="comment-item-actions">
+                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Ред.</button>
+                                    <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
+                                </div>
+                                <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px;">
+                                    <input type="text" id="editCommentInput-${postId}-${idx}" value="${escapeHtml(c.text)}" style="width:100%; padding:8px; border-radius:25px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-primary);">
+                                    <div style="display: flex; gap: 8px; margin-top: 6px;">
+                                        <button onclick="saveCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px;">Сохранить</button>
+                                        <button onclick="cancelCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px; background: var(--bg-input);">Отмена</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+                <div class="comment-input-area">
+                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off">
+                    <button onclick="submitComment('${postId}')">→</button>
+                </div>
+            </div>
+        `;
+    }
+
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -613,7 +701,7 @@
             date: firebase.firestore.FieldValue.serverTimestamp()
         });
         await loadData();
-        renderFeed();
+        await refreshAll();
     }
 
     async function toggleLike(postId, post) {
@@ -623,7 +711,7 @@
         else likes.splice(index, 1);
         await db.collection('posts').doc(postId).update({ likes });
         await loadData();
-        renderFeed();
+        await refreshAll();
     }
 
     async function addComment(postId, commentText) {
@@ -642,7 +730,7 @@
         await db.collection('posts').doc(postId).update({ comments });
         await loadData();
         openComments[postId] = true;
-        renderFeed();
+        await refreshAll();
         
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
@@ -659,7 +747,7 @@
         post.comments.splice(commentIndex, 1);
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
-        renderFeed();
+        await refreshAll();
     }
     
     async function editComment(postId, commentIndex, newText) {
@@ -671,14 +759,14 @@
         post.comments[commentIndex].text = newText.trim();
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
-        renderFeed();
+        await refreshAll();
     }
 
     async function deletePost(postId) {
         if (confirm('Удалить пост?')) {
             await db.collection('posts').doc(postId).delete();
             await loadData();
-            renderFeed();
+            await refreshAll();
         }
     }
 
@@ -688,11 +776,10 @@
         if (newText && newText.trim()) {
             await db.collection('posts').doc(postId).update({ text: newText.trim() });
             await loadData();
-            renderFeed();
+            await refreshAll();
         }
     }
 
-    // ========== ПОДПИСКИ ==========
     async function toggleFollow(targetUserId) {
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
@@ -713,13 +800,10 @@
                 followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
             });
         }
-        
         await loadData();
-        await renderProfile();
-        renderFeed();
+        await refreshAll();
     }
 
-    // ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ==========
     async function updateProfile(newName, newBio, newAvatar) {
         const updates = {};
         if (newName && newName !== currentUser.name) updates.name = newName;
@@ -729,165 +813,130 @@
         if (Object.keys(updates).length > 0) {
             await db.collection('users').doc(currentUser.uid).update(updates);
             await loadData();
-            await renderProfile();
-            renderFeed();
+            await refreshAll();
             return true;
         }
         return false;
     }
 
+    // Обновление всех вкладок
+    async function refreshAll() {
+        await renderFeed();
+        await renderProfile();
+        renderGameTab();
+    }
+
+    // ========== РЕНДЕР ЛЕНТЫ ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
             container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>';
             return;
         }
+        container.innerHTML = posts.map(post => renderPostCard(post, false)).join('');
+    }
+
+    // ========== ПРОФИЛЬ С ПОСТАМИ ==========
+    async function renderProfile() {
+        const container = document.getElementById('profileContainer');
+        const profileUser = users.find(u => u.id === viewingUserId);
+        if (!profileUser) return;
         
-        container.innerHTML = posts.map(post => {
-            const author = users.find(u => u.id === post.userId);
-            const isLiked = post.likes?.includes(currentUser.uid);
-            const isAuthor = post.userId === currentUser.uid;
-            const showComments = openComments[post.id] || false;
-            const showMenu = openMenus[post.id];
-            const comments = post.comments || [];
-            
-            return `
-                <div class="post" id="post-${post.id}">
-                    <div class="post-header">
-                        <button class="post-author" onclick="viewProfile('${post.userId}')">${escapeHtml(author?.name || '?')}</button>
-                        ${isAuthor ? `
-                            <div class="post-menu">
-                                <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
-                                ${showMenu ? `
-                                    <div class="menu-dropdown">
-                                        <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
-                                        <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : ''}
-                    </div>
-                    <div class="post-text">${escapeHtml(post.text)}</div>
-                    ${post.photo ? `<img src="${post.photo}" class="post-photo">` : ''}
-                    <div class="post-footer">
-                        <div class="post-actions">
-                            <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${JSON.stringify(post).replace(/"/g, '&quot;')})">❤️ ${post.likes?.length || 0}</button>
-                            <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
-                        </div>
-                        <div class="post-time-footer">${formatDate(post.date)}</div>
-                    </div>
-                    ${showComments ? `
-                        <div class="comments-area" id="comments-panel-${post.id}">
-                            ${comments.length === 0 ? '<div class="no-comments-text">✨ Нет комментариев</div>' : ''}
-                            ${comments.map((c, idx) => {
-                                const commentAuthor = users.find(u => u.id === c.userId);
-                                const isCommentOwner = c.userId === currentUser.uid;
-                                return `
-                                    <div class="comment-item" id="comment-${post.id}-${idx}">
-                                        <div class="comment-item-header">
-                                            <button class="comment-item-author" onclick="viewProfile('${c.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
-                                            <span class="comment-item-date">${formatDate(c.date)}</span>
-                                        </div>
-                                        <div class="comment-item-text" id="comment-text-${post.id}-${idx}">${escapeHtml(c.text)}</div>
-                                        ${isCommentOwner ? `
-                                            <div class="comment-item-actions">
-                                                <button onclick="editCommentUI('${post.id}', ${idx})">✏️ Ред.</button>
-                                                <button onclick="deleteComment('${post.id}', ${idx})">🗑️ Удалить</button>
-                                            </div>
-                                            <div id="editCommentForm-${post.id}-${idx}" style="display: none; margin-top: 8px;">
-                                                <input type="text" id="editCommentInput-${post.id}-${idx}" value="${escapeHtml(c.text)}" style="width:100%; padding:8px; border-radius:25px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-primary);">
-                                                <div style="display: flex; gap: 8px; margin-top: 6px;">
-                                                    <button onclick="saveCommentEdit('${post.id}', ${idx})" style="width: auto; padding: 6px 12px;">Сохранить</button>
-                                                    <button onclick="cancelCommentEdit('${post.id}', ${idx})" style="width: auto; padding: 6px 12px; background: var(--bg-input);">Отмена</button>
-                                                </div>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                `;
-                            }).join('')}
-                            <div class="comment-input-area">
-                                <input type="text" id="comment-input-${post.id}" placeholder="Написать комментарий..." autocomplete="off">
-                                <button onclick="submitComment('${post.id}')">→</button>
-                            </div>
-                        </div>
-                    ` : ''}
+        const isOwn = viewingUserId === currentUser.uid;
+        document.getElementById('backBtn').classList.toggle('hidden', isOwn);
+        
+        const userPosts = posts.filter(p => p.userId === viewingUserId);
+        const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
+        
+        container.innerHTML = `
+            <div class="profile-card">
+                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="avatar" id="profileAvatar">
+                <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
+                <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <div class="stats">
+                    <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
+                    <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
+                    <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
                 </div>
-            `;
-        }).join('');
-    }
-    
-    window.submitComment = async function(postId) {
-        const input = document.getElementById(`comment-input-${postId}`);
-        const text = input?.value;
-        if (!text || !text.trim()) return;
-        await addComment(postId, text);
-    };
-    
-    window.editCommentUI = function(postId, idx) {
-        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
-        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
-        if (form) form.style.display = 'block';
-        if (textSpan) textSpan.style.display = 'none';
-    };
-    
-    window.saveCommentEdit = async function(postId, idx) {
-        const input = document.getElementById(`editCommentInput-${postId}-${idx}`);
-        const newText = input?.value;
-        if (!newText || !newText.trim()) return;
-        await editComment(postId, idx, newText);
-    };
-    
-    window.cancelCommentEdit = function(postId, idx) {
-        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
-        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
-        if (form) form.style.display = 'none';
-        if (textSpan) textSpan.style.display = 'block';
-    };
-    
-    window.deleteComment = deleteComment;
-    
-    function toggleComments(postId) {
-        openComments[postId] = !openComments[postId];
-        renderFeed();
-        if (openComments[postId]) {
-            setTimeout(() => {
-                const input = document.getElementById(`comment-input-${postId}`);
-                if (input) input.focus();
-            }, 100);
+                <div class="stats">
+                    <div><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
+                    <div><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
+                </div>
+                <div class="profile-buttons">
+                    ${!isOwn ? `
+                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
+                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
+                        </button>
+                    ` : `
+                        <button id="editProfileBtn">✏️ Редактировать</button>
+                        <button id="themeBtn">🌓 Тема</button>
+                    `}
+                </div>
+                ${isOwn ? `
+                    <div id="editProfileForm" class="edit-form hidden">
+                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
+                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
+                        <div class="upload-btn">
+                            <input type="file" id="editAvatar" accept="image/*">
+                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
+                            <span id="avatarFileNameDisplay" class="file-name"></span>
+                        </div>
+                        <button id="saveProfileBtn">Сохранить</button>
+                        <button id="cancelEditBtn">Отмена</button>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="profile-posts-title">📝 Посты</div>
+            <div id="profilePosts"></div>
+        `;
+        
+        // Рендер постов в профиле с полным функционалом
+        const profilePostsContainer = document.getElementById('profilePosts');
+        if (!userPosts.length) {
+            profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
+        } else {
+            profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post, true)).join('');
+        }
+        
+        if (isOwn) {
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.remove('hidden');
+            });
+            
+            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+                const newName = document.getElementById('editName').value.trim();
+                const newBio = document.getElementById('editBio').value.trim();
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                let avatarBase64 = null;
+                
+                if (avatarFile) {
+                    avatarBase64 = await compressImage(avatarFile, 400);
+                }
+                
+                await updateProfile(newName, newBio, avatarBase64);
+                document.getElementById('editProfileForm').classList.add('hidden');
+                alert('Профиль обновлён!');
+            });
+            
+            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.add('hidden');
+            });
+            
+            document.getElementById('themeBtn')?.addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            });
+            
+            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
+                }
+            });
         }
     }
-    
-    document.addEventListener('keypress', function(e) {
-        if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const postId = e.target.id.replace('comment-input-', '');
-                submitComment(postId);
-            }
-        }
-    });
-    
-    window.toggleMenu = function(postId) {
-        if (openMenus[postId]) delete openMenus[postId];
-        else { openMenus = {}; openMenus[postId] = true; }
-        renderFeed();
-    };
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.post-menu')) {
-            openMenus = {};
-            renderFeed();
-        }
-    });
 
-    window.viewProfile = function(userId) {
-        viewingUserId = userId;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-    
-    window.toggleFollow = toggleFollow;
-
+    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
@@ -950,7 +999,6 @@
         } else {
             document.getElementById('rollButton')?.setAttribute('disabled', 'disabled');
         }
-        
         await renderLeaderboard();
     }
 
@@ -979,112 +1027,81 @@
         `;
     }
 
-    // ========== ПРОФИЛЬ С РЕДАКТИРОВАНИЕМ ==========
-    async function renderProfile() {
-        const container = document.getElementById('profileContainer');
-        const profileUser = users.find(u => u.id === viewingUserId);
-        if (!profileUser) return;
-        
-        const isOwn = viewingUserId === currentUser.uid;
-        document.getElementById('backBtn').classList.toggle('hidden', isOwn);
-        
-        const userPosts = posts.filter(p => p.userId === viewingUserId);
-        const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
-        
-        container.innerHTML = `
-            <div class="profile-card">
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="avatar" id="profileAvatar">
-                <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
-                <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
-                <div class="stats">
-                    <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
-                    <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
-                    <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
-                </div>
-                <div class="stats">
-                    <div><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
-                    <div><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
-                </div>
-                <div class="profile-buttons">
-                    ${!isOwn ? `
-                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
-                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
-                        </button>
-                    ` : `
-                        <button id="editProfileBtn">✏️ Редактировать</button>
-                        <button id="themeBtn">🌓 Тема</button>
-                    `}
-                </div>
-                ${isOwn ? `
-                    <div id="editProfileForm" class="edit-form hidden">
-                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
-                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
-                        <div class="upload-btn">
-                            <input type="file" id="editAvatar" accept="image/*">
-                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
-                            <span id="avatarFileNameDisplay" class="file-name"></span>
-                        </div>
-                        <button id="saveProfileBtn">Сохранить</button>
-                        <button id="cancelEditBtn">Отмена</button>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="profile-posts-title">📝 Посты</div>
-            <div id="profilePosts"></div>
-        `;
-        
-        const profilePosts = document.getElementById('profilePosts');
-        if (!userPosts.length) {
-            profilePosts.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
-        } else {
-            profilePosts.innerHTML = userPosts.map(post => `
-                <div class="post">
-                    <div class="post-text">${escapeHtml(post.text)}</div>
-                    ${post.photo ? `<img src="${post.photo}" class="post-photo">` : ''}
-                    <div class="post-footer"><div class="post-time-footer">${formatDate(post.date)}</div></div>
-                </div>
-            `).join('');
-        }
-        
-        if (isOwn) {
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.remove('hidden');
-            });
-            
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newName = document.getElementById('editName').value.trim();
-                const newBio = document.getElementById('editBio').value.trim();
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                let avatarBase64 = null;
-                
-                if (avatarFile) {
-                    avatarBase64 = await compressImage(avatarFile, 400);
-                }
-                
-                await updateProfile(newName, newBio, avatarBase64);
-                document.getElementById('editProfileForm').classList.add('hidden');
-                alert('Профиль обновлён!');
-            });
-            
-            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.add('hidden');
-            });
-            
-            document.getElementById('themeBtn')?.addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-                localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-            });
-            
-            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
-                }
-            });
+    // ========== ОБРАБОТЧИКИ ==========
+    window.submitComment = async function(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const text = input?.value;
+        if (!text || !text.trim()) return;
+        await addComment(postId, text);
+    };
+    
+    window.editCommentUI = function(postId, idx) {
+        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
+        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
+        if (form) form.style.display = 'block';
+        if (textSpan) textSpan.style.display = 'none';
+    };
+    
+    window.saveCommentEdit = async function(postId, idx) {
+        const input = document.getElementById(`editCommentInput-${postId}-${idx}`);
+        const newText = input?.value;
+        if (!newText || !newText.trim()) return;
+        await editComment(postId, idx, newText);
+    };
+    
+    window.cancelCommentEdit = function(postId, idx) {
+        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
+        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
+        if (form) form.style.display = 'none';
+        if (textSpan) textSpan.style.display = 'block';
+    };
+    
+    window.deleteComment = deleteComment;
+    
+    function toggleComments(postId) {
+        openComments[postId] = !openComments[postId];
+        refreshAll();
+        if (openComments[postId]) {
+            setTimeout(() => {
+                const input = document.getElementById(`comment-input-${postId}`);
+                if (input) input.focus();
+            }, 100);
         }
     }
+    
+    document.addEventListener('keypress', function(e) {
+        if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const postId = e.target.id.replace('comment-input-', '');
+                submitComment(postId);
+            }
+        }
+    });
+    
+    window.toggleMenu = function(postId) {
+        if (openMenus[postId]) delete openMenus[postId];
+        else { openMenus = {}; openMenus[postId] = true; }
+        refreshAll();
+    };
+    
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.post-menu')) {
+            openMenus = {};
+            refreshAll();
+        }
+    });
 
-    // Auth
+    window.viewProfile = function(userId) {
+        viewingUserId = userId;
+        renderProfile();
+        document.querySelector('.tab[data-tab="profile"]').click();
+    };
+    
+    window.toggleFollow = toggleFollow;
+    window.toggleLike = toggleLike;
+
+    // ========== АВТОРИЗАЦИЯ ==========
     const authScreen = document.getElementById('authScreen');
     const mainApp = document.getElementById('mainApp');
     const submitBtn = document.getElementById('submitAuthBtn');
@@ -1142,9 +1159,7 @@
         viewingUserId = currentUser.uid;
         authScreen.style.display = 'none';
         mainApp.style.display = 'block';
-        await renderFeed();
-        await renderProfile();
-        renderGameTab();
+        await refreshAll();
     }
 
     document.getElementById('logoutBtn').onclick = async () => {
@@ -1167,7 +1182,7 @@
         renderProfile();
     };
 
-    // Пост модалка
+    // ========== МОДАЛКА ПОСТА ==========
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
 
@@ -1201,6 +1216,7 @@
         }
     });
 
+    // ========== ТАБЫ ==========
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
