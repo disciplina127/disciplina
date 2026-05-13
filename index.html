@@ -58,7 +58,7 @@
         .auth-card {
             background: var(--bg-card);
             border-radius: 24px;
-            padding: 24px;
+            padding: 32px;
             width: 100%;
             max-width: 380px;
             border: 1px solid var(--border);
@@ -107,7 +107,19 @@
             padding: 8px;
         }
 
+        .forgot-password {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: underline;
+        }
+
+        .forgot-password:hover { color: var(--accent); }
+
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
+        .success-msg { color: var(--success); font-size: 13px; margin-top: 10px; text-align: center; }
 
         .main-app {
             display: none;
@@ -170,7 +182,6 @@
         .content { padding: 12px; }
         .hidden { display: none; }
 
-        /* Пост */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
@@ -195,10 +206,7 @@
             cursor: pointer;
         }
 
-        .post-author-info {
-            flex: 1;
-        }
-
+        .post-author-info { flex: 1; }
         .post-author {
             font-weight: 700;
             font-size: 15px;
@@ -210,10 +218,7 @@
             text-align: left;
         }
 
-        .post-menu {
-            position: relative;
-        }
-
+        .post-menu { position: relative; }
         .menu-dots {
             background: none;
             width: auto;
@@ -275,7 +280,6 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        /* КОММЕНТАРИИ - ОПТИМИЗИРОВАНО ДЛЯ ТЕЛЕФОНА */
         .comments-area {
             margin-top: 12px;
             border-top: 1px solid var(--border);
@@ -335,9 +339,6 @@
             cursor: pointer;
             border-radius: 16px;
         }
-        .comment-actions button:active {
-            background: var(--border);
-        }
         .comment-input-area {
             display: flex;
             gap: 8px;
@@ -356,16 +357,12 @@
             color: var(--text-primary);
             outline: none;
         }
-        .comment-input-area input:focus {
-            outline: none;
-        }
         .comment-input-area button {
             width: auto;
             padding: 8px 20px;
             margin: 0;
             border-radius: 30px;
             background: var(--accent);
-            font-size: 14px;
         }
         .no-comments-text {
             text-align: center;
@@ -513,8 +510,10 @@
             <input type="password" id="regPassword" placeholder="Пароль">
             <button id="submitAuthBtn">Зарегистрироваться</button>
             <div class="switch-btn" id="switchModeBtn">Уже есть аккаунт? Войти</div>
+            <div class="forgot-password" id="forgotPasswordBtn">🔐 Забыли пароль?</div>
         </div>
         <div id="authError" class="error"></div>
+        <div id="authSuccess" class="success-msg"></div>
     </div>
 </div>
 
@@ -582,7 +581,46 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
+    async function resetPassword(email) {
+        if (!email || !email.trim()) {
+            document.getElementById('authError').textContent = 'Введите email';
+            document.getElementById('authSuccess').textContent = '';
+            return false;
+        }
+        
+        try {
+            await auth.sendPasswordResetEmail(email);
+            document.getElementById('authError').textContent = '';
+            document.getElementById('authSuccess').textContent = '📧 Письмо для сброса пароля отправлено на ' + email;
+            return true;
+        } catch (error) {
+            let errorMsg = '';
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMsg = 'Пользователь с таким email не найден';
+                    break;
+                case 'auth/invalid-email':
+                    errorMsg = 'Неверный формат email';
+                    break;
+                default:
+                    errorMsg = 'Ошибка: ' + error.message;
+            }
+            document.getElementById('authError').textContent = errorMsg;
+            document.getElementById('authSuccess').textContent = '';
+            return false;
+        }
+    }
+
+    document.getElementById('forgotPasswordBtn')?.addEventListener('click', async () => {
+        const email = document.getElementById('regEmail').value.trim();
+        if (!email) {
+            document.getElementById('authError').textContent = 'Введите email в поле выше';
+            return;
+        }
+        await resetPassword(email);
+    });
+
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -636,7 +674,6 @@
         });
     }
 
-    // ========== ДАННЫЕ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -646,7 +683,6 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
-    // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
     async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -672,23 +708,18 @@
 
     async function addComment(postId, commentText) {
         if (!commentText || !commentText.trim()) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post) return;
-        
         const comments = post.comments || [];
         comments.push({
             userId: currentUser.uid,
             text: commentText.trim(),
             date: new Date().toISOString()
         });
-        
         await db.collection('posts').doc(postId).update({ comments });
         await loadData();
         openComments[postId] = true;
         await refreshAll();
-        
-        // Очищаем поле ввода
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.value = '';
@@ -697,10 +728,8 @@
     
     async function deleteComment(postId, commentIndex) {
         if (!confirm('Удалить комментарий?')) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post || !post.comments) return;
-        
         post.comments.splice(commentIndex, 1);
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
@@ -709,10 +738,8 @@
     
     async function editComment(postId, commentIndex, newText) {
         if (!newText || !newText.trim()) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post || !post.comments || !post.comments[commentIndex]) return;
-        
         post.comments[commentIndex].text = newText.trim();
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
@@ -741,7 +768,6 @@
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
         const isFollowing = following.includes(targetUserId);
-        
         if (isFollowing) {
             await db.collection('users').doc(currentUser.uid).update({
                 following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
@@ -766,7 +792,6 @@
         if (newName && newName !== currentUser.name) updates.name = newName;
         if (newBio !== undefined) updates.bio = newBio;
         if (newAvatar) updates.avatar = newAvatar;
-        
         if (Object.keys(updates).length > 0) {
             await db.collection('users').doc(currentUser.uid).update(updates);
             await loadData();
@@ -776,7 +801,6 @@
         return false;
     }
 
-    // ========== РЕНДЕР ПОСТА ==========
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -835,7 +859,7 @@
                             <div class="comment-text" id="comment-text-${postId}-${idx}">${escapeHtml(c.text)}</div>
                             ${isCommentOwner ? `
                                 <div class="comment-actions">
-                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Редактировать</button>
+                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Ред.</button>
                                     <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
                                 </div>
                                 <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px;">
@@ -857,14 +881,12 @@
         `;
     }
 
-    // ========== ОБНОВЛЕНИЕ ВСЕХ ВКЛАДОК ==========
     async function refreshAll() {
         await renderFeed();
         await renderProfile();
         renderGameTab();
     }
 
-    // ========== ЛЕНТА ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -874,21 +896,21 @@
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
     }
 
-    // ========== ПРОФИЛЬ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
         if (!profileUser) return;
         
         const isOwn = viewingUserId === currentUser.uid;
-        document.getElementById('backBtn').classList.toggle('hidden', isOwn);
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) backBtn.classList.toggle('hidden', isOwn);
         
         const userPosts = posts.filter(p => p.userId === viewingUserId);
         const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
         
         container.innerHTML = `
             <div class="profile-card">
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" id="profileAvatar" onclick="viewProfile('${viewingUserId}')">
+                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" id="profileAvatar">
                 <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
                 <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
@@ -915,7 +937,7 @@
                         <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
                         <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
                         <div class="upload-btn">
-                            <input type="file" id="editAvatar" accept="image/*">
+                            <input type="file" id="editAvatar" accept="image/*" onchange="updateAvatarPreview(this)">
                             <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
                             <span id="avatarFileNameDisplay" class="file-name"></span>
                         </div>
@@ -936,44 +958,57 @@
         }
         
         if (isOwn) {
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.remove('hidden');
-            });
+            const editBtn = document.getElementById('editProfileBtn');
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            const themeBtn = document.getElementById('themeBtn');
             
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newName = document.getElementById('editName').value.trim();
-                const newBio = document.getElementById('editBio').value.trim();
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                let avatarBase64 = null;
-                
-                if (avatarFile) {
-                    avatarBase64 = await compressImage(avatarFile, 400);
-                }
-                
-                await updateProfile(newName, newBio, avatarBase64);
-                document.getElementById('editProfileForm').classList.add('hidden');
-                alert('Профиль обновлён!');
-            });
+            if (editBtn) {
+                editBtn.onclick = () => {
+                    document.getElementById('editProfileForm').classList.remove('hidden');
+                };
+            }
             
-            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.add('hidden');
-            });
+            if (saveBtn) {
+                saveBtn.onclick = async () => {
+                    const newName = document.getElementById('editName').value.trim();
+                    const newBio = document.getElementById('editBio').value.trim();
+                    const avatarFile = document.getElementById('editAvatar').files[0];
+                    let avatarBase64 = null;
+                    
+                    if (avatarFile) {
+                        avatarBase64 = await compressImage(avatarFile, 400);
+                    }
+                    
+                    await updateProfile(newName, newBio, avatarBase64);
+                    document.getElementById('editProfileForm').classList.add('hidden');
+                    alert('Профиль обновлён!');
+                };
+            }
             
-            document.getElementById('themeBtn')?.addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-                localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-            });
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    document.getElementById('editProfileForm').classList.add('hidden');
+                };
+            }
             
-            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
-                }
-            });
+            if (themeBtn) {
+                themeBtn.onclick = () => {
+                    document.body.classList.toggle('light-theme');
+                    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+                };
+            }
         }
     }
+    
+    window.updateAvatarPreview = function(input) {
+        const file = input.files[0];
+        if (file) {
+            const display = document.getElementById('avatarFileNameDisplay');
+            if (display) display.textContent = `📎 ${file.name}`;
+        }
+    };
 
-    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
@@ -1031,11 +1066,13 @@
             <div id="leaderboardContainer"></div>
         `;
         
-        if (canPlay) {
-            document.getElementById('rollButton')?.addEventListener('click', runGame);
-        } else {
-            document.getElementById('rollButton')?.setAttribute('disabled', 'disabled');
+        const rollBtn = document.getElementById('rollButton');
+        if (rollBtn && canPlay) {
+            rollBtn.onclick = runGame;
+        } else if (rollBtn) {
+            rollBtn.disabled = true;
         }
+        
         await renderLeaderboard();
     }
 
@@ -1070,10 +1107,8 @@
         const text = input?.value;
         if (!text || !text.trim()) return;
         await addComment(postId, text);
-        // Фокусируем поле ввода обратно для быстрого ввода следующего комментария
-        setTimeout(() => {
-            input.focus();
-        }, 50);
+        if (input) input.value = '';
+        setTimeout(() => input?.focus(), 50);
     };
     
     window.editCommentUI = function(postId, idx) {
@@ -1110,7 +1145,6 @@
         }
     }
     
-    // Обработка нажатия Enter на мобильных устройствах
     document.addEventListener('keypress', function(e) {
         if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
             if (e.key === 'Enter') {
@@ -1149,6 +1183,7 @@
     const submitBtn = document.getElementById('submitAuthBtn');
     const switchBtn = document.getElementById('switchModeBtn');
     const authError = document.getElementById('authError');
+    const authSuccess = document.getElementById('authSuccess');
 
     function updateAuthButton() {
         if (isLoginMode) {
@@ -1165,7 +1200,8 @@
     switchBtn.onclick = () => {
         isLoginMode = !isLoginMode;
         updateAuthButton();
-        authError.textContent = '';
+        if (authError) authError.textContent = '';
+        if (authSuccess) authSuccess.textContent = '';
     };
 
     submitBtn.onclick = async () => {
@@ -1173,11 +1209,17 @@
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
         
-        if (!email || !password) { authError.textContent = 'Заполните email и пароль'; return; }
+        if (!email || !password) {
+            if (authError) authError.textContent = 'Заполните email и пароль';
+            return;
+        }
         
         try {
             if (!isLoginMode) {
-                if (!name) { authError.textContent = 'Введите имя'; return; }
+                if (!name) {
+                    if (authError) authError.textContent = 'Введите имя';
+                    return;
+                }
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await db.collection('users').doc(userCredential.user.uid).set({
                     name, email, bio: '', avatar: null, followers: [], following: []
@@ -1194,93 +1236,109 @@
                 await loadData();
                 showMainApp();
             }
-        } catch (error) { authError.textContent = error.message; }
+        } catch (error) {
+            if (authError) authError.textContent = error.message;
+        }
     };
 
     async function showMainApp() {
         viewingUserId = currentUser.uid;
-        authScreen.style.display = 'none';
-        mainApp.style.display = 'block';
+        if (authScreen) authScreen.style.display = 'none';
+        if (mainApp) mainApp.style.display = 'block';
         await refreshAll();
     }
 
-    document.getElementById('logoutBtn').onclick = async () => {
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
         await auth.signOut();
         currentUser = null;
-        authScreen.style.display = 'flex';
-        mainApp.style.display = 'none';
+        if (authScreen) authScreen.style.display = 'flex';
+        if (mainApp) mainApp.style.display = 'none';
         isLoginMode = false;
         updateAuthButton();
-    };
+    });
 
-    document.getElementById('logoBtn').onclick = () => {
+    document.getElementById('logoBtn')?.addEventListener('click', () => {
         viewingUserId = currentUser.uid;
         renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
+        const profileTab = document.querySelector('.tab[data-tab="profile"]');
+        if (profileTab) profileTab.click();
+    });
 
-    document.getElementById('backBtn').onclick = () => {
+    document.getElementById('backBtn')?.addEventListener('click', () => {
         viewingUserId = currentUser.uid;
         renderProfile();
-    };
+    });
 
     // ========== МОДАЛКА ПОСТА ==========
     const modal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
 
-    fabBtn.onclick = () => {
-        modal.style.display = 'flex';
-        document.getElementById('modalPostText').value = '';
-        document.getElementById('modalPostPhoto').value = '';
-        document.getElementById('fileNameDisplay').textContent = '';
-        document.getElementById('modalPostText').focus();
-    };
-    document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    fabBtn?.addEventListener('click', () => {
+        if (modal) modal.style.display = 'flex';
+        const textarea = document.getElementById('modalPostText');
+        if (textarea) textarea.value = '';
+        const photoInput = document.getElementById('modalPostPhoto');
+        if (photoInput) photoInput.value = '';
+        const nameDisplay = document.getElementById('fileNameDisplay');
+        if (nameDisplay) nameDisplay.textContent = '';
+        if (textarea) textarea.focus();
+    });
+    
+    document.getElementById('modalCancelBtn')?.addEventListener('click', () => {
+        if (modal) modal.style.display = 'none';
+    });
+    
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
 
-    document.getElementById('modalPublishBtn').onclick = async () => {
-        const text = document.getElementById('modalPostText').value.trim();
-        if (!text) { alert('Напишите текст'); return; }
-        const file = document.getElementById('modalPostPhoto').files[0];
+    document.getElementById('modalPublishBtn')?.addEventListener('click', async () => {
+        const text = document.getElementById('modalPostText')?.value.trim();
+        if (!text) {
+            alert('Напишите текст');
+            return;
+        }
+        const file = document.getElementById('modalPostPhoto')?.files[0];
         if (file) {
             const compressed = await compressImage(file);
             await savePost(text, compressed);
         } else {
             await savePost(text, null);
         }
-        modal.style.display = 'none';
-    };
+        if (modal) modal.style.display = 'none';
+    });
 
     document.getElementById('modalPostPhoto')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            document.getElementById('fileNameDisplay').textContent = `📎 ${file.name}`;
+            const display = document.getElementById('fileNameDisplay');
+            if (display) display.textContent = `📎 ${file.name}`;
         }
     });
 
     // ========== ТАБЫ ==========
     document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => {
+        tab.addEventListener('click', () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const tabName = tab.dataset.tab;
             if (tabName === 'feed') {
-                document.getElementById('feedTab').classList.remove('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
+                document.getElementById('feedTab')?.classList.remove('hidden');
+                document.getElementById('gameTab')?.classList.add('hidden');
+                document.getElementById('profileTab')?.classList.add('hidden');
                 renderFeed();
             } else if (tabName === 'game') {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.remove('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
+                document.getElementById('feedTab')?.classList.add('hidden');
+                document.getElementById('gameTab')?.classList.remove('hidden');
+                document.getElementById('profileTab')?.classList.add('hidden');
                 renderGameTab();
             } else {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.remove('hidden');
+                document.getElementById('feedTab')?.classList.add('hidden');
+                document.getElementById('gameTab')?.classList.add('hidden');
+                document.getElementById('profileTab')?.classList.remove('hidden');
                 renderProfile();
             }
-        };
+        });
     });
 
     function initTheme() {
