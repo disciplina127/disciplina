@@ -31,6 +31,7 @@
             --like: #ff3b5c;
             --comment-bg: #0d1119;
             --success: #4caf50;
+            --warning: #ff9800;
         }
 
         body.light-theme {
@@ -99,6 +100,8 @@
             cursor: pointer;
         }
 
+        button:active { transform: scale(0.98); }
+
         .switch-btn {
             text-align: center;
             margin-top: 16px;
@@ -110,16 +113,17 @@
         .forgot-password {
             text-align: center;
             margin-top: 12px;
-            color: var(--text-secondary);
+            color: var(--warning);
             cursor: pointer;
             font-size: 13px;
             text-decoration: underline;
         }
 
-        .forgot-password:hover { color: var(--accent); }
+        .forgot-password:hover { opacity: 0.8; }
 
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
         .success-msg { color: var(--success); font-size: 13px; margin-top: 10px; text-align: center; }
+        .info-msg { color: var(--warning); font-size: 13px; margin-top: 10px; text-align: center; }
 
         .main-app {
             display: none;
@@ -514,6 +518,7 @@
         </div>
         <div id="authError" class="error"></div>
         <div id="authSuccess" class="success-msg"></div>
+        <div id="authInfo" class="info-msg"></div>
     </div>
 </div>
 
@@ -581,41 +586,62 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
+    // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ (ИСПРАВЛЕНО) ==========
     async function resetPassword(email) {
+        // Очищаем предыдущие сообщения
+        const errorDiv = document.getElementById('authError');
+        const successDiv = document.getElementById('authSuccess');
+        const infoDiv = document.getElementById('authInfo');
+        if (errorDiv) errorDiv.textContent = '';
+        if (successDiv) successDiv.textContent = '';
+        if (infoDiv) infoDiv.textContent = '';
+        
         if (!email || !email.trim()) {
-            document.getElementById('authError').textContent = 'Введите email';
-            document.getElementById('authSuccess').textContent = '';
+            if (errorDiv) errorDiv.textContent = '✏️ Введите email в поле выше';
+            return false;
+        }
+        
+        // Проверяем, есть ли пользователь с таким email в Firestore
+        const { data: userInFirestore } = await supabase.from('users').select('email').eq('email', email).single();
+        
+        if (!userInFirestore) {
+            if (errorDiv) errorDiv.textContent = '❌ Пользователь с таким email не найден';
             return false;
         }
         
         try {
+            // Отправляем письмо через Firebase Auth
             await auth.sendPasswordResetEmail(email);
-            document.getElementById('authError').textContent = '';
-            document.getElementById('authSuccess').textContent = '📧 Письмо для сброса пароля отправлено на ' + email;
+            if (successDiv) successDiv.textContent = '📧 Письмо для сброса пароля отправлено на ' + email + '\nПроверьте почту (включая папку Спам)';
+            if (infoDiv) infoDiv.textContent = '✉️ Если письмо не пришло через 5 минут, попробуйте другой email';
             return true;
         } catch (error) {
-            let errorMsg = '';
+            console.error('Reset password error:', error);
+            
+            // Обработка ошибок Firebase Auth
             switch (error.code) {
                 case 'auth/user-not-found':
-                    errorMsg = 'Пользователь с таким email не найден';
+                    if (errorDiv) errorDiv.textContent = '❌ Пользователь с таким email не найден в системе авторизации';
                     break;
                 case 'auth/invalid-email':
-                    errorMsg = 'Неверный формат email';
+                    if (errorDiv) errorDiv.textContent = '❌ Неверный формат email';
+                    break;
+                case 'auth/too-many-requests':
+                    if (errorDiv) errorDiv.textContent = '⏰ Слишком много попыток. Попробуйте позже';
                     break;
                 default:
-                    errorMsg = 'Ошибка: ' + error.message;
+                    if (errorDiv) errorDiv.textContent = '❌ Ошибка: ' + error.message;
             }
-            document.getElementById('authError').textContent = errorMsg;
-            document.getElementById('authSuccess').textContent = '';
             return false;
         }
     }
 
+    // Обработчик кнопки "Забыли пароль?"
     document.getElementById('forgotPasswordBtn')?.addEventListener('click', async () => {
         const email = document.getElementById('regEmail').value.trim();
         if (!email) {
-            document.getElementById('authError').textContent = 'Введите email в поле выше';
+            const errorDiv = document.getElementById('authError');
+            if (errorDiv) errorDiv.textContent = '✏️ Сначала введите ваш email в поле выше';
             return;
         }
         await resetPassword(email);
@@ -1184,6 +1210,7 @@
     const switchBtn = document.getElementById('switchModeBtn');
     const authError = document.getElementById('authError');
     const authSuccess = document.getElementById('authSuccess');
+    const authInfo = document.getElementById('authInfo');
 
     function updateAuthButton() {
         if (isLoginMode) {
@@ -1202,6 +1229,7 @@
         updateAuthButton();
         if (authError) authError.textContent = '';
         if (authSuccess) authSuccess.textContent = '';
+        if (authInfo) authInfo.textContent = '';
     };
 
     submitBtn.onclick = async () => {
