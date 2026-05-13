@@ -110,20 +110,8 @@
             padding: 8px;
         }
 
-        .forgot-password {
-            text-align: center;
-            margin-top: 12px;
-            color: var(--warning);
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: underline;
-        }
-
-        .forgot-password:hover { opacity: 0.8; }
-
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
         .success-msg { color: var(--success); font-size: 13px; margin-top: 10px; text-align: center; }
-        .info-msg { color: var(--warning); font-size: 13px; margin-top: 10px; text-align: center; }
 
         .main-app {
             display: none;
@@ -153,23 +141,13 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            cursor: pointer;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .back-btn, .logout-btn {
+        .logout-btn {
+            background: var(--accent);
             width: auto;
             padding: 8px 16px;
             border-radius: 30px;
-        }
-
-        .back-btn {
-            background: var(--bg-input);
-            color: var(--text-primary);
         }
 
         .tabs {
@@ -418,6 +396,7 @@
 
         .edit-form { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); text-align: left; }
         .profile-posts-title { font-size: 15px; font-weight: 600; margin: 16px 0 12px 0; color: var(--text-primary); }
+        .back-btn { background: var(--bg-input); width: auto; padding: 8px 16px; border-radius: 30px; color: var(--text-primary); }
 
         .fab {
             position: fixed;
@@ -497,6 +476,12 @@
             color: white;
         }
 
+        .change-password-btn {
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
         @media (max-width: 500px) {
             .content { padding: 8px; }
             .fab { width: 55px; height: 55px; font-size: 28px; }
@@ -523,11 +508,9 @@
             <input type="password" id="regPassword" placeholder="Пароль">
             <button id="submitAuthBtn">Зарегистрироваться</button>
             <div class="switch-btn" id="switchModeBtn">Уже есть аккаунт? Войти</div>
-            <div class="forgot-password" id="forgotPasswordBtn">🔐 Забыли пароль?</div>
         </div>
         <div id="authError" class="error"></div>
         <div id="authSuccess" class="success-msg"></div>
-        <div id="authInfo" class="info-msg"></div>
     </div>
 </div>
 
@@ -594,76 +577,6 @@
     let openMenus = {};
     let viewingUserId = null;
     let isLoginMode = false;
-
-    // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ (ИСПРАВЛЕНО) ==========
-    async function resetPassword(email) {
-        // Очищаем предыдущие сообщения
-        const errorDiv = document.getElementById('authError');
-        const successDiv = document.getElementById('authSuccess');
-        const infoDiv = document.getElementById('authInfo');
-        const forgotBtn = document.getElementById('forgotPasswordBtn');
-        
-        if (errorDiv) errorDiv.textContent = '';
-        if (successDiv) successDiv.textContent = '';
-        if (infoDiv) infoDiv.textContent = '';
-        
-        if (!email || !email.trim()) {
-            if (errorDiv) errorDiv.textContent = '✏️ Введите email в поле выше';
-            return false;
-        }
-        
-        // Сохраняем оригинальный текст и показываем загрузку
-        const originalText = forgotBtn ? forgotBtn.textContent : '';
-        if (forgotBtn) forgotBtn.textContent = '⏳ Отправка...';
-        
-        try {
-            // Отправляем письмо через Firebase Auth
-            await auth.sendPasswordResetEmail(email.trim());
-            if (successDiv) {
-                successDiv.textContent = '📧 Письмо для сброса пароля отправлено на ' + email;
-            }
-            if (infoDiv) {
-                infoDiv.textContent = '✉️ Проверьте почту (включая папку Спам)';
-            }
-            return true;
-        } catch (error) {
-            console.error('Reset password error:', error);
-            
-            // Обработка ошибок Firebase Auth
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    if (errorDiv) errorDiv.textContent = '❌ Пользователь с таким email не найден';
-                    break;
-                case 'auth/invalid-email':
-                    if (errorDiv) errorDiv.textContent = '❌ Неверный формат email';
-                    break;
-                case 'auth/too-many-requests':
-                    if (errorDiv) errorDiv.textContent = '⏰ Слишком много попыток. Попробуйте позже';
-                    break;
-                default:
-                    if (errorDiv) errorDiv.textContent = '❌ Ошибка: ' + error.message;
-            }
-            return false;
-        } finally {
-            // Возвращаем текст кнопки
-            if (forgotBtn) forgotBtn.textContent = originalText;
-        }
-    }
-
-    // Обработчик кнопки "Забыли пароль?"
-    document.getElementById('forgotPasswordBtn')?.addEventListener('click', async () => {
-        const emailInput = document.getElementById('regEmail');
-        const email = emailInput ? emailInput.value.trim() : '';
-        
-        if (!email) {
-            const errorDiv = document.getElementById('authError');
-            if (errorDiv) errorDiv.textContent = '✏️ Сначала введите ваш email в поле выше';
-            emailInput?.focus();
-            return;
-        }
-        
-        await resetPassword(email);
-    });
 
     function formatDate(date) {
         if (!date) return 'только что';
@@ -845,6 +758,17 @@
         return false;
     }
 
+    async function changePassword(newPassword) {
+        try {
+            await currentUser.updatePassword(newPassword);
+            await db.collection('users').doc(currentUser.uid).update({ password: newPassword });
+            return true;
+        } catch (error) {
+            console.error('Password change error:', error);
+            throw error;
+        }
+    }
+
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -974,6 +898,7 @@
                     ` : `
                         <button id="editProfileBtn">✏️ Редактировать</button>
                         <button id="themeBtn">🌓 Тема</button>
+                        <button id="changePwdBtn" class="change-password-btn">🔑 Сменить пароль</button>
                     `}
                 </div>
                 ${isOwn ? `
@@ -987,6 +912,12 @@
                         </div>
                         <button id="saveProfileBtn">Сохранить</button>
                         <button id="cancelEditBtn">Отмена</button>
+                    </div>
+                    <div id="changePasswordForm" class="edit-form hidden">
+                        <input type="password" id="newPassword" placeholder="Новый пароль (минимум 6 символов)">
+                        <input type="password" id="confirmPassword" placeholder="Подтвердите пароль">
+                        <button id="savePasswordBtn">Сохранить пароль</button>
+                        <button id="cancelPasswordBtn">Отмена</button>
                     </div>
                 ` : ''}
             </div>
@@ -1002,46 +933,74 @@
         }
         
         if (isOwn) {
-            const editBtn = document.getElementById('editProfileBtn');
-            const saveBtn = document.getElementById('saveProfileBtn');
-            const cancelBtn = document.getElementById('cancelEditBtn');
-            const themeBtn = document.getElementById('themeBtn');
+            // Редактирование профиля
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.remove('hidden');
+            });
             
-            if (editBtn) {
-                editBtn.onclick = () => {
-                    document.getElementById('editProfileForm').classList.remove('hidden');
-                };
-            }
+            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+                const newName = document.getElementById('editName').value.trim();
+                const newBio = document.getElementById('editBio').value.trim();
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                let avatarBase64 = null;
+                
+                if (avatarFile) {
+                    avatarBase64 = await compressImage(avatarFile, 400);
+                }
+                
+                await updateProfile(newName, newBio, avatarBase64);
+                document.getElementById('editProfileForm').classList.add('hidden');
+                alert('✅ Профиль обновлён!');
+            });
             
-            if (saveBtn) {
-                saveBtn.onclick = async () => {
-                    const newName = document.getElementById('editName').value.trim();
-                    const newBio = document.getElementById('editBio').value.trim();
-                    const avatarFile = document.getElementById('editAvatar').files[0];
-                    let avatarBase64 = null;
-                    
-                    if (avatarFile) {
-                        avatarBase64 = await compressImage(avatarFile, 400);
-                    }
-                    
-                    await updateProfile(newName, newBio, avatarBase64);
-                    document.getElementById('editProfileForm').classList.add('hidden');
-                    alert('Профиль обновлён!');
-                };
-            }
+            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').classList.add('hidden');
+            });
             
-            if (cancelBtn) {
-                cancelBtn.onclick = () => {
-                    document.getElementById('editProfileForm').classList.add('hidden');
-                };
-            }
+            // Смена пароля
+            document.getElementById('changePwdBtn')?.addEventListener('click', () => {
+                document.getElementById('changePasswordForm').classList.remove('hidden');
+            });
             
-            if (themeBtn) {
-                themeBtn.onclick = () => {
-                    document.body.classList.toggle('light-theme');
-                    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-                };
-            }
+            document.getElementById('savePasswordBtn')?.addEventListener('click', async () => {
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+                
+                if (!newPass || !confirmPass) {
+                    alert('❌ Заполните оба поля');
+                    return;
+                }
+                
+                if (newPass !== confirmPass) {
+                    alert('❌ Пароли не совпадают');
+                    return;
+                }
+                
+                if (newPass.length < 6) {
+                    alert('❌ Пароль должен быть не менее 6 символов');
+                    return;
+                }
+                
+                try {
+                    await changePassword(newPass);
+                    alert('✅ Пароль успешно изменён!');
+                    document.getElementById('changePasswordForm').classList.add('hidden');
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } catch (error) {
+                    alert('❌ Ошибка: ' + error.message);
+                }
+            });
+            
+            document.getElementById('cancelPasswordBtn')?.addEventListener('click', () => {
+                document.getElementById('changePasswordForm').classList.add('hidden');
+            });
+            
+            // Тема
+            document.getElementById('themeBtn')?.addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+                localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            });
         }
     }
     
@@ -1115,7 +1074,6 @@
             rollBtn.onclick = runGame;
         } else if (rollBtn) {
             rollBtn.disabled = true;
-            rollBtn.style.opacity = '0.5';
         }
         
         await renderLeaderboard();
@@ -1179,7 +1137,7 @@
     
     window.deleteComment = deleteComment;
     
-    window.toggleComments = function(postId) {
+    function toggleComments(postId) {
         openComments[postId] = !openComments[postId];
         refreshAll();
         if (openComments[postId]) {
@@ -1188,7 +1146,7 @@
                 if (input) input.focus();
             }, 150);
         }
-    };
+    }
     
     document.addEventListener('keypress', function(e) {
         if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
@@ -1229,69 +1187,62 @@
     const switchBtn = document.getElementById('switchModeBtn');
     const authError = document.getElementById('authError');
     const authSuccess = document.getElementById('authSuccess');
-    const authInfo = document.getElementById('authInfo');
 
     function updateAuthButton() {
-        const regName = document.getElementById('regName');
         if (isLoginMode) {
             submitBtn.textContent = 'Войти';
             switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
-            if (regName) regName.style.display = 'none';
+            document.getElementById('regName').style.display = 'none';
         } else {
             submitBtn.textContent = 'Зарегистрироваться';
             switchBtn.textContent = 'Уже есть аккаунт? Войти';
-            if (regName) regName.style.display = 'block';
+            document.getElementById('regName').style.display = 'block';
         }
     }
 
-    if (switchBtn) {
-        switchBtn.onclick = () => {
-            isLoginMode = !isLoginMode;
-            updateAuthButton();
-            if (authError) authError.textContent = '';
-            if (authSuccess) authSuccess.textContent = '';
-            if (authInfo) authInfo.textContent = '';
-        };
-    }
+    switchBtn.onclick = () => {
+        isLoginMode = !isLoginMode;
+        updateAuthButton();
+        if (authError) authError.textContent = '';
+        if (authSuccess) authSuccess.textContent = '';
+    };
 
-    if (submitBtn) {
-        submitBtn.onclick = async () => {
-            const name = document.getElementById('regName')?.value.trim() || '';
-            const email = document.getElementById('regEmail')?.value.trim() || '';
-            const password = document.getElementById('regPassword')?.value || '';
-            
-            if (!email || !password) {
-                if (authError) authError.textContent = 'Заполните email и пароль';
-                return;
-            }
-            
-            try {
-                if (!isLoginMode) {
-                    if (!name) {
-                        if (authError) authError.textContent = 'Введите имя';
-                        return;
-                    }
-                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                    await db.collection('users').doc(userCredential.user.uid).set({
-                        name, email, bio: '', avatar: null, followers: [], following: []
-                    });
-                    await db.collection('gameStats').doc(userCredential.user.uid).set({
-                        userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
-                    });
-                    currentUser = userCredential.user;
-                    await loadData();
-                    showMainApp();
-                } else {
-                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                    currentUser = userCredential.user;
-                    await loadData();
-                    showMainApp();
+    submitBtn.onclick = async () => {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        
+        if (!email || !password) {
+            if (authError) authError.textContent = 'Заполните email и пароль';
+            return;
+        }
+        
+        try {
+            if (!isLoginMode) {
+                if (!name) {
+                    if (authError) authError.textContent = 'Введите имя';
+                    return;
                 }
-            } catch (error) {
-                if (authError) authError.textContent = error.message;
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    name, email, bio: '', avatar: null, followers: [], following: []
+                });
+                await db.collection('gameStats').doc(userCredential.user.uid).set({
+                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
+                });
+                currentUser = userCredential.user;
+                await loadData();
+                showMainApp();
+            } else {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                await loadData();
+                showMainApp();
             }
-        };
-    }
+        } catch (error) {
+            if (authError) authError.textContent = error.message;
+        }
+    };
 
     async function showMainApp() {
         viewingUserId = currentUser.uid;
@@ -1310,19 +1261,15 @@
     });
 
     document.getElementById('logoBtn')?.addEventListener('click', () => {
-        if (currentUser) {
-            viewingUserId = currentUser.uid;
-            renderProfile();
-            const profileTab = document.querySelector('.tab[data-tab="profile"]');
-            if (profileTab) profileTab.click();
-        }
+        viewingUserId = currentUser.uid;
+        renderProfile();
+        const profileTab = document.querySelector('.tab[data-tab="profile"]');
+        if (profileTab) profileTab.click();
     });
 
     document.getElementById('backBtn')?.addEventListener('click', () => {
-        if (currentUser) {
-            viewingUserId = currentUser.uid;
-            renderProfile();
-        }
+        viewingUserId = currentUser.uid;
+        renderProfile();
     });
 
     // ========== МОДАЛКА ПОСТА ==========
@@ -1403,15 +1350,7 @@
     initTheme();
     
     auth.onAuthStateChanged(async (user) => {
-        if (user) { 
-            currentUser = user; 
-            await loadData(); 
-            showMainApp(); 
-        } else {
-            // Если пользователь не авторизован, показываем экран авторизации
-            if (authScreen) authScreen.style.display = 'flex';
-            if (mainApp) mainApp.style.display = 'none';
-        }
+        if (user) { currentUser = user; await loadData(); showMainApp(); }
     });
 </script>
 </body>
