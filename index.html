@@ -170,7 +170,7 @@
         .content { padding: 12px; }
         .hidden { display: none; }
 
-        /* Пост с аватаркой */
+        /* Пост */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
@@ -275,6 +275,7 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
+        /* КОММЕНТАРИИ - ОПТИМИЗИРОВАНО ДЛЯ ТЕЛЕФОНА */
         .comments-area {
             margin-top: 12px;
             border-top: 1px solid var(--border);
@@ -283,24 +284,25 @@
         .comment-item {
             background: var(--comment-bg);
             border-radius: 14px;
-            padding: 8px 12px;
+            padding: 10px 12px;
             margin-bottom: 8px;
         }
         .comment-item-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .comment-avatar {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             object-fit: cover;
+            cursor: pointer;
         }
         .comment-author {
-            font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 13px;
             color: var(--accent);
             cursor: pointer;
             background: none;
@@ -316,55 +318,60 @@
             font-size: 13px;
             color: var(--text-primary);
             word-break: break-word;
-            margin-left: 32px;
+            margin-left: 36px;
         }
-        .comment-item-actions {
+        .comment-actions {
             margin-top: 6px;
-            margin-left: 32px;
+            margin-left: 36px;
             display: flex;
             gap: 12px;
         }
-        .comment-item-actions button {
+        .comment-actions button {
             background: none;
             border: none;
             color: var(--text-secondary);
             font-size: 11px;
-            padding: 2px 8px;
+            padding: 4px 8px;
             cursor: pointer;
-            border-radius: 12px;
-            width: auto;
+            border-radius: 16px;
+        }
+        .comment-actions button:active {
+            background: var(--border);
         }
         .comment-input-area {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
             background: var(--bg-input);
             border-radius: 30px;
-            padding: 4px 4px 4px 12px;
+            padding: 6px 6px 6px 16px;
         }
         .comment-input-area input {
             flex: 1;
             background: transparent;
             border: none;
-            padding: 10px 0;
+            padding: 12px 0;
             margin: 0;
-            font-size: 14px;
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
         }
         .comment-input-area input:focus {
             outline: none;
         }
         .comment-input-area button {
             width: auto;
-            padding: 8px 18px;
+            padding: 8px 20px;
             margin: 0;
             border-radius: 30px;
             background: var(--accent);
+            font-size: 14px;
         }
         .no-comments-text {
             text-align: center;
             color: var(--text-secondary);
             font-size: 12px;
-            padding: 8px;
+            padding: 12px;
         }
 
         .profile-card {
@@ -484,8 +491,13 @@
             .content { padding: 8px; }
             .fab { width: 55px; height: 55px; font-size: 28px; }
             .post-actions { gap: 8px; }
-            .comment-input-area input { font-size: 15px; }
+            .like-btn, .comment-toggle-btn { padding: 6px 10px; font-size: 13px; }
+            .comment-input-area input { font-size: 15px; padding: 10px 0; }
+            .comment-input-area button { padding: 6px 16px; }
             .post-avatar { width: 32px; height: 32px; }
+            .comment-avatar { width: 24px; height: 24px; }
+            .comment-text { margin-left: 32px; }
+            .comment-actions { margin-left: 32px; }
         }
     </style>
 </head>
@@ -676,6 +688,7 @@
         openComments[postId] = true;
         await refreshAll();
         
+        // Очищаем поле ввода
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.value = '';
@@ -763,7 +776,7 @@
         return false;
     }
 
-    // ========== РЕНДЕР ПОСТА (ОБЩИЙ ДЛЯ ЛЕНТЫ И ПРОФИЛЯ) ==========
+    // ========== РЕНДЕР ПОСТА ==========
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -815,17 +828,17 @@
                     return `
                         <div class="comment-item" id="comment-${postId}-${idx}">
                             <div class="comment-item-header">
-                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/24'}" onclick="viewProfile('${c.userId}')">
+                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/28'}" onclick="viewProfile('${c.userId}')">
                                 <button class="comment-author" onclick="viewProfile('${c.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
                                 <span class="comment-date">${formatDate(c.date)}</span>
                             </div>
                             <div class="comment-text" id="comment-text-${postId}-${idx}">${escapeHtml(c.text)}</div>
                             ${isCommentOwner ? `
-                                <div class="comment-item-actions">
-                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Ред.</button>
+                                <div class="comment-actions">
+                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Редактировать</button>
                                     <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
                                 </div>
-                                <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px; margin-left: 32px;">
+                                <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px;">
                                     <input type="text" id="editCommentInput-${postId}-${idx}" value="${escapeHtml(c.text)}" style="width:100%; padding:8px; border-radius:25px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-primary);">
                                     <div style="display: flex; gap: 8px; margin-top: 6px;">
                                         <button onclick="saveCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px;">Сохранить</button>
@@ -837,7 +850,7 @@
                     `;
                 }).join('')}
                 <div class="comment-input-area">
-                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off">
+                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off" enterkeyhint="send">
                     <button onclick="submitComment('${postId}')">→</button>
                 </div>
             </div>
@@ -1057,6 +1070,10 @@
         const text = input?.value;
         if (!text || !text.trim()) return;
         await addComment(postId, text);
+        // Фокусируем поле ввода обратно для быстрого ввода следующего комментария
+        setTimeout(() => {
+            input.focus();
+        }, 50);
     };
     
     window.editCommentUI = function(postId, idx) {
@@ -1089,10 +1106,11 @@
             setTimeout(() => {
                 const input = document.getElementById(`comment-input-${postId}`);
                 if (input) input.focus();
-            }, 100);
+            }, 150);
         }
     }
     
+    // Обработка нажатия Enter на мобильных устройствах
     document.addEventListener('keypress', function(e) {
         if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
             if (e.key === 'Enter') {
