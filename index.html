@@ -107,6 +107,18 @@
             padding: 8px;
         }
 
+        .forgot-btn {
+            background: none;
+            color: var(--accent);
+            margin-top: 8px;
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        .forgot-btn:hover {
+            background: rgba(255, 87, 34, 0.1);
+        }
+
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
 
         .main-app {
@@ -170,7 +182,6 @@
         .content { padding: 12px; }
         .hidden { display: none; }
 
-        /* Пост */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
@@ -275,7 +286,6 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        /* КОММЕНТАРИИ - ОПТИМИЗИРОВАНО ДЛЯ ТЕЛЕФОНА */
         .comments-area {
             margin-top: 12px;
             border-top: 1px solid var(--border);
@@ -487,6 +497,50 @@
             color: white;
         }
 
+        /* Стили для модалки сброса пароля */
+        .reset-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .reset-modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            width: 90%;
+            max-width: 350px;
+            border: 1px solid var(--border);
+        }
+        .reset-modal-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .reset-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .reset-buttons button {
+            flex: 1;
+        }
+        .cancel-reset-btn {
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        .reset-message {
+            font-size: 13px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
         @media (max-width: 500px) {
             .content { padding: 8px; }
             .fab { width: 55px; height: 55px; font-size: 28px; }
@@ -512,9 +566,23 @@
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Пароль">
             <button id="submitAuthBtn">Зарегистрироваться</button>
+            <button id="forgotPasswordBtn" class="forgot-btn">🔐 Забыли пароль?</button>
             <div class="switch-btn" id="switchModeBtn">Уже есть аккаунт? Войти</div>
         </div>
         <div id="authError" class="error"></div>
+    </div>
+</div>
+
+<!-- Модальное окно сброса пароля -->
+<div id="resetPasswordModal" class="reset-modal">
+    <div class="reset-modal-content">
+        <h3>Сброс пароля</h3>
+        <input type="email" id="resetEmail" placeholder="Введите ваш Email" style="width: 100%;">
+        <div class="reset-buttons">
+            <button id="confirmResetBtn">Отправить</button>
+            <button id="cancelResetBtn" class="cancel-reset-btn">Отмена</button>
+        </div>
+        <div id="resetMessage" class="reset-message"></div>
     </div>
 </div>
 
@@ -688,7 +756,6 @@
         openComments[postId] = true;
         await refreshAll();
         
-        // Очищаем поле ввода
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.value = '';
@@ -1070,7 +1137,6 @@
         const text = input?.value;
         if (!text || !text.trim()) return;
         await addComment(postId, text);
-        // Фокусируем поле ввода обратно для быстрого ввода следующего комментария
         setTimeout(() => {
             input.focus();
         }, 50);
@@ -1110,7 +1176,6 @@
         }
     }
     
-    // Обработка нажатия Enter на мобильных устройствах
     document.addEventListener('keypress', function(e) {
         if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
             if (e.key === 'Enter') {
@@ -1142,6 +1207,83 @@
     
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
+
+    // ========== ЗАБЫЛИ ПАРОЛЬ ==========
+    const forgotBtn = document.getElementById('forgotPasswordBtn');
+    const resetModal = document.getElementById('resetPasswordModal');
+    const confirmResetBtn = document.getElementById('confirmResetBtn');
+    const cancelResetBtn = document.getElementById('cancelResetBtn');
+    const resetEmailInput = document.getElementById('resetEmail');
+    const resetMessage = document.getElementById('resetMessage');
+
+    if (forgotBtn) {
+        forgotBtn.onclick = (e) => {
+            e.preventDefault();
+            resetModal.style.display = 'flex';
+            resetEmailInput.value = '';
+            resetMessage.textContent = '';
+            resetMessage.style.color = '';
+        };
+    }
+
+    if (cancelResetBtn) {
+        cancelResetBtn.onclick = () => {
+            resetModal.style.display = 'none';
+        };
+    }
+
+    if (resetModal) {
+        resetModal.onclick = (e) => {
+            if (e.target === resetModal) {
+                resetModal.style.display = 'none';
+            }
+        };
+    }
+
+    if (confirmResetBtn) {
+        confirmResetBtn.onclick = async () => {
+            const email = resetEmailInput.value.trim();
+            
+            if (!email) {
+                resetMessage.textContent = 'Введите ваш email';
+                resetMessage.style.color = 'var(--accent)';
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
+                resetMessage.style.color = 'var(--success)';
+                resetEmailInput.value = '';
+                
+                setTimeout(() => {
+                    resetModal.style.display = 'none';
+                }, 3000);
+            } catch (error) {
+                let errorMsg = 'Ошибка: ';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMsg += 'Пользователь с таким email не найден';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg += 'Неверный формат email';
+                        break;
+                    default:
+                        errorMsg += error.message;
+                }
+                resetMessage.textContent = errorMsg;
+                resetMessage.style.color = 'var(--accent)';
+            }
+        };
+    }
+
+    if (resetEmailInput) {
+        resetEmailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmResetBtn.click();
+            }
+        });
+    }
 
     // ========== АВТОРИЗАЦИЯ ==========
     const authScreen = document.getElementById('authScreen');
