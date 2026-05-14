@@ -497,7 +497,6 @@
             color: white;
         }
 
-        /* Стили для модалки сброса пароля */
         .reset-modal {
             display: none;
             position: fixed;
@@ -573,7 +572,6 @@
     </div>
 </div>
 
-<!-- Модальное окно сброса пароля -->
 <div id="resetPasswordModal" class="reset-modal">
     <div class="reset-modal-content">
         <h3>Сброс пароля</h3>
@@ -650,7 +648,6 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -704,7 +701,6 @@
         });
     }
 
-    // ========== ДАННЫЕ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -714,7 +710,6 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
-    // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
     async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -740,22 +735,18 @@
 
     async function addComment(postId, commentText) {
         if (!commentText || !commentText.trim()) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post) return;
-        
         const comments = post.comments || [];
         comments.push({
             userId: currentUser.uid,
             text: commentText.trim(),
             date: new Date().toISOString()
         });
-        
         await db.collection('posts').doc(postId).update({ comments });
         await loadData();
         openComments[postId] = true;
         await refreshAll();
-        
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.value = '';
@@ -764,10 +755,8 @@
     
     async function deleteComment(postId, commentIndex) {
         if (!confirm('Удалить комментарий?')) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post || !post.comments) return;
-        
         post.comments.splice(commentIndex, 1);
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
@@ -776,10 +765,8 @@
     
     async function editComment(postId, commentIndex, newText) {
         if (!newText || !newText.trim()) return;
-        
         const post = posts.find(p => p.id === postId);
         if (!post || !post.comments || !post.comments[commentIndex]) return;
-        
         post.comments[commentIndex].text = newText.trim();
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
@@ -808,7 +795,6 @@
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
         const isFollowing = following.includes(targetUserId);
-        
         if (isFollowing) {
             await db.collection('users').doc(currentUser.uid).update({
                 following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
@@ -828,12 +814,11 @@
         await refreshAll();
     }
 
-    async function updateProfile(newName, newBio, newAvatar) {
+    async function updateUserProfile(newName, newBio, newAvatar) {
         const updates = {};
         if (newName && newName !== currentUser.name) updates.name = newName;
         if (newBio !== undefined) updates.bio = newBio;
         if (newAvatar) updates.avatar = newAvatar;
-        
         if (Object.keys(updates).length > 0) {
             await db.collection('users').doc(currentUser.uid).update(updates);
             await loadData();
@@ -843,7 +828,6 @@
         return false;
     }
 
-    // ========== РЕНДЕР ПОСТА ==========
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -924,14 +908,12 @@
         `;
     }
 
-    // ========== ОБНОВЛЕНИЕ ВСЕХ ВКЛАДОК ==========
     async function refreshAll() {
         await renderFeed();
         await renderProfile();
         renderGameTab();
     }
 
-    // ========== ЛЕНТА ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -941,7 +923,6 @@
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
     }
 
-    // ========== ПРОФИЛЬ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
@@ -1017,9 +998,9 @@
                     avatarBase64 = await compressImage(avatarFile, 400);
                 }
                 
-                await updateProfile(newName, newBio, avatarBase64);
+                await updateUserProfile(newName, newBio, avatarBase64);
                 document.getElementById('editProfileForm').classList.add('hidden');
-                alert('Профиль обновлён!');
+                alert('✅ Профиль обновлён!');
             });
             
             document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
@@ -1040,7 +1021,6 @@
         }
     }
 
-    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
@@ -1131,7 +1111,6 @@
         `;
     }
 
-    // ========== ОБРАБОТЧИКИ ==========
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
@@ -1243,19 +1222,16 @@
     if (confirmResetBtn) {
         confirmResetBtn.onclick = async () => {
             const email = resetEmailInput.value.trim();
-            
             if (!email) {
                 resetMessage.textContent = 'Введите ваш email';
                 resetMessage.style.color = 'var(--accent)';
                 return;
             }
-            
             try {
                 await auth.sendPasswordResetEmail(email);
                 resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
                 resetMessage.style.color = 'var(--success)';
                 resetEmailInput.value = '';
-                
                 setTimeout(() => {
                     resetModal.style.display = 'none';
                 }, 3000);
@@ -1314,9 +1290,7 @@
         const name = document.getElementById('regName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
-        
         if (!email || !password) { authError.textContent = 'Заполните email и пароль'; return; }
-        
         try {
             if (!isLoginMode) {
                 if (!name) { authError.textContent = 'Введите имя'; return; }
