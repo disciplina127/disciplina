@@ -31,7 +31,6 @@
             --like: #ff3b5c;
             --comment-bg: #0d1119;
             --success: #4caf50;
-            --warning: #ff9800;
         }
 
         body.light-theme {
@@ -45,33 +44,24 @@
             --border: #e2e6ed;
         }
 
-        body {
-            background: var(--bg-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+        body { background: var(--bg-primary); }
 
-        /* Auth Screen */
         .auth-screen {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #0a0c12 0%, #141820 100%);
-            padding: 20px;
-        }
-
-        body.light-theme .auth-screen {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
         }
 
         .auth-card {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 32px;
+            border-radius: 24px;
+            padding: 24px;
             width: 100%;
             max-width: 380px;
             border: 1px solid var(--border);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .auth-card h1 {
@@ -84,13 +74,6 @@
             margin-bottom: 8px;
         }
 
-        .auth-card .sub {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-size: 13px;
-        }
-
         input, textarea {
             width: 100%;
             padding: 14px;
@@ -100,19 +83,9 @@
             font-size: 16px;
             background: var(--bg-input);
             color: var(--text-primary);
-            transition: all 0.2s;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255,87,34,0.15);
-        }
-
-        textarea {
-            resize: none;
-            font-family: inherit;
-        }
+        textarea { resize: none; font-family: inherit; }
 
         button {
             width: 100%;
@@ -124,11 +97,6 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        button:active {
-            transform: scale(0.98);
         }
 
         .switch-btn {
@@ -136,25 +104,23 @@
             margin-top: 16px;
             color: var(--accent);
             cursor: pointer;
-            font-size: 14px;
+            padding: 8px;
         }
 
         .forgot-btn {
             background: none;
             color: var(--accent);
             margin-top: 8px;
-            font-size: 13px;
-            padding: 8px;
+            font-size: 14px;
+            padding: 10px;
+        }
+        
+        .forgot-btn:hover {
+            background: rgba(255, 87, 34, 0.1);
         }
 
-        .error {
-            color: var(--accent);
-            font-size: 13px;
-            margin-top: 10px;
-            text-align: center;
-        }
+        .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
 
-        /* Main App */
         .main-app {
             display: none;
             max-width: 600px;
@@ -174,7 +140,6 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(10px);
         }
 
         .logo {
@@ -184,7 +149,13 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            width: auto;
+            padding: 8px 16px;
+            border-radius: 30px;
         }
 
         .tabs {
@@ -204,34 +175,19 @@
             font-size: 14px;
             color: var(--text-secondary);
             border-radius: 30px;
-            transition: all 0.2s;
         }
 
-        .tab.active {
-            background: var(--accent);
-            color: white;
-        }
+        .tab.active { background: var(--accent); color: white; }
 
-        .content {
-            padding: 12px;
-        }
+        .content { padding: 12px; }
+        .hidden { display: none; }
 
-        .hidden {
-            display: none;
-        }
-
-        /* Post Card */
         .post {
             background: var(--bg-card);
             border-radius: 20px;
             padding: 14px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .post:hover {
-            border-color: var(--accent);
         }
 
         .post-header {
@@ -273,7 +229,7 @@
             background: none;
             width: auto;
             padding: 8px 12px;
-            font-size: 18px;
+            font-size: 20px;
             color: var(--text-secondary);
             cursor: pointer;
             border-radius: 30px;
@@ -292,7 +248,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             border: 1px solid var(--border);
         }
-
         .menu-dropdown button {
             background: none;
             width: 100%;
@@ -303,21 +258,8 @@
             font-size: 14px;
         }
 
-        .post-text {
-            margin: 8px 0;
-            color: var(--text-primary);
-            line-height: 1.45;
-            font-size: 15px;
-        }
-
-        .post-photo {
-            max-width: 100%;
-            border-radius: 16px;
-            margin: 8px 0;
-            max-height: 300px;
-            object-fit: cover;
-            cursor: pointer;
-        }
+        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 15px; }
+        .post-photo { max-width: 100%; border-radius: 16px; margin: 8px 0; max-height: 300px; object-fit: cover; cursor: pointer; }
 
         .post-footer {
             display: flex;
@@ -328,59 +270,39 @@
             border-top: 1px solid var(--border);
         }
 
-        .post-actions {
-            display: flex;
-            gap: 16px;
-        }
-
+        .post-actions { display: flex; gap: 16px; }
         .like-btn, .comment-toggle-btn {
             cursor: pointer;
             background: none;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 6px;
             color: var(--text-secondary);
-            font-size: 13px;
-            transition: all 0.2s;
+            font-size: 14px;
         }
+        .like-btn.liked { color: var(--like); }
+        .post-time-footer { font-size: 11px; color: var(--text-secondary); }
 
-        .like-btn:active, .comment-toggle-btn:active {
-            background: var(--bg-input);
-        }
-
-        .like-btn.liked {
-            color: var(--like);
-        }
-
-        .post-time-footer {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        /* Comments Section */
         .comments-area {
             margin-top: 12px;
             border-top: 1px solid var(--border);
             padding-top: 10px;
         }
-
         .comment-item {
             background: var(--comment-bg);
             border-radius: 14px;
             padding: 10px 12px;
             margin-bottom: 8px;
         }
-
         .comment-item-header {
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 6px;
         }
-
         .comment-avatar {
             width: 28px;
             height: 28px;
@@ -388,7 +310,6 @@
             object-fit: cover;
             cursor: pointer;
         }
-
         .comment-author {
             font-weight: 600;
             font-size: 13px;
@@ -398,27 +319,23 @@
             border: none;
             padding: 0;
         }
-
         .comment-date {
             font-size: 10px;
             color: var(--text-secondary);
             margin-left: auto;
         }
-
         .comment-text {
             font-size: 13px;
             color: var(--text-primary);
             word-break: break-word;
             margin-left: 36px;
         }
-
         .comment-actions {
             margin-top: 6px;
             margin-left: 36px;
             display: flex;
             gap: 12px;
         }
-
         .comment-actions button {
             background: none;
             border: none;
@@ -428,7 +345,9 @@
             cursor: pointer;
             border-radius: 16px;
         }
-
+        .comment-actions button:active {
+            background: var(--border);
+        }
         .comment-input-area {
             display: flex;
             gap: 8px;
@@ -437,7 +356,6 @@
             border-radius: 30px;
             padding: 6px 6px 6px 16px;
         }
-
         .comment-input-area input {
             flex: 1;
             background: transparent;
@@ -448,7 +366,9 @@
             color: var(--text-primary);
             outline: none;
         }
-
+        .comment-input-area input:focus {
+            outline: none;
+        }
         .comment-input-area button {
             width: auto;
             padding: 8px 20px;
@@ -457,7 +377,6 @@
             background: var(--accent);
             font-size: 14px;
         }
-
         .no-comments-text {
             text-align: center;
             color: var(--text-secondary);
@@ -465,7 +384,7 @@
             padding: 12px;
         }
 
-        /* Profile Card */
+        /* ПРОФИЛЬ С ШЕСТЕРЁНКОЙ */
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -475,320 +394,60 @@
             margin-bottom: 16px;
             position: relative;
         }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 12px;
-            background: var(--border);
-            border: 2px solid var(--accent);
-            cursor: pointer;
+        
+        .profile-avatar { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin: 0 auto 12px; 
+            background: var(--border); 
+            border: 2px solid var(--accent); 
+            cursor: pointer; 
         }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin: 16px 0;
+        
+        .stats { 
+            display: flex; 
+            justify-content: center; 
+            gap: 24px; 
+            margin: 16px 0; 
         }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent);
+        
+        .stat-value { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--accent); 
         }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
+        
+        .stat-label { 
+            font-size: 11px; 
+            color: var(--text-secondary); 
         }
-
-        .profile-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        /* Settings Button */
+        
+        /* Кнопка шестерёнки */
         .settings-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: var(--bg-input);
+            background: none;
             width: 40px;
             height: 40px;
             padding: 0;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: var(--bg-input);
             color: var(--text-secondary);
         }
-
-        /* Edit Form */
-        .edit-form {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            text-align: left;
-            display: none;
+        
+        .settings-btn:hover {
+            background: var(--border);
+            transform: none;
         }
-
-        .upload-btn {
-            position: relative;
-            margin: 8px 0;
-        }
-
-        .upload-btn input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            border-radius: 14px;
-            padding: 14px;
-            cursor: pointer;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .file-name {
-            font-size: 12px;
-            color: var(--accent);
-            margin-top: 8px;
-            display: block;
-            text-align: center;
-        }
-
-        .profile-posts-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin: 16px 0 12px 0;
-            color: var(--text-primary);
-        }
-
-        .back-btn {
-            background: var(--bg-input);
-            width: auto;
-            padding: 8px 16px;
-            border-radius: 30px;
-            color: var(--text-primary);
-            font-size: 13px;
-        }
-
-        /* FAB */
-        .fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            color: white;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 200;
-            border: none;
-        }
-
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid var(--border);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 16px;
-            color: var(--text-primary);
-            font-size: 20px;
-            text-align: center;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .cancel-modal {
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-
-        /* Game */
-        .game-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .game-icon {
-            font-size: 48px;
-        }
-
-        .game-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent);
-            margin: 10px 0;
-        }
-
-        .dice-container {
-            background: linear-gradient(135deg, var(--bg-input), var(--bg-card));
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .dice-value {
-            font-size: 70px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-
-        .dice-value.positive {
-            color: var(--success);
-        }
-
-        .dice-value.negative {
-            color: #f44336;
-        }
-
-        .roll-button {
-            font-size: 18px;
-            padding: 14px;
-            border-radius: 50px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: var(--bg-input);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        /* Leaderboard */
-        .leaderboard {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 16px;
-        }
-
-        .leaderboard-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .leaderboard-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 6px;
-            cursor: pointer;
-        }
-
-        .leaderboard-rank {
-            font-weight: bold;
-            min-width: 35px;
-            color: var(--accent);
-        }
-
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-
-        .leaderboard-name {
-            flex: 1;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .leaderboard-score {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Follow Button */
-        .follow-btn {
-            background: var(--bg-input);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .follow-btn.following {
-            background: var(--accent);
-            color: white;
-        }
-
-        /* Settings Modal */
+        
+        /* Модальное окно настроек */
         .settings-modal {
             display: none;
             position: fixed;
@@ -802,7 +461,7 @@
             justify-content: center;
             backdrop-filter: blur(5px);
         }
-
+        
         .settings-modal-content {
             background: var(--bg-card);
             border-radius: 28px;
@@ -811,18 +470,18 @@
             max-width: 320px;
             border: 1px solid var(--border);
         }
-
+        
         .settings-modal-content h3 {
             color: var(--text-primary);
             margin-bottom: 20px;
             text-align: center;
             font-size: 20px;
         }
-
+        
         .settings-item {
             margin: 16px 0;
         }
-
+        
         .settings-item button {
             width: 100%;
             padding: 14px;
@@ -832,25 +491,169 @@
             justify-content: center;
             gap: 10px;
         }
-
+        
         .settings-theme-btn {
             background: var(--bg-input);
             color: var(--accent);
             border: 1px solid var(--accent);
         }
-
+        
         .settings-logout-btn {
             background: var(--accent);
             color: white;
         }
-
+        
         .settings-close-btn {
             background: var(--bg-input);
             color: var(--text-primary);
             margin-top: 12px;
         }
 
-        /* Reset Modal */
+        .profile-buttons { 
+            display: flex; 
+            gap: 10px; 
+            justify-content: center; 
+            margin-top: 12px; 
+            flex-wrap: wrap; 
+        }
+
+        .upload-btn { 
+            position: relative; 
+            margin: 8px 0; 
+        }
+        
+        .upload-btn input[type="file"] { 
+            position: absolute; 
+            opacity: 0; 
+            width: 100%; 
+            height: 100%; 
+            cursor: pointer; 
+            z-index: 2; 
+        }
+        
+        .upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 14px;
+            padding: 14px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .file-name { 
+            font-size: 12px; 
+            color: var(--accent); 
+            margin-top: 8px; 
+            display: block; 
+            text-align: center; 
+        }
+
+        .edit-form { 
+            margin-top: 20px; 
+            padding-top: 20px; 
+            border-top: 1px solid var(--border); 
+            text-align: left; 
+            display: none; 
+        }
+        
+        .profile-posts-title { 
+            font-size: 15px; 
+            font-weight: 600; 
+            margin: 16px 0 12px 0; 
+            color: var(--text-primary); 
+        }
+        
+        .back-btn { 
+            background: var(--bg-input); 
+            width: auto; 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            color: var(--text-primary); 
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 200;
+            border: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+        }
+        .modal-content h3 { margin-bottom: 16px; color: var(--text-primary); font-size: 20px; text-align: center; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
+        .modal-buttons button { flex: 1; }
+        .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
+
+        .game-card { background: var(--bg-card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .game-header { text-align: center; margin-bottom: 20px; }
+        .game-icon { font-size: 48px; }
+        .game-title { font-size: 22px; font-weight: bold; color: var(--accent); margin: 10px 0; }
+        .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 20px; padding: 30px; text-align: center; margin: 20px 0; }
+        .dice-value { font-size: 70px; font-weight: bold; margin: 20px 0; }
+        .dice-value.positive { color: var(--success); }
+        .dice-value.negative { color: #f44336; }
+        .roll-button { font-size: 18px; padding: 14px; border-radius: 50px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .stat-card { background: var(--bg-input); border-radius: 16px; padding: 15px; text-align: center; }
+
+        .leaderboard { background: var(--bg-card); border-radius: 20px; padding: 16px; }
+        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .leaderboard-title { font-size: 18px; font-weight: bold; color: var(--text-primary); }
+        .leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; }
+        .leaderboard-rank { font-weight: bold; min-width: 35px; color: var(--accent); }
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+        .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); }
+
+        .follow-btn {
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            transition: all 0.2s;
+        }
+        .follow-btn.following {
+            background: var(--accent);
+            color: white;
+        }
+
         .reset-modal {
             display: none;
             position: fixed;
@@ -863,7 +666,6 @@
             align-items: center;
             justify-content: center;
         }
-
         .reset-modal-content {
             background: var(--bg-card);
             border-radius: 24px;
@@ -872,28 +674,23 @@
             max-width: 350px;
             border: 1px solid var(--border);
         }
-
         .reset-modal-content h3 {
             color: var(--text-primary);
             margin-bottom: 16px;
             text-align: center;
         }
-
         .reset-buttons {
             display: flex;
             gap: 12px;
             margin-top: 20px;
         }
-
         .reset-buttons button {
             flex: 1;
         }
-
         .cancel-reset-btn {
             background: var(--bg-input);
             color: var(--text-primary);
         }
-
         .reset-message {
             font-size: 13px;
             margin-top: 12px;
@@ -902,9 +699,11 @@
 
         @media (max-width: 500px) {
             .content { padding: 8px; }
-            .fab { width: 50px; height: 50px; font-size: 26px; }
+            .fab { width: 55px; height: 55px; font-size: 28px; }
             .post-actions { gap: 8px; }
-            .like-btn, .comment-toggle-btn { padding: 5px 8px; font-size: 12px; }
+            .like-btn, .comment-toggle-btn { padding: 6px 10px; font-size: 13px; }
+            .comment-input-area input { font-size: 15px; padding: 10px 0; }
+            .comment-input-area button { padding: 6px 16px; }
             .post-avatar { width: 32px; height: 32px; }
             .comment-avatar { width: 24px; height: 24px; }
             .comment-text { margin-left: 32px; }
@@ -918,7 +717,7 @@
 <div id="authScreen" class="auth-screen">
     <div class="auth-card">
         <h1>Дисциплина</h1>
-        <div class="sub">Делай каждый день</div>
+        <div class="sub" style="text-align:center;color:var(--text-secondary);margin-bottom:20px;">Делай каждый день</div>
         <div id="authForm">
             <input type="text" id="regName" placeholder="Имя">
             <input type="email" id="regEmail" placeholder="Email">
@@ -934,7 +733,7 @@
 <div id="resetPasswordModal" class="reset-modal">
     <div class="reset-modal-content">
         <h3>Сброс пароля</h3>
-        <input type="email" id="resetEmail" placeholder="Введите ваш Email">
+        <input type="email" id="resetEmail" placeholder="Введите ваш Email" style="width: 100%;">
         <div class="reset-buttons">
             <button id="confirmResetBtn">Отправить</button>
             <button id="cancelResetBtn" class="cancel-reset-btn">Отмена</button>
@@ -946,7 +745,9 @@
 <div id="mainApp" class="main-app">
     <div class="header">
         <div class="logo" id="logoBtn">Дисциплина</div>
-        <button class="back-btn hidden" id="backBtn">← Назад</button>
+        <div class="header-actions">
+            <button class="back-btn hidden" id="backBtn">← Назад</button>
+        </div>
     </div>
 
     <div class="tabs">
@@ -1004,7 +805,6 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -1185,21 +985,15 @@
         return false;
     }
 
-    // ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ==========
-    window.toggleEditForm = function() {
-        const form = document.getElementById('editProfileForm');
-        if (form) {
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
-    };
-
-    // ========== НАСТРОЙКИ ==========
+    // ========== ФУНКЦИИ ДЛЯ НАСТРОЕК ==========
     function openSettings() {
-        document.getElementById('settingsModal').style.display = 'flex';
+        const modal = document.getElementById('settingsModal');
+        if (modal) modal.style.display = 'flex';
     }
     
     function closeSettings() {
-        document.getElementById('settingsModal').style.display = 'none';
+        const modal = document.getElementById('settingsModal');
+        if (modal) modal.style.display = 'none';
     }
     
     function logoutUser() {
@@ -1219,7 +1013,18 @@
         closeSettings();
     }
 
-    // ========== РЕНДЕР ПОСТА ==========
+    // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОРМЫ РЕДАКТИРОВАНИЯ ==========
+    window.toggleEditForm = function() {
+        const form = document.getElementById('editProfileForm');
+        if (form) {
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    };
+
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -1262,20 +1067,9 @@
     }
 
     function renderCommentsSection(postId, comments) {
-        if (!comments || comments.length === 0) {
-            return `
-                <div class="comments-area">
-                    <div class="no-comments-text">✨ Нет комментариев</div>
-                    <div class="comment-input-area">
-                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off" enterkeyhint="send">
-                        <button onclick="submitComment('${postId}')">→</button>
-                    </div>
-                </div>
-            `;
-        }
-        
         return `
-            <div class="comments-area">
+            <div class="comments-area" id="comments-panel-${postId}">
+                ${comments.length === 0 ? '<div class="no-comments-text">✨ Нет комментариев</div>' : ''}
                 ${comments.map((c, idx) => {
                     const commentAuthor = users.find(u => u.id === c.userId);
                     const isCommentOwner = c.userId === currentUser.uid;
@@ -1289,7 +1083,7 @@
                             <div class="comment-text" id="comment-text-${postId}-${idx}">${escapeHtml(c.text)}</div>
                             ${isCommentOwner ? `
                                 <div class="comment-actions">
-                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Ред.</button>
+                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Редактировать</button>
                                     <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
                                 </div>
                                 <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px;">
@@ -1311,13 +1105,221 @@
         `;
     }
 
+    async function refreshAll() {
+        await renderFeed();
+        await renderProfile();
+        renderGameTab();
+    }
+
+    async function renderFeed() {
+        const container = document.getElementById('postsList');
+        if (!posts.length) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>';
+            return;
+        }
+        container.innerHTML = posts.map(post => renderPostCard(post)).join('');
+    }
+
+    async function renderProfile() {
+        const container = document.getElementById('profileContainer');
+        const profileUser = users.find(u => u.id === viewingUserId);
+        if (!profileUser) return;
+        
+        const isOwn = viewingUserId === currentUser.uid;
+        document.getElementById('backBtn').classList.toggle('hidden', isOwn);
+        
+        const userPosts = posts.filter(p => p.userId === viewingUserId);
+        const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
+        
+        container.innerHTML = `
+            <div class="profile-card">
+                ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
+                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" id="profileAvatar" onclick="viewProfile('${viewingUserId}')">
+                <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
+                <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <div class="stats">
+                    <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
+                    <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
+                    <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
+                </div>
+                <div class="stats">
+                    <div><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
+                    <div><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
+                </div>
+                <div class="profile-buttons">
+                    ${!isOwn ? `
+                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
+                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
+                        </button>
+                    ` : `
+                        <button id="editProfileBtn" onclick="toggleEditForm()">✏️ Редактировать</button>
+                    `}
+                </div>
+                ${isOwn ? `
+                    <div id="editProfileForm" class="edit-form" style="display: none;">
+                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
+                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
+                        <div class="upload-btn">
+                            <input type="file" id="editAvatar" accept="image/*">
+                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
+                            <span id="avatarFileNameDisplay" class="file-name"></span>
+                        </div>
+                        <button id="saveProfileBtn">Сохранить</button>
+                        <button id="cancelEditBtn">Отмена</button>
+                    </div>
+                ` : ''}
+            </div>
+            <div class="profile-posts-title">📝 Посты</div>
+            <div id="profilePosts"></div>
+        `;
+        
+        const profilePostsContainer = document.getElementById('profilePosts');
+        if (!userPosts.length) {
+            profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
+        } else {
+            profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
+        }
+        
+        if (isOwn) {
+            // Сохранение
+            const saveBtn = document.getElementById('saveProfileBtn');
+            if (saveBtn) {
+                saveBtn.onclick = async () => {
+                    const newName = document.getElementById('editName').value.trim();
+                    const newBio = document.getElementById('editBio').value.trim();
+                    const avatarFile = document.getElementById('editAvatar').files[0];
+                    let avatarBase64 = null;
+                    
+                    if (avatarFile) {
+                        avatarBase64 = await compressImage(avatarFile, 400);
+                    }
+                    
+                    await updateUserProfile(newName, newBio, avatarBase64);
+                    document.getElementById('editProfileForm').style.display = 'none';
+                    alert('✅ Профиль обновлён!');
+                };
+            }
+            
+            // Отмена
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    document.getElementById('editProfileForm').style.display = 'none';
+                };
+            }
+            
+            // Показ имени файла
+            const avatarInput = document.getElementById('editAvatar');
+            if (avatarInput) {
+                avatarInput.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const display = document.getElementById('avatarFileNameDisplay');
+                        if (display) display.textContent = `📎 ${file.name}`;
+                    }
+                };
+            }
+        }
+    }
+
+    async function runGame() {
+        const stats = gameStats.find(s => s.userId === currentUser.uid);
+        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (lastDate && lastDate >= today) {
+            alert('Вы уже играли сегодня! Завтра новая попытка.');
+            return;
+        }
+        
+        const rolled = Math.floor(Math.random() * 16) - 5;
+        const newTotal = (stats?.totalPoints || 0) + rolled;
+        const newBest = Math.max(rolled, stats?.bestRoll || -5);
+        
+        await db.collection('gameStats').doc(currentUser.uid).set({
+            userId: currentUser.uid,
+            totalPoints: newTotal,
+            bestRoll: newBest,
+            lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(),
+            lastRollValue: rolled
+        });
+        
+        await loadData();
+        renderGameTab();
+        alert(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
+    }
+
+    async function renderGameTab() {
+        const container = document.getElementById('gameContainer');
+        const stats = gameStats.find(s => s.userId === currentUser.uid);
+        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const canPlay = !lastDate || lastDate < today;
+        
+        container.innerHTML = `
+            <div class="game-card">
+                <div class="game-header">
+                    <div class="game-icon">🎲</div>
+                    <div class="game-title">Пиписа бот</div>
+                    <div style="color:var(--text-secondary);">Бросай кубик! от -5 до +10</div>
+                </div>
+                <div class="dice-container">
+                    <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
+                        ${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}
+                    </div>
+                </div>
+                <button id="rollButton" class="roll-button">${canPlay ? '🎲 Бросить кубик!' : '⏰ Завтра'}</button>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div>
+                    <div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div>
+                </div>
+            </div>
+            <div id="leaderboardContainer"></div>
+        `;
+        
+        if (canPlay) {
+            document.getElementById('rollButton')?.addEventListener('click', runGame);
+        } else {
+            document.getElementById('rollButton')?.setAttribute('disabled', 'disabled');
+        }
+        await renderLeaderboard();
+    }
+
+    async function renderLeaderboard() {
+        const container = document.getElementById('leaderboardContainer');
+        const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
+        if (!data.length) {
+            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;color:var(--text-secondary);">Пока нет участников</div></div>`;
+            return;
+        }
+        const usersMap = new Map(users.map(u => [u.id, u]));
+        container.innerHTML = `
+            <div class="leaderboard">
+                <div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>
+                ${data.map((item, idx) => {
+                    const user = usersMap.get(item.userId);
+                    return `
+                        <div class="leaderboard-item" onclick="viewProfile('${item.userId}')">
+                            <div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div>
+                            <div class="leaderboard-name">${escapeHtml(user?.name || '?')}</div>
+                            <div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
         if (!text || !text.trim()) return;
         await addComment(postId, text);
-        if (input) input.value = '';
-        setTimeout(() => input?.focus(), 50);
+        setTimeout(() => {
+            input.focus();
+        }, 50);
     };
     
     window.editCommentUI = function(postId, idx) {
@@ -1386,270 +1388,7 @@
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
 
-    async function refreshAll() {
-        await renderFeed();
-        await renderProfile();
-        renderGameTab();
-    }
-
-    async function renderFeed() {
-        const container = document.getElementById('postsList');
-        if (!posts.length) {
-            container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>';
-            return;
-        }
-        container.innerHTML = posts.map(post => renderPostCard(post)).join('');
-    }
-
-    async function renderProfile() {
-        const container = document.getElementById('profileContainer');
-        const profileUser = users.find(u => u.id === viewingUserId);
-        if (!profileUser) return;
-        
-        const isOwn = viewingUserId === currentUser.uid;
-        document.getElementById('backBtn').classList.toggle('hidden', !isOwn);
-        
-        const userPosts = posts.filter(p => p.userId === viewingUserId);
-        const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
-        
-        container.innerHTML = `
-            <div class="profile-card">
-                ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" onclick="viewProfile('${viewingUserId}')">
-                <h3 style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
-                <p style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
-                <div class="stats">
-                    <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
-                    <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
-                    <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
-                </div>
-                <div class="stats">
-                    <div><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
-                    <div><div class="stat-value" style="color:var(--warning);">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
-                </div>
-                <div class="profile-buttons">
-                    ${!isOwn ? `
-                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
-                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
-                        </button>
-                    ` : `
-                        <button id="editProfileBtn" onclick="toggleEditForm()">✏️ Редактировать</button>
-                    `}
-                </div>
-                ${isOwn ? `
-                    <div id="editProfileForm" class="edit-form" style="display: none;">
-                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
-                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
-                        <div class="upload-btn">
-                            <input type="file" id="editAvatar" accept="image/*" onchange="updateAvatarFileName(this)">
-                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
-                            <span id="avatarFileNameDisplay" class="file-name"></span>
-                        </div>
-                        <button id="saveProfileBtn">Сохранить</button>
-                        <button id="cancelEditBtn">Отмена</button>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="profile-posts-title">📝 Посты</div>
-            <div id="profilePosts"></div>
-        `;
-        
-        const profilePostsContainer = document.getElementById('profilePosts');
-        if (!userPosts.length) {
-            profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
-        } else {
-            profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
-        }
-        
-        if (isOwn) {
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newName = document.getElementById('editName').value.trim();
-                const newBio = document.getElementById('editBio').value.trim();
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                let avatarBase64 = null;
-                
-                if (avatarFile) {
-                    avatarBase64 = await compressImage(avatarFile, 400);
-                }
-                
-                await updateUserProfile(newName, newBio, avatarBase64);
-                document.getElementById('editProfileForm').style.display = 'none';
-                alert('✅ Профиль обновлён!');
-            });
-            
-            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').style.display = 'none';
-            });
-        }
-    }
-    
-    window.updateAvatarFileName = function(input) {
-        const file = input.files[0];
-        if (file) {
-            document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
-        }
-    };
-
-    async function runGame() {
-        const stats = gameStats.find(s => s.userId === currentUser.uid);
-        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (lastDate && lastDate >= today) {
-            alert('Вы уже играли сегодня! Завтра новая попытка.');
-            return;
-        }
-        
-        const rolled = Math.floor(Math.random() * 16) - 5;
-        const newTotal = (stats?.totalPoints || 0) + rolled;
-        const newBest = Math.max(rolled, stats?.bestRoll || -5);
-        
-        await db.collection('gameStats').doc(currentUser.uid).set({
-            userId: currentUser.uid,
-            totalPoints: newTotal,
-            bestRoll: newBest,
-            lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(),
-            lastRollValue: rolled
-        });
-        
-        await loadData();
-        renderGameTab();
-        alert(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
-    }
-
-    async function renderGameTab() {
-        const container = document.getElementById('gameContainer');
-        const stats = gameStats.find(s => s.userId === currentUser.uid);
-        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const canPlay = !lastDate || lastDate < today;
-        
-        container.innerHTML = `
-            <div class="game-card">
-                <div class="game-header">
-                    <div class="game-icon">🎲</div>
-                    <div class="game-title">Пиписа бот</div>
-                    <div style="color:var(--text-secondary);font-size:13px;">Бросай кубик каждый день! от -5 до +10</div>
-                </div>
-                <div class="dice-container">
-                    <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
-                        ${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}
-                    </div>
-                </div>
-                <button id="rollButton" class="roll-button">${canPlay ? '🎲 Бросить кубик!' : '⏰ Завтра'}</button>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div>
-                    <div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:var(--warning);">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div>
-                </div>
-            </div>
-            <div id="leaderboardContainer"></div>
-        `;
-        
-        if (canPlay) {
-            document.getElementById('rollButton')?.addEventListener('click', runGame);
-        } else {
-            document.getElementById('rollButton')?.setAttribute('disabled', 'disabled');
-        }
-        await renderLeaderboard();
-    }
-
-    async function renderLeaderboard() {
-        const container = document.getElementById('leaderboardContainer');
-        const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
-        if (!data.length) {
-            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;color:var(--text-secondary);">Пока нет участников</div></div>`;
-            return;
-        }
-        const usersMap = new Map(users.map(u => [u.id, u]));
-        container.innerHTML = `
-            <div class="leaderboard">
-                <div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>
-                ${data.map((item, idx) => {
-                    const user = usersMap.get(item.userId);
-                    return `
-                        <div class="leaderboard-item" onclick="viewProfile('${item.userId}')">
-                            <div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div>
-                            <div class="leaderboard-name">${escapeHtml(user?.name || '?')}</div>
-                            <div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-
-    // ========== АВТОРИЗАЦИЯ ==========
-    const authScreen = document.getElementById('authScreen');
-    const mainApp = document.getElementById('mainApp');
-    const submitBtn = document.getElementById('submitAuthBtn');
-    const switchBtn = document.getElementById('switchModeBtn');
-    const authError = document.getElementById('authError');
-
-    function updateAuthButton() {
-        if (isLoginMode) {
-            submitBtn.textContent = 'Войти';
-            switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
-            document.getElementById('regName').style.display = 'none';
-        } else {
-            submitBtn.textContent = 'Зарегистрироваться';
-            switchBtn.textContent = 'Уже есть аккаунт? Войти';
-            document.getElementById('regName').style.display = 'block';
-        }
-    }
-
-    switchBtn.onclick = () => {
-        isLoginMode = !isLoginMode;
-        updateAuthButton();
-        authError.textContent = '';
-    };
-
-    submitBtn.onclick = async () => {
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value;
-        
-        if (!email || !password) {
-            authError.textContent = 'Заполните email и пароль';
-            return;
-        }
-        
-        try {
-            if (!isLoginMode) {
-                if (!name) {
-                    authError.textContent = 'Введите имя';
-                    return;
-                }
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({
-                    name, email, bio: '', avatar: null, followers: [], following: []
-                });
-                await db.collection('gameStats').doc(userCredential.user.uid).set({
-                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
-                });
-                currentUser = userCredential.user;
-                await loadData();
-                showMainApp();
-            } else {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = userCredential.user;
-                await loadData();
-                showMainApp();
-            }
-        } catch (error) {
-            authError.textContent = error.message;
-        }
-    };
-
-    async function showMainApp() {
-        viewingUserId = currentUser.uid;
-        authScreen.style.display = 'none';
-        mainApp.style.display = 'block';
-        await refreshAll();
-    }
-
-    // ========== МОДАЛКА НАСТРОЕК ==========
+    // ========== МОДАЛЬНОЕ ОКНО НАСТРОЕК ==========
     const settingsModal = document.createElement('div');
     settingsModal.id = 'settingsModal';
     settingsModal.className = 'settings-modal';
@@ -1694,6 +1433,7 @@
             resetModal.style.display = 'flex';
             resetEmailInput.value = '';
             resetMessage.textContent = '';
+            resetMessage.style.color = '';
         };
     }
 
@@ -1705,7 +1445,9 @@
 
     if (resetModal) {
         resetModal.onclick = (e) => {
-            if (e.target === resetModal) resetModal.style.display = 'none';
+            if (e.target === resetModal) {
+                resetModal.style.display = 'none';
+            }
         };
     }
 
@@ -1722,7 +1464,9 @@
                 resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
                 resetMessage.style.color = 'var(--success)';
                 resetEmailInput.value = '';
-                setTimeout(() => resetModal.style.display = 'none', 3000);
+                setTimeout(() => {
+                    resetModal.style.display = 'none';
+                }, 3000);
             } catch (error) {
                 let errorMsg = 'Ошибка: ';
                 switch (error.code) {
@@ -1743,8 +1487,69 @@
 
     if (resetEmailInput) {
         resetEmailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') confirmResetBtn.click();
+            if (e.key === 'Enter') {
+                confirmResetBtn.click();
+            }
         });
+    }
+
+    // ========== АВТОРИЗАЦИЯ ==========
+    const authScreen = document.getElementById('authScreen');
+    const mainApp = document.getElementById('mainApp');
+    const submitBtn = document.getElementById('submitAuthBtn');
+    const switchBtn = document.getElementById('switchModeBtn');
+    const authError = document.getElementById('authError');
+
+    function updateAuthButton() {
+        if (isLoginMode) {
+            submitBtn.textContent = 'Войти';
+            switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
+            document.getElementById('regName').style.display = 'none';
+        } else {
+            submitBtn.textContent = 'Зарегистрироваться';
+            switchBtn.textContent = 'Уже есть аккаунт? Войти';
+            document.getElementById('regName').style.display = 'block';
+        }
+    }
+
+    switchBtn.onclick = () => {
+        isLoginMode = !isLoginMode;
+        updateAuthButton();
+        authError.textContent = '';
+    };
+
+    submitBtn.onclick = async () => {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        if (!email || !password) { authError.textContent = 'Заполните email и пароль'; return; }
+        try {
+            if (!isLoginMode) {
+                if (!name) { authError.textContent = 'Введите имя'; return; }
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    name, email, bio: '', avatar: null, followers: [], following: []
+                });
+                await db.collection('gameStats').doc(userCredential.user.uid).set({
+                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
+                });
+                currentUser = userCredential.user;
+                await loadData();
+                showMainApp();
+            } else {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                await loadData();
+                showMainApp();
+            }
+        } catch (error) { authError.textContent = error.message; }
+    };
+
+    async function showMainApp() {
+        viewingUserId = currentUser.uid;
+        authScreen.style.display = 'none';
+        mainApp.style.display = 'block';
+        await refreshAll();
     }
 
     // ========== МОДАЛКА ПОСТА ==========
@@ -1758,16 +1563,12 @@
         document.getElementById('fileNameDisplay').textContent = '';
         document.getElementById('modalPostText').focus();
     };
-    
     document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
     modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
     document.getElementById('modalPublishBtn').onclick = async () => {
         const text = document.getElementById('modalPostText').value.trim();
-        if (!text) {
-            alert('Напишите текст');
-            return;
-        }
+        if (!text) { alert('Напишите текст'); return; }
         const file = document.getElementById('modalPostPhoto').files[0];
         if (file) {
             const compressed = await compressImage(file);
@@ -1809,17 +1610,6 @@
             }
         };
     });
-
-    document.getElementById('logoBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-
-    document.getElementById('backBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-    };
 
     function initTheme() {
         if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
