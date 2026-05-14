@@ -648,6 +648,7 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -701,6 +702,7 @@
         });
     }
 
+    // ========== ДАННЫЕ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -710,6 +712,7 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
+    // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
     async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -828,6 +831,7 @@
         return false;
     }
 
+    // ========== РЕНДЕР ПОСТА ==========
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -908,12 +912,14 @@
         `;
     }
 
+    // ========== ОБНОВЛЕНИЕ ВСЕХ ВКЛАДОК ==========
     async function refreshAll() {
         await renderFeed();
         await renderProfile();
         renderGameTab();
     }
 
+    // ========== ЛЕНТА ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -923,6 +929,7 @@
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
     }
 
+    // ========== ПРОФИЛЬ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
@@ -984,43 +991,67 @@
         }
         
         if (isOwn) {
-            document.getElementById('editProfileBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.remove('hidden');
-            });
+            // Обработчик для кнопки редактирования профиля
+            const editBtn = document.getElementById('editProfileBtn');
+            if (editBtn) {
+                editBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const form = document.getElementById('editProfileForm');
+                    if (form) form.classList.toggle('hidden');
+                };
+            }
             
-            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
-                const newName = document.getElementById('editName').value.trim();
-                const newBio = document.getElementById('editBio').value.trim();
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                let avatarBase64 = null;
-                
-                if (avatarFile) {
-                    avatarBase64 = await compressImage(avatarFile, 400);
-                }
-                
-                await updateUserProfile(newName, newBio, avatarBase64);
-                document.getElementById('editProfileForm').classList.add('hidden');
-                alert('✅ Профиль обновлён!');
-            });
+            // Обработчик сохранения
+            const saveBtn = document.getElementById('saveProfileBtn');
+            if (saveBtn) {
+                saveBtn.onclick = async () => {
+                    const newName = document.getElementById('editName').value.trim();
+                    const newBio = document.getElementById('editBio').value.trim();
+                    const avatarFile = document.getElementById('editAvatar').files[0];
+                    let avatarBase64 = null;
+                    
+                    if (avatarFile) {
+                        avatarBase64 = await compressImage(avatarFile, 400);
+                    }
+                    
+                    await updateUserProfile(newName, newBio, avatarBase64);
+                    document.getElementById('editProfileForm').classList.add('hidden');
+                    alert('✅ Профиль обновлён!');
+                };
+            }
             
-            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
-                document.getElementById('editProfileForm').classList.add('hidden');
-            });
+            // Обработчик отмены
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            if (cancelBtn) {
+                cancelBtn.onclick = () => {
+                    document.getElementById('editProfileForm').classList.add('hidden');
+                };
+            }
             
-            document.getElementById('themeBtn')?.addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-                localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-            });
+            // Обработчик темы
+            const themeBtn = document.getElementById('themeBtn');
+            if (themeBtn) {
+                themeBtn.onclick = () => {
+                    document.body.classList.toggle('light-theme');
+                    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+                };
+            }
             
-            document.getElementById('editAvatar')?.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('avatarFileNameDisplay').textContent = `📎 ${file.name}`;
-                }
-            });
+            // Показ имени файла аватара
+            const avatarInput = document.getElementById('editAvatar');
+            if (avatarInput) {
+                avatarInput.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const display = document.getElementById('avatarFileNameDisplay');
+                        if (display) display.textContent = `📎 ${file.name}`;
+                    }
+                };
+            }
         }
     }
 
+    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
@@ -1111,6 +1142,7 @@
         `;
     }
 
+    // ========== ОБРАБОТЧИКИ ==========
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
