@@ -648,7 +648,6 @@
     let viewingUserId = null;
     let isLoginMode = false;
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -702,7 +701,6 @@
         });
     }
 
-    // ========== ДАННЫЕ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -712,7 +710,6 @@
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
     }
 
-    // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
     async function savePost(text, photoDataUrl) {
         await db.collection('posts').add({
             userId: currentUser.uid,
@@ -831,7 +828,16 @@
         return false;
     }
 
-    // ========== РЕНДЕР ПОСТА ==========
+    // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОРМЫ РЕДАКТИРОВАНИЯ ==========
+    window.openEditProfileForm = function() {
+        const form = document.getElementById('editProfileForm');
+        if (form) {
+            form.classList.toggle('hidden');
+        } else {
+            console.log('Форма не найдена');
+        }
+    };
+
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -912,14 +918,12 @@
         `;
     }
 
-    // ========== ОБНОВЛЕНИЕ ВСЕХ ВКЛАДОК ==========
     async function refreshAll() {
         await renderFeed();
         await renderProfile();
         renderGameTab();
     }
 
-    // ========== ЛЕНТА ==========
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -929,7 +933,6 @@
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
     }
 
-    // ========== ПРОФИЛЬ ==========
     async function renderProfile() {
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
@@ -961,7 +964,7 @@
                             ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
                         </button>
                     ` : `
-                        <button id="editProfileBtn">✏️ Редактировать</button>
+                        <button id="editProfileBtn" onclick="openEditProfileForm()">✏️ Редактировать</button>
                         <button id="themeBtn">🌓 Тема</button>
                     `}
                 </div>
@@ -991,16 +994,6 @@
         }
         
         if (isOwn) {
-            // Обработчик для кнопки редактирования профиля
-            const editBtn = document.getElementById('editProfileBtn');
-            if (editBtn) {
-                editBtn.onclick = (e) => {
-                    e.preventDefault();
-                    const form = document.getElementById('editProfileForm');
-                    if (form) form.classList.toggle('hidden');
-                };
-            }
-            
             // Обработчик сохранения
             const saveBtn = document.getElementById('saveProfileBtn');
             if (saveBtn) {
@@ -1142,7 +1135,6 @@
         `;
     }
 
-    // ========== ОБРАБОТЧИКИ ==========
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
