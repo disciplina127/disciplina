@@ -384,6 +384,7 @@
             padding: 12px;
         }
 
+        /* ПРОФИЛЬ С ШЕСТЕРЁНКОЙ */
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
@@ -391,15 +392,145 @@
             text-align: center;
             border: 1px solid var(--border);
             margin-bottom: 16px;
+            position: relative;
         }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
-        .stats { display: flex; justify-content: center; gap: 24px; margin: 16px 0; }
-        .stat-value { font-size: 18px; font-weight: 700; color: var(--accent); }
-        .stat-label { font-size: 11px; color: var(--text-secondary); }
-        .profile-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+        
+        .profile-avatar { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin: 0 auto 12px; 
+            background: var(--border); 
+            border: 2px solid var(--accent); 
+            cursor: pointer; 
+        }
+        
+        .stats { 
+            display: flex; 
+            justify-content: center; 
+            gap: 24px; 
+            margin: 16px 0; 
+        }
+        
+        .stat-value { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: var(--accent); 
+        }
+        
+        .stat-label { 
+            font-size: 11px; 
+            color: var(--text-secondary); 
+        }
+        
+        /* Кнопка шестерёнки */
+        .settings-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+        }
+        
+        .settings-btn:hover {
+            background: var(--border);
+            transform: none;
+        }
+        
+        /* Модальное окно настроек */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .settings-modal-content {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 24px;
+            width: 90%;
+            max-width: 320px;
+            border: 1px solid var(--border);
+        }
+        
+        .settings-modal-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 20px;
+        }
+        
+        .settings-item {
+            margin: 16px 0;
+        }
+        
+        .settings-item button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .settings-theme-btn {
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        
+        .settings-logout-btn {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .settings-close-btn {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            margin-top: 12px;
+        }
 
-        .upload-btn { position: relative; margin: 8px 0; }
-        .upload-btn input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+        .profile-buttons { 
+            display: flex; 
+            gap: 10px; 
+            justify-content: center; 
+            margin-top: 12px; 
+            flex-wrap: wrap; 
+        }
+
+        .upload-btn { 
+            position: relative; 
+            margin: 8px 0; 
+        }
+        
+        .upload-btn input[type="file"] { 
+            position: absolute; 
+            opacity: 0; 
+            width: 100%; 
+            height: 100%; 
+            cursor: pointer; 
+            z-index: 2; 
+        }
+        
         .upload-label {
             display: flex;
             align-items: center;
@@ -413,11 +544,37 @@
             font-size: 14px;
             font-weight: 600;
         }
-        .file-name { font-size: 12px; color: var(--accent); margin-top: 8px; display: block; text-align: center; }
+        
+        .file-name { 
+            font-size: 12px; 
+            color: var(--accent); 
+            margin-top: 8px; 
+            display: block; 
+            text-align: center; 
+        }
 
-        .edit-form { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); text-align: left; display: none; }
-        .profile-posts-title { font-size: 15px; font-weight: 600; margin: 16px 0 12px 0; color: var(--text-primary); }
-        .back-btn { background: var(--bg-input); width: auto; padding: 8px 16px; border-radius: 30px; color: var(--text-primary); }
+        .edit-form { 
+            margin-top: 20px; 
+            padding-top: 20px; 
+            border-top: 1px solid var(--border); 
+            text-align: left; 
+            display: none; 
+        }
+        
+        .profile-posts-title { 
+            font-size: 15px; 
+            font-weight: 600; 
+            margin: 16px 0 12px 0; 
+            color: var(--text-primary); 
+        }
+        
+        .back-btn { 
+            background: var(--bg-input); 
+            width: auto; 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            color: var(--text-primary); 
+        }
 
         .fab {
             position: fixed;
@@ -551,6 +708,7 @@
             .comment-avatar { width: 24px; height: 24px; }
             .comment-text { margin-left: 32px; }
             .comment-actions { margin-left: 32px; }
+            .settings-btn { width: 35px; height: 35px; font-size: 18px; top: 10px; right: 10px; }
         }
     </style>
 </head>
@@ -589,7 +747,6 @@
         <div class="logo" id="logoBtn">Дисциплина</div>
         <div class="header-actions">
             <button class="back-btn hidden" id="backBtn">← Назад</button>
-            <button class="logout-btn" id="logoutBtn">Выйти</button>
         </div>
     </div>
 
@@ -828,6 +985,34 @@
         return false;
     }
 
+    // ========== ФУНКЦИИ ДЛЯ НАСТРОЕК ==========
+    function openSettings() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) modal.style.display = 'flex';
+    }
+    
+    function closeSettings() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) modal.style.display = 'none';
+    }
+    
+    function logoutUser() {
+        closeSettings();
+        auth.signOut().then(() => {
+            currentUser = null;
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            isLoginMode = false;
+            updateAuthButton();
+        });
+    }
+    
+    function toggleThemeGlobal() {
+        document.body.classList.toggle('light-theme');
+        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        closeSettings();
+    }
+
     // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОРМЫ РЕДАКТИРОВАНИЯ ==========
     window.toggleEditForm = function() {
         const form = document.getElementById('editProfileForm');
@@ -948,6 +1133,7 @@
         
         container.innerHTML = `
             <div class="profile-card">
+                ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
                 <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" id="profileAvatar" onclick="viewProfile('${viewingUserId}')">
                 <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
                 <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
@@ -967,7 +1153,6 @@
                         </button>
                     ` : `
                         <button id="editProfileBtn" onclick="toggleEditForm()">✏️ Редактировать</button>
-                        <button id="themeBtn">🌓 Тема</button>
                     `}
                 </div>
                 ${isOwn ? `
@@ -1020,15 +1205,6 @@
             if (cancelBtn) {
                 cancelBtn.onclick = () => {
                     document.getElementById('editProfileForm').style.display = 'none';
-                };
-            }
-            
-            // Тема
-            const themeBtn = document.getElementById('themeBtn');
-            if (themeBtn) {
-                themeBtn.onclick = () => {
-                    document.body.classList.toggle('light-theme');
-                    localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
                 };
             }
             
@@ -1212,6 +1388,37 @@
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
 
+    // ========== МОДАЛЬНОЕ ОКНО НАСТРОЕК ==========
+    const settingsModal = document.createElement('div');
+    settingsModal.id = 'settingsModal';
+    settingsModal.className = 'settings-modal';
+    settingsModal.innerHTML = `
+        <div class="settings-modal-content">
+            <h3>⚙️ Настройки</h3>
+            <div class="settings-item">
+                <button class="settings-theme-btn" id="settingsThemeBtn">🌓 Сменить тему</button>
+            </div>
+            <div class="settings-item">
+                <button class="settings-logout-btn" id="settingsLogoutBtn">🚪 Выйти из аккаунта</button>
+            </div>
+            <div class="settings-item">
+                <button class="settings-close-btn" id="settingsCloseBtn">✖️ Закрыть</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(settingsModal);
+    
+    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
+    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
+    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
+    
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) closeSettings();
+    });
+    
+    window.openSettings = openSettings;
+    window.closeSettings = closeSettings;
+
     // ========== ЗАБЫЛИ ПАРОЛЬ ==========
     const forgotBtn = document.getElementById('forgotPasswordBtn');
     const resetModal = document.getElementById('resetPasswordModal');
@@ -1344,26 +1551,6 @@
         mainApp.style.display = 'block';
         await refreshAll();
     }
-
-    document.getElementById('logoutBtn').onclick = async () => {
-        await auth.signOut();
-        currentUser = null;
-        authScreen.style.display = 'flex';
-        mainApp.style.display = 'none';
-        isLoginMode = false;
-        updateAuthButton();
-    };
-
-    document.getElementById('logoBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-
-    document.getElementById('backBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-    };
 
     // ========== МОДАЛКА ПОСТА ==========
     const modal = document.getElementById('postModal');
