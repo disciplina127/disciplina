@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <meta name="theme-color" content="#0a0c12">
     <title>Дисциплина | Социальная сеть</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -11,59 +10,38 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
             --bg-primary: #0a0c12;
-            --bg-secondary: #141820;
             --bg-card: #1a1f2b;
             --bg-input: #0f131c;
             --text-primary: #e8edf5;
             --text-secondary: #8a91a8;
             --accent: #ff5722;
-            --accent-hover: #ff7043;
             --border: #252c38;
-            --like: #ff3b5c;
-            --comment-bg: #0d1119;
             --success: #4caf50;
         }
-
-        body.light-theme {
-            --bg-primary: #f5f7fb;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --bg-input: #f0f2f6;
-            --text-primary: #1a1f2e;
-            --text-secondary: #5a6278;
-            --accent: #ff5722;
-            --border: #e2e6ed;
-        }
-
-        body { background: var(--bg-primary); }
-
+        
+        body { background: var(--bg-primary); font-family: system-ui, -apple-system, sans-serif; }
+        
         .auth-screen {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0a0c12 0%, #141820 100%);
-            padding: 16px;
+            padding: 20px;
         }
-
+        
         .auth-card {
             background: var(--bg-card);
             border-radius: 24px;
-            padding: 24px;
+            padding: 32px 24px;
             width: 100%;
             max-width: 380px;
             border: 1px solid var(--border);
         }
-
+        
         .auth-card h1 {
             text-align: center;
             background: linear-gradient(135deg, #ff5722, #ff8a4c);
@@ -71,22 +49,20 @@
             background-clip: text;
             color: transparent;
             font-size: 34px;
-            margin-bottom: 8px;
+            margin-bottom: 24px;
         }
-
+        
         input, textarea {
             width: 100%;
             padding: 14px;
             margin: 8px 0;
             border: 1px solid var(--border);
             border-radius: 14px;
-            font-size: 16px;
             background: var(--bg-input);
             color: var(--text-primary);
+            font-size: 16px;
         }
-
-        textarea { resize: none; font-family: inherit; }
-
+        
         button {
             width: 100%;
             padding: 14px;
@@ -98,218 +74,141 @@
             font-weight: 600;
             cursor: pointer;
         }
-
-        .switch-btn {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .forgot-btn {
-            background: none;
-            color: var(--accent);
-            margin-top: 8px;
-            font-size: 14px;
-            padding: 10px;
-        }
         
-        .forgot-btn:hover {
-            background: rgba(255, 87, 34, 0.1);
-        }
-
-        .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
-
         .main-app {
             display: none;
             max-width: 600px;
             margin: 0 auto;
-            background: var(--bg-primary);
             min-height: 100vh;
             padding-bottom: 80px;
         }
-
+        
         .header {
-            background: var(--bg-secondary);
-            padding: 12px 16px;
+            background: var(--bg-card);
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
             border-bottom: 1px solid var(--border);
         }
-
+        
         .logo {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
             background: linear-gradient(135deg, #ff5722, #ff8a4c);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
-        .logout-btn {
-            background: var(--accent);
-            width: auto;
-            padding: 8px 16px;
-            border-radius: 30px;
-        }
-
+        
         .tabs {
             display: flex;
-            background: var(--bg-secondary);
-            gap: 4px;
-            padding: 8px 12px;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-card);
             border-bottom: 1px solid var(--border);
         }
-
+        
         .tab {
             flex: 1;
             text-align: center;
             padding: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-secondary);
             border-radius: 30px;
+            cursor: pointer;
+            color: var(--text-secondary);
         }
-
-        .tab.active { background: var(--accent); color: white; }
-
-        .content { padding: 12px; }
+        
+        .tab.active {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .content { padding: 16px; }
         .hidden { display: none; }
-
+        
         .post {
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 14px;
-            margin-bottom: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
             border: 1px solid var(--border);
         }
-
+        
         .post-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
-
+        
         .post-avatar {
-            width: 36px;
-            height: 36px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             object-fit: cover;
-            background: var(--border);
             cursor: pointer;
+            background: var(--border);
         }
-
-        .post-author-info {
-            flex: 1;
-        }
-
+        
         .post-author {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
             color: var(--accent);
             cursor: pointer;
             background: none;
             border: none;
             padding: 0;
-            text-align: left;
         }
-
-        .post-menu {
-            position: relative;
-        }
-
-        .menu-dots {
-            background: none;
-            width: auto;
-            padding: 8px 12px;
-            font-size: 20px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 30px;
-            border: none;
-        }
-
-        .menu-dropdown {
-            position: absolute;
-            right: 0;
-            top: 40px;
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 8px 0;
-            min-width: 140px;
-            z-index: 999;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-        .menu-dropdown button {
-            background: none;
-            width: 100%;
-            text-align: left;
-            padding: 12px 16px;
-            border-radius: 0;
+        
+        .post-text {
+            margin: 12px 0;
             color: var(--text-primary);
-            font-size: 14px;
+            line-height: 1.4;
         }
-
-        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 15px; }
-        .post-photo { max-width: 100%; border-radius: 16px; margin: 8px 0; max-height: 300px; object-fit: cover; cursor: pointer; }
-
+        
         .post-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 8px;
-            padding-top: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 1px solid var(--border);
         }
-
-        .post-actions { display: flex; gap: 16px; }
-        .like-btn, .comment-toggle-btn {
+        
+        .like-btn {
             cursor: pointer;
             background: none;
             border: none;
             padding: 8px 12px;
             border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
             color: var(--text-secondary);
             font-size: 14px;
         }
-        .like-btn.liked { color: var(--like); }
-        .post-time-footer { font-size: 11px; color: var(--text-secondary); }
-
+        
+        .like-btn.liked { color: #ff3b5c; }
+        
         .comments-area {
-            margin-top: 12px;
+            margin-top: 16px;
+            padding-top: 12px;
             border-top: 1px solid var(--border);
-            padding-top: 10px;
         }
+        
         .comment-item {
-            background: var(--comment-bg);
-            border-radius: 14px;
-            padding: 10px 12px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 12px;
             margin-bottom: 8px;
         }
-        .comment-item-header {
+        
+        .comment-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
-        .comment-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-        }
+        
         .comment-author {
             font-weight: 600;
             font-size: 13px;
@@ -317,281 +216,106 @@
             cursor: pointer;
             background: none;
             border: none;
-            padding: 0;
         }
-        .comment-date {
-            font-size: 10px;
-            color: var(--text-secondary);
-            margin-left: auto;
-        }
+        
         .comment-text {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-primary);
-            word-break: break-word;
-            margin-left: 36px;
+            margin-left: 32px;
+            margin-bottom: 8px;
         }
+        
         .comment-actions {
-            margin-top: 6px;
-            margin-left: 36px;
+            margin-left: 32px;
             display: flex;
             gap: 12px;
         }
+        
         .comment-actions button {
+            width: auto;
+            padding: 4px 12px;
+            font-size: 12px;
             background: none;
-            border: none;
             color: var(--text-secondary);
-            font-size: 11px;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 16px;
         }
-        .comment-actions button:active {
-            background: var(--border);
-        }
+        
         .comment-input-area {
             display: flex;
             gap: 8px;
             margin-top: 12px;
             background: var(--bg-input);
             border-radius: 30px;
-            padding: 6px 6px 6px 16px;
+            padding: 4px 4px 4px 16px;
         }
+        
         .comment-input-area input {
             flex: 1;
-            background: transparent;
+            background: none;
             border: none;
-            padding: 12px 0;
             margin: 0;
-            font-size: 15px;
-            color: var(--text-primary);
-            outline: none;
+            padding: 10px 0;
         }
-        .comment-input-area input:focus {
-            outline: none;
-        }
+        
         .comment-input-area button {
             width: auto;
             padding: 8px 20px;
             margin: 0;
             border-radius: 30px;
-            background: var(--accent);
-            font-size: 14px;
         }
-        .no-comments-text {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 12px;
-            padding: 12px;
-        }
-
+        
         .profile-card {
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-            position: relative;
-        }
-        
-        .profile-avatar { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            margin: 0 auto 12px; 
-            background: var(--border); 
-            border: 2px solid var(--accent); 
-            cursor: pointer; 
-        }
-        
-        .stats { 
-            display: flex; 
-            justify-content: center; 
-            gap: 24px; 
-            margin: 16px 0; 
-        }
-        
-        .stat-value { 
-            font-size: 18px; 
-            font-weight: 700; 
-            color: var(--accent); 
-        }
-        
-        .stat-label { 
-            font-size: 11px; 
-            color: var(--text-secondary); 
-        }
-        
-        .settings-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border-radius: 50%;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-input);
-            color: var(--text-secondary);
-        }
-        
-        .settings-btn:hover {
-            background: var(--border);
-            transform: none;
-        }
-        
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        
-        .settings-modal-content {
-            background: var(--bg-card);
-            border-radius: 28px;
             padding: 24px;
-            width: 90%;
-            max-width: 320px;
-            border: 1px solid var(--border);
-        }
-        
-        .settings-modal-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
             text-align: center;
-            font-size: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
         }
         
-        .settings-item {
-            margin: 16px 0;
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            border: 3px solid var(--accent);
         }
         
-        .settings-item button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .settings-theme-btn {
-            background: var(--bg-input);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-        
-        .settings-logout-btn {
-            background: var(--accent);
-            color: white;
-        }
-        
-        .settings-close-btn {
-            background: var(--bg-input);
+        .profile-name {
+            font-size: 24px;
             color: var(--text-primary);
-            margin-top: 12px;
-        }
-
-        .profile-buttons { 
-            display: flex; 
-            gap: 10px; 
-            justify-content: center; 
-            margin-top: 12px; 
-            flex-wrap: wrap; 
-        }
-
-        .upload-btn { 
-            position: relative; 
-            margin: 8px 0; 
+            margin-bottom: 8px;
         }
         
-        .upload-btn input[type="file"] { 
-            position: absolute; 
-            opacity: 0; 
-            width: 100%; 
-            height: 100%; 
-            cursor: pointer; 
-            z-index: 2; 
+        .profile-bio {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
         }
         
-        .upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            border-radius: 14px;
-            padding: 14px;
-            cursor: pointer;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
+        .edit-profile-form {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
         }
         
-        .file-name { 
-            font-size: 12px; 
-            color: var(--accent); 
-            margin-top: 8px; 
-            display: block; 
-            text-align: center; 
-        }
-
-        .edit-form { 
-            margin-top: 20px; 
-            padding-top: 20px; 
-            border-top: 1px solid var(--border); 
-            text-align: left; 
-            display: none; 
-        }
-        
-        .profile-posts-title { 
-            font-size: 15px; 
-            font-weight: 600; 
-            margin: 16px 0 12px 0; 
-            color: var(--text-primary); 
-        }
-        
-        .back-btn { 
-            background: var(--bg-input); 
-            width: auto; 
-            padding: 8px 16px; 
-            border-radius: 30px; 
-            color: var(--text-primary); 
-        }
-
         .fab {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            color: white;
-            font-size: 30px;
+            background: linear-gradient(135deg, var(--accent), #ff8a4c);
+            font-size: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 200;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             border: none;
         }
-
+        
         .modal {
             display: none;
             position: fixed;
@@ -599,101 +323,47 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 300;
+            background: rgba(0,0,0,0.9);
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid var(--border);
-        }
-        .modal-content h3 { margin-bottom: 16px; color: var(--text-primary); font-size: 20px; text-align: center; }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
-        .modal-buttons button { flex: 1; }
-        .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
-
-        .game-card { background: var(--bg-card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .game-header { text-align: center; margin-bottom: 20px; }
-        .game-icon { font-size: 48px; }
-        .game-title { font-size: 22px; font-weight: bold; color: var(--accent); margin: 10px 0; }
-        .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 20px; padding: 30px; text-align: center; margin: 20px 0; }
-        .dice-value { font-size: 70px; font-weight: bold; margin: 20px 0; }
-        .dice-value.positive { color: var(--success); }
-        .dice-value.negative { color: #f44336; }
-        .roll-button { font-size: 18px; padding: 14px; border-radius: 50px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .stat-card { background: var(--bg-input); border-radius: 16px; padding: 15px; text-align: center; }
-
-        .leaderboard { background: var(--bg-card); border-radius: 20px; padding: 16px; }
-        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .leaderboard-title { font-size: 18px; font-weight: bold; color: var(--text-primary); }
-        .leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; }
-        .leaderboard-rank { font-weight: bold; min-width: 35px; color: var(--accent); }
-        .rank-1 { color: #ffd700; }
-        .rank-2 { color: #c0c0c0; }
-        .rank-3 { color: #cd7f32; }
-        .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); }
-
-        .follow-btn {
-            background: var(--bg-input);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            transition: all 0.2s;
-        }
-        .follow-btn.following {
-            background: var(--accent);
-            color: white;
-        }
-
-        .reset-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
         }
-        .reset-modal-content {
+        
+        .modal-content {
             background: var(--bg-card);
             border-radius: 24px;
             padding: 24px;
             width: 90%;
-            max-width: 350px;
-            border: 1px solid var(--border);
+            max-width: 400px;
         }
-        .reset-modal-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            text-align: center;
+        
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-input);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .reset-buttons {
+        
+        .profile-buttons {
             display: flex;
             gap: 12px;
-            margin-top: 20px;
+            justify-content: center;
+            margin-top: 16px;
         }
-        .reset-buttons button {
-            flex: 1;
-        }
-        .cancel-reset-btn {
+        
+        .btn-secondary {
             background: var(--bg-input);
             color: var(--text-primary);
+            border: 1px solid var(--border);
         }
-        .reset-message {
-            font-size: 13px;
-            margin-top: 12px;
-            text-align: center;
-        }
-
+        
         .notification {
             position: fixed;
             bottom: 80px;
@@ -704,28 +374,13 @@
             padding: 10px 20px;
             border-radius: 30px;
             z-index: 10000;
-            animation: fadeInOut 2s ease;
+            animation: fadeOut 2s ease;
         }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-        }
-
-        @media (max-width: 500px) {
-            .content { padding: 8px; }
-            .fab { width: 55px; height: 55px; font-size: 28px; }
-            .post-actions { gap: 8px; }
-            .like-btn, .comment-toggle-btn { padding: 6px 10px; font-size: 13px; }
-            .comment-input-area input { font-size: 15px; padding: 10px 0; }
-            .comment-input-area button { padding: 6px 16px; }
-            .post-avatar { width: 32px; height: 32px; }
-            .comment-avatar { width: 24px; height: 24px; }
-            .comment-text { margin-left: 32px; }
-            .comment-actions { margin-left: 32px; }
-            .settings-btn { width: 35px; height: 35px; font-size: 18px; top: 10px; right: 10px; }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
         }
     </style>
 </head>
@@ -734,72 +389,47 @@
 <div id="authScreen" class="auth-screen">
     <div class="auth-card">
         <h1>Дисциплина</h1>
-        <div class="sub" style="text-align:center;color:var(--text-secondary);margin-bottom:20px;">Делай каждый день</div>
         <div id="authForm">
             <input type="text" id="regName" placeholder="Имя">
             <input type="email" id="regEmail" placeholder="Email">
             <input type="password" id="regPassword" placeholder="Пароль">
-            <button id="submitAuthBtn">Зарегистрироваться</button>
-            <button id="forgotPasswordBtn" class="forgot-btn">🔐 Забыли пароль?</button>
-            <div class="switch-btn" id="switchModeBtn">Уже есть аккаунт? Войти</div>
+            <button id="submitBtn">Зарегистрироваться</button>
+            <div class="tab" id="switchMode" style="margin-top: 16px; background: none;">Уже есть аккаунт? Войти</div>
         </div>
-        <div id="authError" class="error"></div>
-    </div>
-</div>
-
-<div id="resetPasswordModal" class="reset-modal">
-    <div class="reset-modal-content">
-        <h3>Сброс пароля</h3>
-        <input type="email" id="resetEmail" placeholder="Введите ваш Email" style="width: 100%;">
-        <div class="reset-buttons">
-            <button id="confirmResetBtn">Отправить</button>
-            <button id="cancelResetBtn" class="cancel-reset-btn">Отмена</button>
-        </div>
-        <div id="resetMessage" class="reset-message"></div>
+        <div id="authError" style="color: var(--accent); margin-top: 16px; text-align: center;"></div>
     </div>
 </div>
 
 <div id="mainApp" class="main-app">
     <div class="header">
-        <div class="logo" id="logoBtn">Дисциплина</div>
-        <div class="header-actions">
-            <button class="back-btn hidden" id="backBtn">← Назад</button>
-        </div>
+        <div class="logo">Дисциплина</div>
     </div>
-
+    
     <div class="tabs">
         <div class="tab active" data-tab="feed">Лента</div>
-        <div class="tab" data-tab="game">Игра</div>
         <div class="tab" data-tab="profile">Профиль</div>
     </div>
-
+    
     <div class="content">
         <div id="feedTab"><div id="postsList"></div></div>
-        <div id="gameTab" class="hidden"><div id="gameContainer"></div></div>
         <div id="profileTab" class="hidden"><div id="profileContainer"></div></div>
     </div>
-
+    
     <button class="fab" id="fabBtn">+</button>
-
+    
     <div id="postModal" class="modal">
         <div class="modal-content">
-            <h3>Новый пост</h3>
-            <textarea id="modalPostText" rows="3" placeholder="Что у тебя нового?"></textarea>
-            <div class="upload-btn">
-                <input type="file" id="modalPostPhoto" accept="image/*">
-                <div class="upload-label"><span>📷</span><span>Выбрать фото</span></div>
-                <span id="fileNameDisplay" class="file-name"></span>
-            </div>
-            <div class="modal-buttons">
-                <button id="modalPublishBtn">Опубликовать</button>
-                <button id="modalCancelBtn" class="cancel-modal">Отмена</button>
+            <h3 style="color: var(--text-primary); margin-bottom: 16px;">Новый пост</h3>
+            <textarea id="postText" rows="3" placeholder="Что нового?" style="width: 100%;"></textarea>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button id="publishBtn">Опубликовать</button>
+                <button id="cancelModalBtn" class="btn-secondary">Отмена</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ========== FIREBASE ==========
     const firebaseConfig = {
         apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
         authDomain: "disciplina-8ac49.firebaseapp.com",
@@ -812,24 +442,124 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-
+    
     let currentUser = null;
-    let posts = [];
-    let users = [];
-    let gameStats = [];
-    let openComments = {};
-    let openMenus = {};
-    let viewingUserId = null;
-    let isLoginMode = false;
-
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
+    let postsData = [];
+    let usersData = [];
+    let editingComment = null;
+    
+    function showNotification(msg) {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.textContent = msg;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 2000);
     }
-
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    async function loadData() {
+        const usersSnap = await db.collection('users').get();
+        usersData = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        const postsSnap = await db.collection('posts').orderBy('date', 'desc').get();
+        postsData = postsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+    
+    async function addPost(text) {
+        await db.collection('posts').add({
+            userId: currentUser.uid,
+            text: text,
+            likes: [],
+            comments: [],
+            date: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        await loadData();
+        await renderFeed();
+        showNotification('Пост опубликован!');
+    }
+    
+    async function deletePost(postId) {
+        if (!confirm('Удалить пост?')) return;
+        await db.collection('posts').doc(postId).delete();
+        await loadData();
+        await renderFeed();
+        showNotification('Пост удалён');
+    }
+    
+    async function editPost(postId) {
+        const post = postsData.find(p => p.id === postId);
+        const newText = prompt('Редактировать пост:', post.text);
+        if (newText && newText.trim()) {
+            await db.collection('posts').doc(postId).update({ text: newText.trim() });
+            await loadData();
+            await renderFeed();
+            showNotification('Пост обновлён');
+        }
+    }
+    
+    async function toggleLike(postId) {
+        const post = postsData.find(p => p.id === postId);
+        const likes = post.likes || [];
+        const idx = likes.indexOf(currentUser.uid);
+        
+        if (idx === -1) likes.push(currentUser.uid);
+        else likes.splice(idx, 1);
+        
+        await db.collection('posts').doc(postId).update({ likes });
+        await loadData();
+        await renderFeed();
+    }
+    
+    async function addComment(postId, text) {
+        if (!text.trim()) return;
+        const post = postsData.find(p => p.id === postId);
+        const comments = post.comments || [];
+        
+        comments.push({
+            userId: currentUser.uid,
+            text: text.trim(),
+            date: new Date().toISOString()
+        });
+        
+        await db.collection('posts').doc(postId).update({ comments });
+        await loadData();
+        await renderFeed();
+    }
+    
+    async function deleteComment(postId, commentIndex) {
+        if (!confirm('Удалить комментарий?')) return;
+        const post = postsData.find(p => p.id === postId);
+        post.comments.splice(commentIndex, 1);
+        await db.collection('posts').doc(postId).update({ comments: post.comments });
+        await loadData();
+        await renderFeed();
+        showNotification('Комментарий удалён');
+    }
+    
+    async function updateComment(postId, commentIndex, newText) {
+        if (!newText.trim()) return;
+        const post = postsData.find(p => p.id === postId);
+        post.comments[commentIndex].text = newText.trim();
+        await db.collection('posts').doc(postId).update({ comments: post.comments });
+        await loadData();
+        await renderFeed();
+        showNotification('Комментарий обновлён');
+    }
+    
+    async function updateProfile(name, bio) {
+        await db.collection('users').doc(currentUser.uid).update({
+            name: name,
+            bio: bio
+        });
+        await loadData();
+        await renderProfile();
+        showNotification('Профиль обновлён!');
+    }
+    
     function formatDate(date) {
         if (!date) return 'только что';
         const d = date.toDate ? date.toDate() : new Date(date);
@@ -838,723 +568,226 @@
         if (diff < 60) return 'только что';
         if (diff < 3600) return Math.floor(diff / 60) + ' мин';
         if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
-        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
-    function compressImage(file, maxWidth = 900) {
-        return new Promise((resolve, reject) => {
-            if (!file.type.match(/image.*/)) {
-                resolve(null);
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    let width = img.width;
-                    let height = img.height;
-                    if (width > maxWidth) {
-                        height = (height * maxWidth) / width;
-                        width = maxWidth;
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    let quality = 0.8;
-                    let result = canvas.toDataURL('image/jpeg', quality);
-                    while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
-                        quality -= 0.1;
-                        result = canvas.toDataURL('image/jpeg', quality);
-                    }
-                    resolve(result);
-                };
-                img.onerror = reject;
-                img.src = e.target.result;
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function loadData() {
-        const usersSnapshot = await db.collection('users').get();
-        users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const postsSnapshot = await db.collection('posts').orderBy('date', 'desc').get();
-        posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const statsSnapshot = await db.collection('gameStats').get();
-        gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
-    }
-
-    async function savePost(text, photoDataUrl) {
-        await db.collection('posts').add({
-            userId: currentUser.uid,
-            text: text,
-            photo: photoDataUrl || null,
-            likes: [],
-            comments: [],
-            date: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await loadData();
-        await refreshAll();
-    }
-
-    async function toggleLike(postId, post) {
-        const likes = post.likes || [];
-        const index = likes.indexOf(currentUser.uid);
-        if (index === -1) likes.push(currentUser.uid);
-        else likes.splice(index, 1);
-        await db.collection('posts').doc(postId).update({ likes });
-        await loadData();
-        await refreshAll();
-    }
-
-    async function addComment(postId, commentText) {
-        if (!commentText || !commentText.trim()) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        const comments = post.comments || [];
-        comments.push({
-            userId: currentUser.uid,
-            text: commentText.trim(),
-            date: new Date().toISOString()
-        });
-        await db.collection('posts').doc(postId).update({ comments });
-        await loadData();
-        openComments[postId] = true;
-        await refreshAll();
-        setTimeout(() => {
-            const input = document.getElementById(`comment-input-${postId}`);
-            if (input) input.value = '';
-        }, 100);
+        return d.toLocaleDateString('ru-RU');
     }
     
-    async function deleteComment(postId, commentIndex) {
-        if (!confirm('Удалить комментарий?')) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments) return;
-        post.comments.splice(commentIndex, 1);
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotification('🗑️ Комментарий удалён');
-    }
-    
-    async function editComment(postId, commentIndex, newText) {
-        if (!newText || !newText.trim()) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments || !post.comments[commentIndex]) return;
-        post.comments[commentIndex].text = newText.trim();
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotification('✏️ Комментарий обновлён');
-    }
-
-    async function deletePost(postId) {
-        if (confirm('Удалить пост?')) {
-            await db.collection('posts').doc(postId).delete();
-            await loadData();
-            await refreshAll();
-            showNotification('Пост удалён');
+    function renderComments(postId, comments, isPostAuthor = false) {
+        if (!comments || comments.length === 0) {
+            return '<div style="color: var(--text-secondary); text-align: center; padding: 12px;">Нет комментариев</div>';
         }
-    }
-
-    async function editPost(postId) {
-        const post = posts.find(p => p.id === postId);
-        const newText = prompt('Редактировать пост:', post?.text);
-        if (newText && newText.trim()) {
-            await db.collection('posts').doc(postId).update({ text: newText.trim() });
-            await loadData();
-            await refreshAll();
-            showNotification('Пост обновлён');
-        }
-    }
-
-    async function toggleFollow(targetUserId) {
-        const currentUserDoc = users.find(u => u.id === currentUser.uid);
-        const following = currentUserDoc?.following || [];
-        const isFollowing = following.includes(targetUserId);
-        if (isFollowing) {
-            await db.collection('users').doc(currentUser.uid).update({
-                following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
-            });
-            await db.collection('users').doc(targetUserId).update({
-                followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-            });
-        } else {
-            await db.collection('users').doc(currentUser.uid).update({
-                following: firebase.firestore.FieldValue.arrayUnion(targetUserId)
-            });
-            await db.collection('users').doc(targetUserId).update({
-                followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-            });
-        }
-        await loadData();
-        await refreshAll();
-    }
-
-    async function updateUserProfile(newName, newBio, newAvatar) {
-        const updates = {};
-        if (newName && newName !== currentUser.name) updates.name = newName;
-        if (newBio !== undefined) updates.bio = newBio;
-        if (newAvatar) updates.avatar = newAvatar;
         
-        if (Object.keys(updates).length > 0) {
-            await db.collection('users').doc(currentUser.uid).update(updates);
+        return comments.map((comment, idx) => {
+            const author = usersData.find(u => u.id === comment.userId);
+            const isOwner = comment.userId === currentUser.uid;
             
-            // Обновляем текущего пользователя в локальном массиве
-            const updatedUser = await db.collection('users').doc(currentUser.uid).get();
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) {
-                users[userIndex] = { id: currentUser.uid, ...updatedUser.data() };
-            }
-            
-            await loadData();
-            await refreshAll();
-            return true;
-        }
-        return false;
-    }
-
-    // ========== ФУНКЦИИ ДЛЯ НАСТРОЕК ==========
-    function openSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'flex';
-    }
-    
-    function closeSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'none';
-    }
-    
-    function logoutUser() {
-        closeSettings();
-        auth.signOut().then(() => {
-            currentUser = null;
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-            isLoginMode = false;
-            updateAuthButton();
-        });
-    }
-    
-    function toggleThemeGlobal() {
-        document.body.classList.toggle('light-theme');
-        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-        closeSettings();
-    }
-
-    // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОРМЫ РЕДАКТИРОВАНИЯ ==========
-    window.toggleEditForm = function() {
-        const form = document.getElementById('editProfileForm');
-        if (form) {
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
-        }
-    };
-
-    function renderPostCard(post) {
-        const author = users.find(u => u.id === post.userId);
-        const isLiked = post.likes?.includes(currentUser.uid);
-        const isAuthor = post.userId === currentUser.uid;
-        const showComments = openComments[post.id] || false;
-        const showMenu = openMenus[post.id];
-        const comments = post.comments || [];
-        
-        return `
-            <div class="post" id="post-${post.id}">
-                <div class="post-header">
-                    <img class="post-avatar" src="${author?.avatar || 'https://via.placeholder.com/36'}" onclick="viewProfile('${post.userId}')">
-                    <div class="post-author-info">
-                        <button class="post-author" onclick="viewProfile('${post.userId}')">${escapeHtml(author?.name || '?')}</button>
+            return `
+                <div class="comment-item" id="comment-${postId}-${idx}">
+                    <div class="comment-header">
+                        <div style="font-weight: 600; color: var(--accent);">${escapeHtml(author?.name || '?')}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">${formatDate(comment.date)}</div>
                     </div>
-                    ${isAuthor ? `
-                        <div class="post-menu">
-                            <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
-                            ${showMenu ? `
-                                <div class="menu-dropdown">
-                                    <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
-                                    <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
-                                </div>
-                            ` : ''}
+                    <div class="comment-text" id="comment-text-${postId}-${idx}">${escapeHtml(comment.text)}</div>
+                    ${isOwner ? `
+                        <div class="comment-actions">
+                            <button onclick="showEditCommentForm('${postId}', ${idx})">✏️ Редактировать</button>
+                            <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
+                        </div>
+                        <div id="edit-form-${postId}-${idx}" style="display: none; margin-top: 8px;">
+                            <input type="text" id="edit-input-${postId}-${idx}" value="${escapeHtml(comment.text)}" style="width: 100%; padding: 8px; border-radius: 20px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary);">
+                            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                <button onclick="saveCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px;">Сохранить</button>
+                                <button onclick="hideEditCommentForm('${postId}', ${idx})" style="width: auto; padding: 6px 12px; background: var(--bg-input);">Отмена</button>
+                            </div>
                         </div>
                     ` : ''}
                 </div>
-                <div class="post-text">${escapeHtml(post.text)}</div>
-                ${post.photo ? `<img src="${post.photo}" class="post-photo" onclick="window.open(this.src)">` : ''}
-                <div class="post-footer">
-                    <div class="post-actions">
-                        <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${JSON.stringify(post).replace(/"/g, '&quot;')})">❤️ ${post.likes?.length || 0}</button>
-                        <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
-                    </div>
-                    <div class="post-time-footer">${formatDate(post.date)}</div>
-                </div>
-                ${showComments ? renderCommentsSection(post.id, comments) : ''}
-            </div>
-        `;
+            `;
+        }).join('');
     }
-
-    function renderCommentsSection(postId, comments) {
-        return `
-            <div class="comments-area" id="comments-panel-${postId}">
-                ${comments.length === 0 ? '<div class="no-comments-text">✨ Нет комментариев</div>' : ''}
-                ${comments.map((c, idx) => {
-                    const commentAuthor = users.find(u => u.id === c.userId);
-                    const isCommentOwner = c.userId === currentUser.uid;
-                    return `
-                        <div class="comment-item" id="comment-${postId}-${idx}">
-                            <div class="comment-item-header">
-                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/28'}" onclick="viewProfile('${c.userId}')">
-                                <button class="comment-author" onclick="viewProfile('${c.userId}')">${escapeHtml(commentAuthor?.name || '?')}</button>
-                                <span class="comment-date">${formatDate(c.date)}</span>
-                            </div>
-                            <div class="comment-text" id="comment-text-${postId}-${idx}">${escapeHtml(c.text)}</div>
-                            ${isCommentOwner ? `
-                                <div class="comment-actions">
-                                    <button onclick="editCommentUI('${postId}', ${idx})">✏️ Редактировать</button>
-                                    <button onclick="deleteComment('${postId}', ${idx})">🗑️ Удалить</button>
-                                </div>
-                                <div id="editCommentForm-${postId}-${idx}" style="display: none; margin-top: 8px;">
-                                    <input type="text" id="editCommentInput-${postId}-${idx}" value="${escapeHtml(c.text)}" style="width:100%; padding:8px; border-radius:25px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-primary);">
-                                    <div style="display: flex; gap: 8px; margin-top: 6px;">
-                                        <button onclick="saveCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px;">Сохранить</button>
-                                        <button onclick="cancelCommentEdit('${postId}', ${idx})" style="width: auto; padding: 6px 12px; background: var(--bg-input);">Отмена</button>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-                <div class="comment-input-area">
-                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off" enterkeyhint="send">
-                    <button onclick="submitComment('${postId}')">→</button>
-                </div>
-            </div>
-        `;
-    }
-
-    async function refreshAll() {
-        await renderFeed();
-        await renderProfile();
-        renderGameTab();
-    }
-
-    async function renderFeed() {
-        const container = document.getElementById('postsList');
-        if (!posts.length) {
-            container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>';
-            return;
-        }
-        container.innerHTML = posts.map(post => renderPostCard(post)).join('');
-    }
-
-    async function renderProfile() {
-        const container = document.getElementById('profileContainer');
-        const profileUser = users.find(u => u.id === viewingUserId);
-        if (!profileUser) return;
-        
-        const isOwn = viewingUserId === currentUser.uid;
-        document.getElementById('backBtn').classList.toggle('hidden', isOwn);
-        
-        const userPosts = posts.filter(p => p.userId === viewingUserId);
-        const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
-        
-        container.innerHTML = `
-            <div class="profile-card">
-                ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" id="profileAvatar" onclick="viewProfile('${viewingUserId}')">
-                <h3 id="profileName" style="color:var(--text-primary);">${escapeHtml(profileUser.name)}</h3>
-                <p id="profileBio" style="color:var(--text-secondary);">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
-                <div class="stats">
-                    <div><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
-                    <div><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
-                    <div><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
-                </div>
-                <div class="stats">
-                    <div><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
-                    <div><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
-                </div>
-                <div class="profile-buttons">
-                    ${!isOwn ? `
-                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
-                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
-                        </button>
-                    ` : `
-                        <button id="editProfileBtn" onclick="toggleEditForm()">✏️ Редактировать</button>
-                    `}
-                </div>
-                ${isOwn ? `
-                    <div id="editProfileForm" class="edit-form" style="display: none;">
-                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(profileUser.name)}">
-                        <textarea id="editBio" rows="2" placeholder="О себе">${escapeHtml(profileUser.bio || '')}</textarea>
-                        <div class="upload-btn">
-                            <input type="file" id="editAvatar" accept="image/*">
-                            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
-                            <span id="avatarFileNameDisplay" class="file-name"></span>
-                        </div>
-                        <button id="saveProfileBtn">Сохранить</button>
-                        <button id="cancelEditBtn">Отмена</button>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="profile-posts-title">📝 Посты</div>
-            <div id="profilePosts"></div>
-        `;
-        
-        const profilePostsContainer = document.getElementById('profilePosts');
-        if (!userPosts.length) {
-            profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
-        } else {
-            profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
-        }
-        
-        if (isOwn) {
-            // Сохранение профиля
-            const saveBtn = document.getElementById('saveProfileBtn');
-            if (saveBtn) {
-                saveBtn.onclick = async () => {
-                    const originalText = saveBtn.textContent;
-                    saveBtn.disabled = true;
-                    saveBtn.textContent = 'Сохранение...';
-                    
-                    try {
-                        const newName = document.getElementById('editName').value.trim();
-                        const newBio = document.getElementById('editBio').value.trim();
-                        const avatarFile = document.getElementById('editAvatar').files[0];
-                        let avatarBase64 = null;
-                        
-                        if (avatarFile) {
-                            avatarBase64 = await compressImage(avatarFile, 400);
-                        }
-                        
-                        await updateUserProfile(newName, newBio, avatarBase64);
-                        document.getElementById('editProfileForm').style.display = 'none';
-                        showNotification('✅ Профиль обновлён!');
-                    } catch (error) {
-                        console.error('Error saving profile:', error);
-                        showNotification('❌ Ошибка при сохранении');
-                    } finally {
-                        saveBtn.disabled = false;
-                        saveBtn.textContent = originalText;
-                    }
-                };
-            }
-            
-            // Отмена
-            const cancelBtn = document.getElementById('cancelEditBtn');
-            if (cancelBtn) {
-                cancelBtn.onclick = () => {
-                    document.getElementById('editProfileForm').style.display = 'none';
-                };
-            }
-            
-            // Показ имени файла
-            const avatarInput = document.getElementById('editAvatar');
-            if (avatarInput) {
-                avatarInput.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const display = document.getElementById('avatarFileNameDisplay');
-                        if (display) display.textContent = `📎 ${file.name}`;
-                    }
-                };
-            }
-        }
-    }
-
-    async function runGame() {
-        const stats = gameStats.find(s => s.userId === currentUser.uid);
-        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (lastDate && lastDate >= today) {
-            showNotification('Вы уже играли сегодня! Завтра новая попытка.');
-            return;
-        }
-        
-        const rolled = Math.floor(Math.random() * 16) - 5;
-        const newTotal = (stats?.totalPoints || 0) + rolled;
-        const newBest = Math.max(rolled, stats?.bestRoll || -5);
-        
-        await db.collection('gameStats').doc(currentUser.uid).set({
-            userId: currentUser.uid,
-            totalPoints: newTotal,
-            bestRoll: newBest,
-            lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(),
-            lastRollValue: rolled
-        });
-        
-        await loadData();
-        renderGameTab();
-        showNotification(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
-    }
-
-    async function renderGameTab() {
-        const container = document.getElementById('gameContainer');
-        const stats = gameStats.find(s => s.userId === currentUser.uid);
-        const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const canPlay = !lastDate || lastDate < today;
-        
-        container.innerHTML = `
-            <div class="game-card">
-                <div class="game-header">
-                    <div class="game-icon">🎲</div>
-                    <div class="game-title">Пиписа бот</div>
-                    <div style="color:var(--text-secondary);">Бросай кубик! от -5 до +10</div>
-                </div>
-                <div class="dice-container">
-                    <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
-                        ${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}
-                    </div>
-                </div>
-                <button id="rollButton" class="roll-button">${canPlay ? '🎲 Бросить кубик!' : '⏰ Завтра'}</button>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div>
-                    <div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div>
-                </div>
-            </div>
-            <div id="leaderboardContainer"></div>
-        `;
-        
-        if (canPlay) {
-            const rollBtn = document.getElementById('rollButton');
-            if (rollBtn) rollBtn.addEventListener('click', runGame);
-        } else {
-            const rollBtn = document.getElementById('rollButton');
-            if (rollBtn) rollBtn.setAttribute('disabled', 'disabled');
-        }
-        await renderLeaderboard();
-    }
-
-    async function renderLeaderboard() {
-        const container = document.getElementById('leaderboardContainer');
-        const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
-        if (!data.length) {
-            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;color:var(--text-secondary);">Пока нет участников</div></div>`;
-            return;
-        }
-        const usersMap = new Map(users.map(u => [u.id, u]));
-        container.innerHTML = `
-            <div class="leaderboard">
-                <div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>
-                ${data.map((item, idx) => {
-                    const user = usersMap.get(item.userId);
-                    return `
-                        <div class="leaderboard-item" onclick="viewProfile('${item.userId}')">
-                            <div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div>
-                            <div class="leaderboard-name">${escapeHtml(user?.name || '?')}</div>
-                            <div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-
-    window.submitComment = async function(postId) {
-        const input = document.getElementById(`comment-input-${postId}`);
-        const text = input?.value;
-        if (!text || !text.trim()) return;
-        await addComment(postId, text);
-        setTimeout(() => {
-            if (input) input.focus();
-        }, 50);
+    
+    window.showEditCommentForm = function(postId, idx) {
+        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
+        const editForm = document.getElementById(`edit-form-${postId}-${idx}`);
+        if (textSpan) textSpan.style.display = 'none';
+        if (editForm) editForm.style.display = 'block';
     };
     
-    window.editCommentUI = function(postId, idx) {
-        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
+    window.hideEditCommentForm = function(postId, idx) {
         const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
-        if (form) form.style.display = 'block';
-        if (textSpan) textSpan.style.display = 'none';
+        const editForm = document.getElementById(`edit-form-${postId}-${idx}`);
+        if (textSpan) textSpan.style.display = 'block';
+        if (editForm) editForm.style.display = 'none';
     };
     
     window.saveCommentEdit = async function(postId, idx) {
-        const input = document.getElementById(`editCommentInput-${postId}-${idx}`);
-        const newText = input?.value;
-        if (!newText || !newText.trim()) return;
-        await editComment(postId, idx, newText);
-        await refreshAll();
+        const input = document.getElementById(`edit-input-${postId}-${idx}`);
+        const newText = input.value;
+        await updateComment(postId, idx, newText);
     };
     
-    window.cancelCommentEdit = function(postId, idx) {
-        const form = document.getElementById(`editCommentForm-${postId}-${idx}`);
-        const textSpan = document.getElementById(`comment-text-${postId}-${idx}`);
-        if (form) form.style.display = 'none';
-        if (textSpan) textSpan.style.display = 'block';
-    };
-    
-    window.deleteComment = deleteComment;
-    
-    function toggleComments(postId) {
-        openComments[postId] = !openComments[postId];
-        refreshAll();
-        if (openComments[postId]) {
-            setTimeout(() => {
-                const input = document.getElementById(`comment-input-${postId}`);
-                if (input) input.focus();
-            }, 150);
+    async function renderFeed() {
+        const container = document.getElementById('postsList');
+        if (!postsData.length) {
+            container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">Нет постов. Нажмите +</div>';
+            return;
         }
+        
+        container.innerHTML = postsData.map(post => {
+            const author = usersData.find(u => u.id === post.userId);
+            const isLiked = post.likes?.includes(currentUser.uid);
+            const isAuthor = post.userId === currentUser.uid;
+            
+            return `
+                <div class="post">
+                    <div class="post-header">
+                        <img class="post-avatar" src="${author?.avatar || 'https://via.placeholder.com/44'}" onclick="viewProfile('${post.userId}')">
+                        <button class="post-author" onclick="viewProfile('${post.userId}')">${escapeHtml(author?.name || '?')}</button>
+                        ${isAuthor ? `
+                            <div style="margin-left: auto;">
+                                <button onclick="editPost('${post.id}')" style="background: none; width: auto; padding: 4px 8px; margin: 0;">✏️</button>
+                                <button onclick="deletePost('${post.id}')" style="background: none; width: auto; padding: 4px 8px; margin: 0;">🗑️</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="post-text">${escapeHtml(post.text)}</div>
+                    <div class="post-footer">
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">❤️ ${post.likes?.length || 0}</button>
+                        <button class="like-btn" onclick="toggleCommentsSection('${post.id}')">💬 ${post.comments?.length || 0}</button>
+                    </div>
+                    <div id="comments-${post.id}" style="display: none;">
+                        <div class="comments-area">
+                            ${renderComments(post.id, post.comments || [])}
+                            <div class="comment-input-area">
+                                <input type="text" id="comment-input-${post.id}" placeholder="Написать комментарий...">
+                                <button onclick="submitComment('${post.id}')">→</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
     
-    document.addEventListener('keypress', function(e) {
-        if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const postId = e.target.id.replace('comment-input-', '');
-                submitComment(postId);
+    window.toggleCommentsSection = function(postId) {
+        const section = document.getElementById(`comments-${postId}`);
+        if (section) {
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
             }
         }
-    });
-    
-    window.toggleMenu = function(postId) {
-        if (openMenus[postId]) delete openMenus[postId];
-        else { openMenus = {}; openMenus[postId] = true; }
-        refreshAll();
     };
     
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.post-menu')) {
-            openMenus = {};
-            refreshAll();
-        }
-    });
-
-    window.viewProfile = function(userId) {
-        viewingUserId = userId;
-        renderProfile();
+    window.submitComment = async function(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const text = input.value;
+        await addComment(postId, text);
+        input.value = '';
+    };
+    
+    window.viewProfile = async function(userId) {
         document.querySelector('.tab[data-tab="profile"]').click();
+        await renderProfile(userId);
     };
     
-    window.toggleFollow = toggleFollow;
-    window.toggleLike = toggleLike;
-
-    // ========== МОДАЛЬНОЕ ОКНО НАСТРОЕК ==========
-    const settingsModal = document.createElement('div');
-    settingsModal.id = 'settingsModal';
-    settingsModal.className = 'settings-modal';
-    settingsModal.innerHTML = `
-        <div class="settings-modal-content">
-            <h3>⚙️ Настройки</h3>
-            <div class="settings-item">
-                <button class="settings-theme-btn" id="settingsThemeBtn">🌓 Сменить тему</button>
+    async function renderProfile(userId = null) {
+        const targetId = userId || currentUser.uid;
+        const user = usersData.find(u => u.id === targetId);
+        if (!user) return;
+        
+        const isOwn = targetId === currentUser.uid;
+        const userPosts = postsData.filter(p => p.userId === targetId);
+        
+        const container = document.getElementById('profileContainer');
+        container.innerHTML = `
+            <div class="profile-card" style="position: relative;">
+                ${isOwn ? '<button class="settings-btn" onclick="toggleEditProfile()">⚙️</button>' : ''}
+                <img class="profile-avatar" src="${user.avatar || 'https://via.placeholder.com/100'}" alt="avatar">
+                <div class="profile-name">${escapeHtml(user.name)}</div>
+                <div class="profile-bio">${escapeHtml(user.bio || 'Нет описания')}</div>
+                <div class="profile-buttons">
+                    ${isOwn ? '<button id="showEditBtn">✏️ Редактировать профиль</button>' : ''}
+                </div>
+                ${isOwn ? `
+                    <div id="editProfileForm" class="edit-profile-form">
+                        <input type="text" id="editName" placeholder="Имя" value="${escapeHtml(user.name)}">
+                        <textarea id="editBio" rows="3" placeholder="О себе">${escapeHtml(user.bio || '')}</textarea>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <button id="saveProfileBtn">Сохранить</button>
+                            <button id="cancelEditBtn" class="btn-secondary">Отмена</button>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
-            <div class="settings-item">
-                <button class="settings-logout-btn" id="settingsLogoutBtn">🚪 Выйти из аккаунта</button>
-            </div>
-            <div class="settings-item">
-                <button class="settings-close-btn" id="settingsCloseBtn">✖️ Закрыть</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(settingsModal);
-    
-    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
-    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
-    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
-    
-    settingsModal.addEventListener('click', (e) => {
-        if (e.target === settingsModal) closeSettings();
-    });
-    
-    window.openSettings = openSettings;
-    window.closeSettings = closeSettings;
-
-    // ========== ЗАБЫЛИ ПАРОЛЬ ==========
-    const forgotBtn = document.getElementById('forgotPasswordBtn');
-    const resetModal = document.getElementById('resetPasswordModal');
-    const confirmResetBtn = document.getElementById('confirmResetBtn');
-    const cancelResetBtn = document.getElementById('cancelResetBtn');
-    const resetEmailInput = document.getElementById('resetEmail');
-    const resetMessage = document.getElementById('resetMessage');
-
-    if (forgotBtn) {
-        forgotBtn.onclick = (e) => {
-            e.preventDefault();
-            resetModal.style.display = 'flex';
-            resetEmailInput.value = '';
-            resetMessage.textContent = '';
-            resetMessage.style.color = '';
-        };
-    }
-
-    if (cancelResetBtn) {
-        cancelResetBtn.onclick = () => {
-            resetModal.style.display = 'none';
-        };
-    }
-
-    if (resetModal) {
-        resetModal.onclick = (e) => {
-            if (e.target === resetModal) {
-                resetModal.style.display = 'none';
-            }
-        };
-    }
-
-    if (confirmResetBtn) {
-        confirmResetBtn.onclick = async () => {
-            const email = resetEmailInput.value.trim();
-            if (!email) {
-                resetMessage.textContent = 'Введите ваш email';
-                resetMessage.style.color = 'var(--accent)';
-                return;
-            }
-            try {
-                await auth.sendPasswordResetEmail(email);
-                resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
-                resetMessage.style.color = 'var(--success)';
-                resetEmailInput.value = '';
-                setTimeout(() => {
-                    resetModal.style.display = 'none';
-                }, 3000);
-            } catch (error) {
-                let errorMsg = 'Ошибка: ';
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMsg += 'Пользователь с таким email не найден';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMsg += 'Неверный формат email';
-                        break;
-                    default:
-                        errorMsg += error.message;
+            <h3 style="color: var(--text-primary); margin: 20px 0 12px;">Посты (${userPosts.length})</h3>
+            <div id="userPosts"></div>
+        `;
+        
+        const userPostsContainer = document.getElementById('userPosts');
+        if (userPosts.length === 0) {
+            userPostsContainer.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">Нет постов</div>';
+        } else {
+            userPostsContainer.innerHTML = userPosts.map(post => {
+                const isAuthor = post.userId === currentUser.uid;
+                return `
+                    <div class="post">
+                        <div class="post-text">${escapeHtml(post.text)}</div>
+                        <div style="color: var(--text-secondary); font-size: 12px; margin-top: 8px;">${formatDate(post.date)}</div>
+                        ${isAuthor ? `
+                            <div style="margin-top: 8px;">
+                                <button onclick="editPost('${post.id}')" style="background: none; width: auto; padding: 4px 12px; margin: 0;">✏️ Редактировать</button>
+                                <button onclick="deletePost('${post.id}')" style="background: none; width: auto; padding: 4px 12px; margin: 0;">🗑️ Удалить</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        if (isOwn) {
+            document.getElementById('showEditBtn')?.addEventListener('click', () => {
+                const form = document.getElementById('editProfileForm');
+                form.style.display = form.style.display === 'none' || !form.style.display ? 'block' : 'none';
+            });
+            
+            document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+                const newName = document.getElementById('editName').value.trim();
+                const newBio = document.getElementById('editBio').value.trim();
+                if (newName) {
+                    await updateProfile(newName, newBio);
                 }
-                resetMessage.textContent = errorMsg;
-                resetMessage.style.color = 'var(--accent)';
-            }
-        };
+            });
+            
+            document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+                document.getElementById('editProfileForm').style.display = 'none';
+            });
+        }
     }
-
-    if (resetEmailInput) {
-        resetEmailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                confirmResetBtn.click();
-            }
-        });
-    }
-
-    // ========== АВТОРИЗАЦИЯ ==========
-    const authScreen = document.getElementById('authScreen');
-    const mainApp = document.getElementById('mainApp');
-    const submitBtn = document.getElementById('submitAuthBtn');
-    const switchBtn = document.getElementById('switchModeBtn');
+    
+    window.toggleEditProfile = function() {
+        const form = document.getElementById('editProfileForm');
+        if (form) {
+            form.style.display = form.style.display === 'none' || !form.style.display ? 'block' : 'none';
+        }
+    };
+    
+    // Экспорт функций в глобальный scope
+    window.deleteComment = deleteComment;
+    window.updateComment = updateComment;
+    window.toggleLike = toggleLike;
+    window.editPost = editPost;
+    window.deletePost = deletePost;
+    
+    // Авторизация
+    let isLogin = false;
+    const switchBtn = document.getElementById('switchMode');
+    const submitBtn = document.getElementById('submitBtn');
     const authError = document.getElementById('authError');
-
-    function updateAuthButton() {
-        if (isLoginMode) {
+    
+    switchBtn.onclick = () => {
+        isLogin = !isLogin;
+        if (isLogin) {
             submitBtn.textContent = 'Войти';
             switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
             document.getElementById('regName').style.display = 'none';
@@ -1563,115 +796,74 @@
             switchBtn.textContent = 'Уже есть аккаунт? Войти';
             document.getElementById('regName').style.display = 'block';
         }
-    }
-
-    switchBtn.onclick = () => {
-        isLoginMode = !isLoginMode;
-        updateAuthButton();
-        authError.textContent = '';
     };
-
+    
     submitBtn.onclick = async () => {
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
         const password = document.getElementById('regPassword').value;
-        if (!email || !password) { authError.textContent = 'Заполните email и пароль'; return; }
+        
         try {
-            if (!isLoginMode) {
-                if (!name) { authError.textContent = 'Введите имя'; return; }
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({
-                    name, email, bio: '', avatar: null, followers: [], following: []
+            if (!isLogin) {
+                const res = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(res.user.uid).set({
+                    name: name,
+                    email: email,
+                    bio: '',
+                    avatar: null,
+                    followers: [],
+                    following: []
                 });
-                await db.collection('gameStats').doc(userCredential.user.uid).set({
-                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
-                });
-                currentUser = userCredential.user;
-                await loadData();
-                showMainApp();
+                showNotification('Регистрация успешна!');
             } else {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = userCredential.user;
-                await loadData();
-                showMainApp();
+                await auth.signInWithEmailAndPassword(email, password);
+                showNotification('Добро пожаловать!');
             }
-        } catch (error) { authError.textContent = error.message; }
+        } catch(e) {
+            authError.textContent = e.message;
+        }
     };
-
-    async function showMainApp() {
-        viewingUserId = currentUser.uid;
-        authScreen.style.display = 'none';
-        mainApp.style.display = 'block';
-        await refreshAll();
-    }
-
-    // ========== МОДАЛКА ПОСТА ==========
+    
+    // Модалка поста
     const modal = document.getElementById('postModal');
-    const fabBtn = document.getElementById('fabBtn');
-
-    fabBtn.onclick = () => {
-        modal.style.display = 'flex';
-        document.getElementById('modalPostText').value = '';
-        document.getElementById('modalPostPhoto').value = '';
-        document.getElementById('fileNameDisplay').textContent = '';
-        document.getElementById('modalPostText').focus();
-    };
-    document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-
-    document.getElementById('modalPublishBtn').onclick = async () => {
-        const text = document.getElementById('modalPostText').value.trim();
-        if (!text) { alert('Напишите текст'); return; }
-        const file = document.getElementById('modalPostPhoto').files[0];
-        if (file) {
-            const compressed = await compressImage(file);
-            await savePost(text, compressed);
-        } else {
-            await savePost(text, null);
+    document.getElementById('fabBtn').onclick = () => modal.style.display = 'flex';
+    document.getElementById('cancelModalBtn').onclick = () => modal.style.display = 'none';
+    document.getElementById('publishBtn').onclick = async () => {
+        const text = document.getElementById('postText').value;
+        if (text.trim()) {
+            await addPost(text);
+            modal.style.display = 'none';
+            document.getElementById('postText').value = '';
         }
-        modal.style.display = 'none';
-        showNotification('Пост опубликован!');
     };
-
-    document.getElementById('modalPostPhoto')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('fileNameDisplay').textContent = `📎 ${file.name}`;
-        }
-    });
-
-    // ========== ТАБЫ ==========
+    
+    // Табы
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const tabName = tab.dataset.tab;
+            
             if (tabName === 'feed') {
                 document.getElementById('feedTab').classList.remove('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
                 document.getElementById('profileTab').classList.add('hidden');
                 renderFeed();
-            } else if (tabName === 'game') {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.remove('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                renderGameTab();
             } else {
                 document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
                 document.getElementById('profileTab').classList.remove('hidden');
                 renderProfile();
             }
         };
     });
-
-    function initTheme() {
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
-    }
-    initTheme();
     
     auth.onAuthStateChanged(async (user) => {
-        if (user) { currentUser = user; await loadData(); showMainApp(); }
+        if (user) {
+            currentUser = user;
+            await loadData();
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            await renderFeed();
+        }
     });
 </script>
 </body>
