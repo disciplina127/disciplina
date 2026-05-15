@@ -511,6 +511,7 @@
             flex-wrap: wrap; 
         }
 
+        /* Модальное окно редактирования профиля */
         .edit-profile-modal {
             display: none;
             position: fixed;
@@ -575,6 +576,43 @@
             margin-bottom: 8px;
         }
 
+        /* Модальное окно редактирования поста */
+        .edit-post-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2002;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        
+        .edit-post-content {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 24px;
+            width: 90%;
+            max-width: 380px;
+            border: 1px solid var(--border);
+        }
+        
+        .edit-post-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+        
+        .edit-post-content textarea {
+            margin-bottom: 15px;
+            min-height: 120px;
+        }
+
+        /* Модальное окно редактирования комментария */
         .edit-comment-modal {
             display: none;
             position: fixed;
@@ -907,6 +945,18 @@
     </div>
 </div>
 
+<!-- Модальное окно редактирования поста -->
+<div id="editPostModal" class="edit-post-modal">
+    <div class="edit-post-content">
+        <h3>✏️ Редактировать пост</h3>
+        <textarea id="editPostText" rows="4" placeholder="Текст поста"></textarea>
+        <div class="edit-buttons">
+            <button id="savePostEditBtn">Сохранить</button>
+            <button id="cancelPostEditBtn" class="cancel-edit-btn">Отмена</button>
+        </div>
+    </div>
+</div>
+
 <!-- Модальное окно редактирования комментария -->
 <div id="editCommentModal" class="edit-comment-modal">
     <div class="edit-comment-content">
@@ -965,6 +1015,8 @@
         postId: null,
         commentIndex: null
     };
+    
+    let currentEditPostId = null;
 
     function showNotification(message) {
         const notification = document.createElement('div');
@@ -1130,15 +1182,35 @@
         }
     }
 
-    async function editPost(postId) {
-        const post = posts.find(p => p.id === postId);
-        const newText = prompt('Редактировать пост:', post?.text);
-        if (newText && newText.trim()) {
-            await db.collection('posts').doc(postId).update({ text: newText.trim() });
-            await loadData();
-            await refreshAll();
-            showNotification('Пост обновлён');
+    // Функции для редактирования поста через модальное окно
+    function openEditPostModal(postId, currentText) {
+        currentEditPostId = postId;
+        document.getElementById('editPostText').value = currentText;
+        document.getElementById('editPostModal').style.display = 'flex';
+    }
+    
+    async function savePostEdit() {
+        if (!currentEditPostId) return;
+        
+        const newText = document.getElementById('editPostText').value.trim();
+        if (!newText) {
+            showNotification('❌ Текст поста не может быть пустым');
+            return;
         }
+        
+        const post = posts.find(p => p.id === currentEditPostId);
+        if (!post) return;
+        
+        await db.collection('posts').doc(currentEditPostId).update({ text: newText });
+        await loadData();
+        await refreshAll();
+        showNotification('✅ Пост обновлён');
+        closeEditPostModal();
+    }
+    
+    function closeEditPostModal() {
+        document.getElementById('editPostModal').style.display = 'none';
+        currentEditPostId = null;
     }
 
     async function toggleFollow(targetUserId) {
@@ -1260,6 +1332,15 @@
         }
     });
     
+    // Обработчики для редактирования поста
+    document.getElementById('savePostEditBtn')?.addEventListener('click', savePostEdit);
+    document.getElementById('cancelPostEditBtn')?.addEventListener('click', closeEditPostModal);
+    document.getElementById('editPostModal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('editPostModal')) {
+            closeEditPostModal();
+        }
+    });
+    
     document.getElementById('saveCommentEditBtn')?.addEventListener('click', saveCommentEdit);
     document.getElementById('cancelCommentEditBtn')?.addEventListener('click', closeEditCommentModal);
     document.getElementById('editCommentModal')?.addEventListener('click', (e) => {
@@ -1316,7 +1397,7 @@
                             <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
                             ${showMenu ? `
                                 <div class="menu-dropdown">
-                                    <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
+                                    <button onclick="openEditPostModal('${post.id}', '${escapeHtml(post.text).replace(/'/g, "\\'")}')">✏️ Редактировать</button>
                                     <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
                                 </div>
                             ` : ''}
