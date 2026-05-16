@@ -1870,6 +1870,7 @@
                             <div class="leaderboard-name">
                                 ${escapeHtml(user?.name || '?')}
                                 ${user?.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
+                                ${user?.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
                             </div>
                             <div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div>
                         </div>
