@@ -32,7 +32,6 @@
             --comment-bg: #0d1119;
             --comment-hover: #151b26;
             --success: #4caf50;
-            --admin-gold: #FFD700;
         }
 
         body.light-theme {
@@ -57,13 +56,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
             color: white;
             border-radius: 50%;
-            font-size: 11px;
-            margin-left: 5px;
+            font-size: 10px;
+            margin-left: 4px;
             vertical-align: middle;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -73,23 +72,18 @@
             content: "✓";
         }
 
-        .verified-badge:hover {
-            transform: scale(1.1);
-            transition: transform 0.2s;
-        }
-
         /* Золотая звёздочка для админа */
         .admin-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #8B4513;
             border-radius: 50%;
-            font-size: 11px;
-            margin-left: 5px;
+            font-size: 10px;
+            margin-left: 4px;
             vertical-align: middle;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -479,14 +473,10 @@
         }
         
         .profile-name {
+            margin-top: 8px;
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-wrap: wrap;
         }
         
         .stats { 
@@ -577,7 +567,6 @@
             transform: scale(0.98);
         }
 
-        /* Кнопка получения статуса админа в настройках */
         .get-admin-settings-btn {
             background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #8B4513;
@@ -590,11 +579,6 @@
             justify-content: center; 
             margin-top: 16px; 
             flex-wrap: wrap; 
-        }
-        
-        .profile-buttons button {
-            flex: 1;
-            min-width: 120px;
         }
 
         .edit-profile-modal {
@@ -731,7 +715,6 @@
             min-height: 100px;
         }
 
-        /* Модальное окно для ввода кода администратора */
         .admin-code-modal {
             display: none;
             position: fixed;
@@ -881,7 +864,6 @@
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
-            text-align: center;
         }
         
         .game-header { text-align: center; margin-bottom: 20px; }
@@ -889,14 +871,13 @@
         .game-title { font-size: 22px; font-weight: bold; color: var(--accent); margin: 10px 0; }
         
         .player-name {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
             margin-top: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
             color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         
         .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 20px; padding: 30px; text-align: center; margin: 20px 0; }
@@ -915,7 +896,7 @@
         .rank-1 { color: #ffd700; }
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
-        .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); }
+        .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; }
 
         .follow-btn {
             background: var(--bg-input);
@@ -1005,7 +986,6 @@
             .settings-btn { width: 35px; height: 35px; font-size: 18px; top: 10px; right: 10px; }
             .stats { gap: 20px; }
             .stat-value { font-size: 16px; }
-            .profile-buttons button { min-width: 100px; }
         }
     </style>
 </head>
@@ -1156,15 +1136,12 @@
     }
 
     // ========== АДМИНИСТРИРОВАНИЕ ==========
-    // СЕКРЕТНЫЙ КОД - ВАШ КОД
     const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
     
-    // Проверка, является ли пользователь администратором
     function isAdmin() {
         return currentUser && currentUser.isAdmin === true;
     }
     
-    // Получить статус админа из Firestore
     async function loadAdminStatus() {
         if (!currentUser) return false;
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
@@ -1173,7 +1150,6 @@
         return isAdminFlag;
     }
     
-    // Открыть модальное окно для ввода кода
     function openAdminCodeModal() {
         document.getElementById('adminCodeModal').style.display = 'flex';
         document.getElementById('adminCodeInput').value = '';
@@ -1184,7 +1160,6 @@
         document.getElementById('adminCodeModal').style.display = 'none';
     }
     
-    // Проверка кода и выдача статуса администратора
     async function checkAdminCode() {
         const enteredCode = document.getElementById('adminCodeInput').value.trim();
         const errorDiv = document.getElementById('adminCodeError');
@@ -1213,7 +1188,6 @@
         }
     }
     
-    // Выдать/забрать верификацию (только для админа)
     async function toggleVerification(targetUserId) {
         if (!isAdmin()) {
             showNotification('❌ Только администратор может выдавать галочки');
@@ -1970,11 +1944,9 @@
             <div class="settings-item">
                 <button id="settingsThemeBtn">🌓 Сменить тему</button>
             </div>
-            ${!isAdmin() ? `
-                <div class="settings-item">
-                    <button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button>
-                </div>
-            ` : ''}
+            <div class="settings-item">
+                <button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button>
+            </div>
             <div class="settings-item">
                 <button id="settingsLogoutBtn">🚪 Выйти из аккаунта</button>
             </div>
@@ -2127,21 +2099,6 @@
         authScreen.style.display = 'none';
         mainApp.style.display = 'block';
         await refreshAll();
-        
-        // Обновляем модальное окно настроек с учетом статуса админа
-        const settingsModalContent = document.querySelector('#settingsModal .settings-modal-content');
-        if (settingsModalContent) {
-            const adminItem = settingsModalContent.querySelector('.settings-item .get-admin-settings-btn')?.parentElement;
-            if (!isAdmin() && !adminItem) {
-                const themeItem = settingsModalContent.querySelector('.settings-item:first-child');
-                const newAdminItem = document.createElement('div');
-                newAdminItem.className = 'settings-item';
-                newAdminItem.innerHTML = '<button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button>';
-                themeItem.insertAdjacentElement('afterend', newAdminItem);
-            } else if (isAdmin() && adminItem) {
-                adminItem.remove();
-            }
-        }
     }
 
     const modal = document.getElementById('postModal');
