@@ -2045,13 +2045,13 @@
                 </div>
                 <p style="color:var(--text-secondary); margin-top: 6px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
-                    <div class="stat-item" onclick="showFollowers('${viewingUserId}')">
-                        <div class="stat-value">${profileUser.followers?.length || 0}</div>
-                        <div class="stat-label">подписчики</div>
-                    </div>
                     <div class="stat-item" onclick="showFollowing('${viewingUserId}')">
                         <div class="stat-value">${profileUser.following?.length || 0}</div>
                         <div class="stat-label">подписки</div>
+                    </div>
+                    <div class="stat-item" onclick="showFollowers('${viewingUserId}')">
+                        <div class="stat-value">${profileUser.followers?.length || 0}</div>
+                        <div class="stat-label">подписчики</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">${userPosts.length}</div>
