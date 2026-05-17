@@ -32,6 +32,7 @@
             --comment-bg: #0d1119;
             --comment-hover: #151b26;
             --success: #4caf50;
+            --notification-bg: #ff5722;
         }
 
         body.light-theme {
@@ -209,6 +210,46 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            background: none;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--accent);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
         }
 
         .tabs {
@@ -601,7 +642,7 @@
             flex-wrap: wrap; 
         }
 
-        /* Модальное окно списка пользователей - ИСПРАВЛЕНО */
+        /* Модальное окно списка пользователей */
         .users-list-modal {
             display: none;
             position: fixed;
@@ -642,7 +683,6 @@
             padding-right: 4px;
         }
         
-        /* Красивый скроллбар */
         .users-list::-webkit-scrollbar {
             width: 4px;
         }
@@ -703,6 +743,94 @@
             text-align: center;
             color: var(--text-secondary);
             padding: 40px;
+        }
+
+        /* Модальное окно уведомлений */
+        .notifications-modal {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 10px;
+            width: 320px;
+            max-height: 500px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            z-index: 1001;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .notifications-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notifications-header h4 {
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .clear-notifications-btn {
+            background: none;
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 5px 10px;
+            width: auto;
+        }
+        
+        .notifications-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .notification-item:hover {
+            background: var(--bg-input);
+        }
+        
+        .notification-item.unread {
+            background: rgba(255, 87, 34, 0.1);
+        }
+        
+        .notification-icon-small {
+            font-size: 20px;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-text {
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 10px;
+            margin-top: 4px;
+        }
+        
+        .no-notifications {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px;
+            font-size: 14px;
         }
 
         .edit-profile-modal {
@@ -1114,7 +1242,7 @@
             text-align: center;
         }
 
-        .notification {
+        .notification-toast {
             position: fixed;
             bottom: 80px;
             left: 50%;
@@ -1148,6 +1276,12 @@
             .settings-btn { width: 35px; height: 35px; font-size: 18px; top: 10px; right: 10px; }
             .stats { gap: 20px; }
             .stat-value { font-size: 16px; }
+            .notifications-modal {
+                width: 95%;
+                right: 2.5%;
+                left: 2.5%;
+                top: 70px;
+            }
         }
     </style>
 </head>
@@ -1184,8 +1318,11 @@
 <div id="mainApp" class="main-app">
     <div class="header">
         <div class="logo" id="logoBtn">Дисциплина</div>
-        <div class="header-actions">
-            <button class="back-btn hidden" id="backBtn">← Назад</button>
+        <div class="header-right">
+            <button class="notification-icon" id="notificationBell">
+                🔔
+                <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+            </button>
         </div>
     </div>
 
@@ -1217,6 +1354,17 @@
                 <button id="modalCancelBtn" class="cancel-modal">Отмена</button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Модальное окно уведомлений -->
+<div id="notificationsModal" class="notifications-modal">
+    <div class="notifications-header">
+        <h4>🔔 Уведомления</h4>
+        <button id="clearNotificationsBtn" class="clear-notifications-btn">Очистить всё</button>
+    </div>
+    <div id="notificationsList" class="notifications-list">
+        <div class="no-notifications">😴 Нет уведомлений</div>
     </div>
 </div>
 
@@ -1385,6 +1533,190 @@
         document.getElementById('usersListModal').style.display = 'none';
     }
 
+    // ========== УВЕДОМЛЕНИЯ ==========
+    let notifications = [];
+    
+    async function loadNotifications() {
+        if (!currentUser) return;
+        const notifDoc = await db.collection('notifications').doc(currentUser.uid).get();
+        if (notifDoc.exists) {
+            notifications = notifDoc.data().list || [];
+        } else {
+            notifications = [];
+        }
+        updateNotificationBadge();
+        renderNotificationsList();
+    }
+    
+    async function saveNotifications() {
+        if (!currentUser) return;
+        await db.collection('notifications').doc(currentUser.uid).set({
+            list: notifications,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        updateNotificationBadge();
+    }
+    
+    async function addNotification(type, fromUserId, link, extraText = '') {
+        if (!currentUser) return;
+        if (fromUserId === currentUser.uid) return;
+        
+        const fromUser = users.find(u => u.id === fromUserId);
+        if (!fromUser) return;
+        
+        let icon = '🔔';
+        let text = '';
+        
+        switch(type) {
+            case 'like':
+                icon = '❤️';
+                text = `${escapeHtml(fromUser.name)} поставил(а) лайк вашему посту`;
+                break;
+            case 'comment':
+                icon = '💬';
+                text = `${escapeHtml(fromUser.name)} прокомментировал(а) ваш пост: "${extraText.substring(0, 50)}${extraText.length > 50 ? '...' : ''}"`;
+                break;
+            case 'new_post':
+                icon = '📝';
+                text = `${escapeHtml(fromUser.name)} опубликовал(а) новый пост`;
+                break;
+            case 'follow':
+                icon = '➕';
+                text = `${escapeHtml(fromUser.name)} подписался(ась) на вас`;
+                break;
+            case 'verified':
+                icon = '⭐';
+                text = `Ваш аккаунт был ${extraText === 'give' ? 'верифицирован' : 'лишён верификации'}!`;
+                fromUserId = null;
+                break;
+            case 'admin':
+                icon = '👑';
+                text = `Вы стали администратором!`;
+                fromUserId = null;
+                break;
+        }
+        
+        const newNotif = {
+            id: Date.now() + '_' + Math.random(),
+            type,
+            icon,
+            text,
+            fromUserId,
+            link,
+            timestamp: new Date().toISOString(),
+            read: false
+        };
+        
+        notifications.unshift(newNotif);
+        if (notifications.length > 100) notifications.pop();
+        await saveNotifications();
+        renderNotificationsList();
+        showNotificationToast(text);
+    }
+    
+    function updateNotificationBadge() {
+        const unreadCount = notifications.filter(n => !n.read).length;
+        const badge = document.getElementById('notificationBadge');
+        if (badge) {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }
+    
+    function renderNotificationsList() {
+        const container = document.getElementById('notificationsList');
+        if (!container) return;
+        
+        if (notifications.length === 0) {
+            container.innerHTML = '<div class="no-notifications">😴 Нет уведомлений</div>';
+            return;
+        }
+        
+        container.innerHTML = notifications.map(notif => `
+            <div class="notification-item ${!notif.read ? 'unread' : ''}" onclick="handleNotificationClick('${notif.id}', '${notif.link || ''}')">
+                <div class="notification-icon-small">${notif.icon}</div>
+                <div class="notification-content">
+                    <div class="notification-text">${notif.text}</div>
+                    <div class="notification-time">${formatNotifDate(notif.timestamp)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function formatNotifDate(dateStr) {
+        const d = new Date(dateStr);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'только что';
+        if (diff < 3600) return Math.floor(diff / 60) + ' мин назад';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ч назад';
+        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+    }
+    
+    async function handleNotificationClick(notifId, link) {
+        const notif = notifications.find(n => n.id === notifId);
+        if (notif && !notif.read) {
+            notif.read = true;
+            await saveNotifications();
+            renderNotificationsList();
+            updateNotificationBadge();
+        }
+        
+        closeNotificationsModal();
+        
+        if (link === 'profile') {
+            viewProfile(currentUser.uid);
+        } else if (link && link.startsWith('post_')) {
+            const postId = link.replace('post_', '');
+            document.querySelector('.tab[data-tab="feed"]').click();
+            setTimeout(() => {
+                const postElement = document.getElementById(`post-${postId}`);
+                if (postElement) {
+                    postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    postElement.style.border = `2px solid var(--accent)`;
+                    setTimeout(() => {
+                        postElement.style.border = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+    }
+    
+    function showNotificationToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
+    function openNotificationsModal() {
+        const modal = document.getElementById('notificationsModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            renderNotificationsList();
+        }
+    }
+    
+    function closeNotificationsModal() {
+        const modal = document.getElementById('notificationsModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+    
+    async function clearAllNotifications() {
+        notifications = [];
+        await saveNotifications();
+        renderNotificationsList();
+        updateNotificationBadge();
+        showNotificationToast('Все уведомления удалены');
+    }
+
     // ========== РАНДОМНАЯ ФРАЗА ==========
     const phrases = [
         "Делай каждый день",
@@ -1449,7 +1781,8 @@
             }
             
             closeAdminCodeModal();
-            showNotification('✅ Поздравляем! Вы теперь администратор!');
+            showNotificationToast('✅ Поздравляем! Вы теперь администратор!');
+            await addNotification('admin', null, null, '');
             await refreshAll();
         } else {
             errorDiv.textContent = '❌ Неверный код';
@@ -1458,7 +1791,7 @@
     
     async function toggleVerification(targetUserId) {
         if (!isAdmin()) {
-            showNotification('❌ Только администратор может выдавать галочки');
+            showNotificationToast('❌ Только администратор может выдавать галочки');
             return;
         }
         
@@ -1470,7 +1803,8 @@
             verified: !isCurrentlyVerified
         });
         
-        showNotification(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
+        await addNotification('verified', targetUserId, 'profile', isCurrentlyVerified ? 'remove' : 'give');
+        showNotificationToast(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
         await loadData();
         await refreshAll();
     }
@@ -1505,12 +1839,12 @@
     
     let currentEditPostId = null;
 
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
+    function showNotificationToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
     }
 
     function formatDate(date) {
@@ -1593,6 +1927,7 @@
             if (userDoc) {
                 currentUser.isAdmin = userDoc.isAdmin === true;
             }
+            await loadNotifications();
         }
     }
 
@@ -1613,7 +1948,14 @@
             }
         }
         
-        await db.collection('posts').add(postData);
+        const docRef = await db.collection('posts').add(postData);
+        
+        // Уведомление подписчикам о новом посте
+        const currentUserData = users.find(u => u.id === currentUser.uid);
+        const followers = currentUserData?.followers || [];
+        for (const followerId of followers) {
+            await addNotification('new_post', currentUser.uid, `post_${docRef.id}`, '');
+               
         await loadData();
         await refreshAll();
     }
@@ -1621,9 +1963,17 @@
     async function toggleLike(postId, post) {
         const likes = post.likes || [];
         const index = likes.indexOf(currentUser.uid);
+        const wasLiked = index !== -1;
+        
         if (index === -1) likes.push(currentUser.uid);
         else likes.splice(index, 1);
+        
         await db.collection('posts').doc(postId).update({ likes });
+        
+        if (!wasLiked && post.userId !== currentUser.uid) {
+            await addNotification('like', currentUser.uid, `post_${postId}`, '');
+        }
+        
         await loadData();
         await refreshAll();
     }
@@ -1639,6 +1989,11 @@
             date: new Date().toISOString()
         });
         await db.collection('posts').doc(postId).update({ comments });
+        
+        if (post.userId !== currentUser.uid) {
+            await addNotification('comment', currentUser.uid, `post_${postId}`, commentText);
+        }
+        
         await loadData();
         openComments[postId] = true;
         await refreshAll();
@@ -1656,7 +2011,7 @@
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
         await refreshAll();
-        showNotification('🗑️ Комментарий удалён');
+        showNotificationToast('🗑️ Комментарий удалён');
     }
     
     function openEditCommentModal(postId, commentIndex, currentText) {
@@ -1670,7 +2025,7 @@
         const newText = document.getElementById('editCommentText').value.trim();
         
         if (!newText) {
-            showNotification('❌ Текст комментария не может быть пустым');
+            showNotificationToast('❌ Текст комментария не может быть пустым');
             return;
         }
         
@@ -1681,7 +2036,7 @@
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
         await refreshAll();
-        showNotification('✏️ Комментарий обновлён');
+        showNotificationToast('✏️ Комментарий обновлён');
         closeEditCommentModal();
     }
     
@@ -1695,13 +2050,13 @@
             await db.collection('posts').doc(postId).delete();
             await loadData();
             await refreshAll();
-            showNotification('🗑️ Пост удалён');
+            showNotificationToast('🗑️ Пост удалён');
         }
     }
     
     async function deletePostAsAdmin(postId) {
         if (!isAdmin()) {
-            showNotification('❌ Только администратор может удалять чужие посты');
+            showNotificationToast('❌ Только администратор может удалять чужие посты');
             return;
         }
         
@@ -1709,7 +2064,7 @@
             await db.collection('posts').doc(postId).delete();
             await loadData();
             await refreshAll();
-            showNotification('✅ Пост удалён администратором');
+            showNotificationToast('✅ Пост удалён администратором');
         }
     }
 
@@ -1724,7 +2079,7 @@
         
         const newText = document.getElementById('editPostText').value.trim();
         if (!newText) {
-            showNotification('❌ Текст поста не может быть пустым');
+            showNotificationToast('❌ Текст поста не может быть пустым');
             return;
         }
         
@@ -1734,7 +2089,7 @@
         await db.collection('posts').doc(currentEditPostId).update({ text: newText });
         await loadData();
         await refreshAll();
-        showNotification('✅ Пост обновлён');
+        showNotificationToast('✅ Пост обновлён');
         closeEditPostModal();
     }
     
@@ -1747,6 +2102,7 @@
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
         const isFollowing = following.includes(targetUserId);
+        
         if (isFollowing) {
             await db.collection('users').doc(currentUser.uid).update({
                 following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
@@ -1761,7 +2117,9 @@
             await db.collection('users').doc(targetUserId).update({
                 followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
             });
+            await addNotification('follow', currentUser.uid, 'profile', '');
         }
+        
         await loadData();
         await refreshAll();
     }
@@ -1844,10 +2202,10 @@
             
             await updateUserProfile(newName, newBio, avatarBase64);
             closeEditProfileModal();
-            showNotification('✅ Профиль обновлён!');
+            showNotificationToast('✅ Профиль обновлён!');
         } catch (error) {
             console.error('Error saving profile:', error);
-            showNotification('❌ Ошибка при сохранении');
+            showNotificationToast('❌ Ошибка при сохранении');
         } finally {
             saveBtn.disabled = false;
             saveBtn.textContent = originalText;
@@ -2029,6 +2387,7 @@
         await renderFeed();
         await renderProfile();
         renderGameTab();
+        updateNotificationBadge();
     }
 
     async function renderFeed() {
@@ -2120,7 +2479,7 @@
         today.setHours(0, 0, 0, 0);
         
         if (lastDate && lastDate >= today) {
-            showNotification('Вы уже играли сегодня! Завтра новая попытка.');
+            showNotificationToast('Вы уже играли сегодня! Завтра новая попытка.');
             return;
         }
         
@@ -2138,7 +2497,7 @@
         
         await loadData();
         renderGameTab();
-        showNotification(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
+        showNotificationToast(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
     }
 
     async function renderGameTab() {
@@ -2281,6 +2640,7 @@
     window.showFollowers = showFollowers;
     window.showFollowing = showFollowing;
     window.closeUsersListModal = closeUsersListModal;
+    window.handleNotificationClick = handleNotificationClick;
 
     const settingsModal = document.createElement('div');
     settingsModal.id = 'settingsModal';
@@ -2314,6 +2674,33 @@
     
     window.openSettings = openSettings;
     window.closeSettings = closeSettings;
+    
+    // Колокольчик
+    const bell = document.getElementById('notificationBell');
+    if (bell) {
+        bell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const modal = document.getElementById('notificationsModal');
+            if (modal.style.display === 'flex') {
+                closeNotificationsModal();
+            } else {
+                openNotificationsModal();
+            }
+        });
+    }
+    
+    // Закрытие модалки уведомлений при клике вне
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('notificationsModal');
+        const bellBtn = document.getElementById('notificationBell');
+        if (modal && modal.style.display === 'flex') {
+            if (!modal.contains(e.target) && !bellBtn?.contains(e.target)) {
+                closeNotificationsModal();
+            }
+        }
+    });
+    
+    document.getElementById('clearNotificationsBtn')?.addEventListener('click', clearAllNotifications);
 
     document.getElementById('closeUsersListBtn')?.addEventListener('click', closeUsersListModal);
     document.getElementById('usersListModal')?.addEventListener('click', (e) => {
@@ -2434,6 +2821,9 @@
                 await db.collection('gameStats').doc(userCredential.user.uid).set({
                     userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
                 });
+                await db.collection('notifications').doc(userCredential.user.uid).set({
+                    list: []
+                });
                 currentUser = userCredential.user;
                 currentUser.isAdmin = false;
                 await loadData();
@@ -2450,6 +2840,7 @@
     async function showMainApp() {
         viewingUserId = currentUser.uid;
         await loadAdminStatus();
+        await loadNotifications();
         authScreen.style.display = 'none';
         mainApp.style.display = 'block';
         await refreshAll();
@@ -2481,7 +2872,7 @@
             await savePost(text, null, null);
         }
         modal.style.display = 'none';
-        showNotification('Пост опубликован!');
+        showNotificationToast('Пост опубликован!');
     };
 
     document.getElementById('modalPostMedia')?.addEventListener('change', function(e) {
