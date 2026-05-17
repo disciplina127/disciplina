@@ -642,7 +642,6 @@
             flex-wrap: wrap; 
         }
 
-        /* Модальное окно списка пользователей */
         .users-list-modal {
             display: none;
             position: fixed;
@@ -745,7 +744,6 @@
             padding: 40px;
         }
 
-        /* Модальное окно уведомлений */
         .notifications-modal {
             display: none;
             position: fixed;
@@ -1357,7 +1355,6 @@
     </div>
 </div>
 
-<!-- Модальное окно уведомлений -->
 <div id="notificationsModal" class="notifications-modal">
     <div class="notifications-header">
         <h4>🔔 Уведомления</h4>
@@ -1368,13 +1365,11 @@
     </div>
 </div>
 
-<!-- Модальное окно для просмотра фото -->
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <div class="image-modal-close" onclick="closeImageModal()">✕</div>
     <img id="modalImage" src="" alt="Увеличенное фото">
 </div>
 
-<!-- Модальное окно редактирования профиля -->
 <div id="editProfileModal" class="edit-profile-modal">
     <div class="edit-profile-content">
         <h3>✏️ Редактировать профиль</h3>
@@ -1395,7 +1390,6 @@
     </div>
 </div>
 
-<!-- Модальное окно для ввода кода администратора -->
 <div id="adminCodeModal" class="admin-code-modal">
     <div class="admin-code-content">
         <h3>⭐ Стать администратором</h3>
@@ -1408,7 +1402,6 @@
     </div>
 </div>
 
-<!-- Модальное окно редактирования поста -->
 <div id="editPostModal" class="edit-post-modal">
     <div class="edit-post-content">
         <h3>✏️ Редактировать пост</h3>
@@ -1420,7 +1413,6 @@
     </div>
 </div>
 
-<!-- Модальное окно редактирования комментария -->
 <div id="editCommentModal" class="edit-comment-modal">
     <div class="edit-comment-content">
         <h3>✏️ Редактировать комментарий</h3>
@@ -1432,7 +1424,6 @@
     </div>
 </div>
 
-<!-- Модальное окно списка пользователей (подписчики/подписки) -->
 <div id="usersListModal" class="users-list-modal">
     <div class="users-list-content">
         <h3 id="usersListTitle">Подписчики</h3>
@@ -1444,98 +1435,114 @@
 </div>
 
 <script>
-    // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОТО ==========
-    function openImageModal(imageUrl) {
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImage');
-        if (modal && modalImg && imageUrl) {
-            modalImg.src = imageUrl;
-            modal.style.display = 'flex';
-        }
-    }
+    // ========== FIREBASE ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
+        authDomain: "disciplina-8ac49.firebaseapp.com",
+        projectId: "disciplina-8ac49",
+        storageBucket: "disciplina-8ac49.firebasestorage.app",
+        messagingSenderId: "826961979878",
+        appId: "1:826961979878:web:3d3b62f747253e4fcd8e27"
+    };
     
-    function closeImageModal() {
-        const modal = document.getElementById('imageModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.getElementById('modalImage').src = '';
-        }
-    }
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let posts = [];
+    let users = [];
+    let gameStats = [];
+    let openComments = {};
+    let openMenus = {};
+    let viewingUserId = null;
+    let isLoginMode = false;
+    let notifications = [];
     
-    // ========== ФУНКЦИИ ДЛЯ ПРОСМОТРА ПОДПИСЧИКОВ/ПОДПИСОК ==========
-    function showFollowers(userId) {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-        
-        const followers = user.followers || [];
-        const followersUsers = users.filter(u => followers.includes(u.id));
-        
-        const title = document.getElementById('usersListTitle');
-        const container = document.getElementById('usersListContainer');
-        
-        title.textContent = `👥 Подписчики (${followersUsers.length})`;
-        
-        if (followersUsers.length === 0) {
-            container.innerHTML = '<div class="no-users">😔 Нет подписчиков</div>';
-        } else {
-            container.innerHTML = followersUsers.map(follower => `
-                <div class="user-list-item" onclick="viewProfile('${follower.id}'); closeUsersListModal();">
-                    <img class="user-list-avatar" src="${follower.avatar || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
-                    <div class="user-list-info">
-                        <div class="user-list-name">
-                            ${escapeHtml(follower.name)}
-                            ${follower.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                            ${follower.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                        </div>
-                        <div class="user-list-bio">${escapeHtml(follower.bio || 'Нет описания')}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        document.getElementById('usersListModal').style.display = 'flex';
+    let currentEditComment = { postId: null, commentIndex: null };
+    let currentEditPostId = null;
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    function showNotificationToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
     }
-    
-    function showFollowing(userId) {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-        
-        const following = user.following || [];
-        const followingUsers = users.filter(u => following.includes(u.id));
-        
-        const title = document.getElementById('usersListTitle');
-        const container = document.getElementById('usersListContainer');
-        
-        title.textContent = `📌 Подписки (${followingUsers.length})`;
-        
-        if (followingUsers.length === 0) {
-            container.innerHTML = '<div class="no-users">😔 Нет подписок</div>';
-        } else {
-            container.innerHTML = followingUsers.map(follow => `
-                <div class="user-list-item" onclick="viewProfile('${follow.id}'); closeUsersListModal();">
-                    <img class="user-list-avatar" src="${follow.avatar || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
-                    <div class="user-list-info">
-                        <div class="user-list-name">
-                            ${escapeHtml(follow.name)}
-                            ${follow.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                            ${follow.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                        </div>
-                        <div class="user-list-bio">${escapeHtml(follow.bio || 'Нет описания')}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        document.getElementById('usersListModal').style.display = 'flex';
+
+    function formatDate(date) {
+        if (!date) return 'только что';
+        const d = date.toDate ? date.toDate() : new Date(date);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'только что';
+        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
+        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
     }
-    
-    function closeUsersListModal() {
-        document.getElementById('usersListModal').style.display = 'none';
+
+    function formatNotifDate(dateStr) {
+        const d = new Date(dateStr);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'только что';
+        if (diff < 3600) return Math.floor(diff / 60) + ' мин назад';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ч назад';
+        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    async function compressMedia(file, maxWidth = 900) {
+        return new Promise((resolve, reject) => {
+            if (!file) { resolve(null); return; }
+            if (file.type.startsWith('video/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+                return;
+            }
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        let quality = 0.8;
+                        let result = canvas.toDataURL('image/jpeg', quality);
+                        while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
+                            quality -= 0.1;
+                            result = canvas.toDataURL('image/jpeg', quality);
+                        }
+                        resolve(result);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+                return;
+            }
+            resolve(null);
+        });
     }
 
     // ========== УВЕДОМЛЕНИЯ ==========
-    let notifications = [];
-    
     async function loadNotifications() {
         if (!currentUser) return;
         const notifDoc = await db.collection('notifications').doc(currentUser.uid).get();
@@ -1550,10 +1557,7 @@
     
     async function saveNotifications() {
         if (!currentUser) return;
-        await db.collection('notifications').doc(currentUser.uid).set({
-            list: notifications,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        await db.collection('notifications').doc(currentUser.uid).set({ list: notifications });
         updateNotificationBadge();
     }
     
@@ -1562,7 +1566,7 @@
         if (fromUserId === currentUser.uid) return;
         
         const fromUser = users.find(u => u.id === fromUserId);
-        if (!fromUser) return;
+        if (!fromUser && fromUserId) return;
         
         let icon = '🔔';
         let text = '';
@@ -1570,19 +1574,19 @@
         switch(type) {
             case 'like':
                 icon = '❤️';
-                text = `${escapeHtml(fromUser.name)} поставил(а) лайк вашему посту`;
+                text = `${escapeHtml(fromUser?.name || 'Пользователь')} поставил(а) лайк вашему посту`;
                 break;
             case 'comment':
                 icon = '💬';
-                text = `${escapeHtml(fromUser.name)} прокомментировал(а) ваш пост: "${extraText.substring(0, 50)}${extraText.length > 50 ? '...' : ''}"`;
+                text = `${escapeHtml(fromUser?.name || 'Пользователь')} прокомментировал(а) ваш пост: "${extraText.substring(0, 50)}${extraText.length > 50 ? '...' : ''}"`;
                 break;
             case 'new_post':
                 icon = '📝';
-                text = `${escapeHtml(fromUser.name)} опубликовал(а) новый пост`;
+                text = `${escapeHtml(fromUser?.name || 'Пользователь')} опубликовал(а) новый пост`;
                 break;
             case 'follow':
                 icon = '➕';
-                text = `${escapeHtml(fromUser.name)} подписался(ась) на вас`;
+                text = `${escapeHtml(fromUser?.name || 'Пользователь')} подписался(ась) на вас`;
                 break;
             case 'verified':
                 icon = '⭐';
@@ -1630,12 +1634,10 @@
     function renderNotificationsList() {
         const container = document.getElementById('notificationsList');
         if (!container) return;
-        
         if (notifications.length === 0) {
             container.innerHTML = '<div class="no-notifications">😴 Нет уведомлений</div>';
             return;
         }
-        
         container.innerHTML = notifications.map(notif => `
             <div class="notification-item ${!notif.read ? 'unread' : ''}" onclick="handleNotificationClick('${notif.id}', '${notif.link || ''}')">
                 <div class="notification-icon-small">${notif.icon}</div>
@@ -1647,16 +1649,6 @@
         `).join('');
     }
     
-    function formatNotifDate(dateStr) {
-        const d = new Date(dateStr);
-        const now = new Date();
-        const diff = Math.floor((now - d) / 1000);
-        if (diff < 60) return 'только что';
-        if (diff < 3600) return Math.floor(diff / 60) + ' мин назад';
-        if (diff < 86400) return Math.floor(diff / 3600) + ' ч назад';
-        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
-    }
-    
     async function handleNotificationClick(notifId, link) {
         const notif = notifications.find(n => n.id === notifId);
         if (notif && !notif.read) {
@@ -1665,9 +1657,7 @@
             renderNotificationsList();
             updateNotificationBadge();
         }
-        
         closeNotificationsModal();
-        
         if (link === 'profile') {
             viewProfile(currentUser.uid);
         } else if (link && link.startsWith('post_')) {
@@ -1678,20 +1668,10 @@
                 if (postElement) {
                     postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     postElement.style.border = `2px solid var(--accent)`;
-                    setTimeout(() => {
-                        postElement.style.border = '';
-                    }, 2000);
+                    setTimeout(() => { postElement.style.border = ''; }, 2000);
                 }
             }, 300);
         }
-    }
-    
-    function showNotificationToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'notification-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
     }
     
     function openNotificationsModal() {
@@ -1704,9 +1684,7 @@
     
     function closeNotificationsModal() {
         const modal = document.getElementById('notificationsModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
+        if (modal) modal.style.display = 'none';
     }
     
     async function clearAllNotifications() {
@@ -1717,203 +1695,7 @@
         showNotificationToast('Все уведомления удалены');
     }
 
-    // ========== РАНДОМНАЯ ФРАЗА ==========
-    const phrases = [
-        "Делай каждый день",
-        "Бебебе",
-        "Гигамонстрящим пони вход запрещён",
-        "кремируйте ее быстрее",
-        "огурцы",
-        "типо как yo! только новый"
-    ];
-    
-    function setRandomPhrase() {
-        const randomIndex = Math.floor(Math.random() * phrases.length);
-        const subElement = document.getElementById('randomSub');
-        if (subElement) {
-            subElement.textContent = phrases[randomIndex];
-        }
-    }
-
-    // ========== АДМИНИСТРИРОВАНИЕ ==========
-    const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
-    
-    function isAdmin() {
-        return currentUser && currentUser.isAdmin === true;
-    }
-    
-    async function loadAdminStatus() {
-        if (!currentUser) return false;
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        const isAdminFlag = userDoc.data()?.isAdmin === true;
-        currentUser.isAdmin = isAdminFlag;
-        return isAdminFlag;
-    }
-    
-    function openAdminCodeModal() {
-        document.getElementById('adminCodeModal').style.display = 'flex';
-        document.getElementById('adminCodeInput').value = '';
-        document.getElementById('adminCodeError').textContent = '';
-    }
-    
-    function closeAdminCodeModal() {
-        document.getElementById('adminCodeModal').style.display = 'none';
-    }
-    
-    async function checkAdminCode() {
-        const enteredCode = document.getElementById('adminCodeInput').value.trim();
-        const errorDiv = document.getElementById('adminCodeError');
-        
-        if (!enteredCode) {
-            errorDiv.textContent = 'Введите код';
-            return;
-        }
-        
-        if (enteredCode === ADMIN_SECRET_CODE) {
-            await db.collection('users').doc(currentUser.uid).update({
-                isAdmin: true
-            });
-            
-            currentUser.isAdmin = true;
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) {
-                users[userIndex].isAdmin = true;
-            }
-            
-            closeAdminCodeModal();
-            showNotificationToast('✅ Поздравляем! Вы теперь администратор!');
-            await addNotification('admin', null, null, '');
-            await refreshAll();
-        } else {
-            errorDiv.textContent = '❌ Неверный код';
-        }
-    }
-    
-    async function toggleVerification(targetUserId) {
-        if (!isAdmin()) {
-            showNotificationToast('❌ Только администратор может выдавать галочки');
-            return;
-        }
-        
-        const userRef = db.collection('users').doc(targetUserId);
-        const userDoc = await userRef.get();
-        const isCurrentlyVerified = userDoc.data()?.verified === true;
-        
-        await userRef.update({
-            verified: !isCurrentlyVerified
-        });
-        
-        await addNotification('verified', targetUserId, 'profile', isCurrentlyVerified ? 'remove' : 'give');
-        showNotificationToast(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
-        await loadData();
-        await refreshAll();
-    }
-
-    // ========== FIREBASE ==========
-    const firebaseConfig = {
-        apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
-        authDomain: "disciplina-8ac49.firebaseapp.com",
-        projectId: "disciplina-8ac49",
-        storageBucket: "disciplina-8ac49.firebasestorage.app",
-        messagingSenderId: "826961979878",
-        appId: "1:826961979878:web:3d3b62f747253e4fcd8e27"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    let currentUser = null;
-    let posts = [];
-    let users = [];
-    let gameStats = [];
-    let openComments = {};
-    let openMenus = {};
-    let viewingUserId = null;
-    let isLoginMode = false;
-    
-    let currentEditComment = {
-        postId: null,
-        commentIndex: null
-    };
-    
-    let currentEditPostId = null;
-
-    function showNotificationToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'notification-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
-    }
-
-    function formatDate(date) {
-        if (!date) return 'только что';
-        const d = date.toDate ? date.toDate() : new Date(date);
-        const now = new Date();
-        const diff = Math.floor((now - d) / 1000);
-        if (diff < 60) return 'только что';
-        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
-        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
-        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
-    async function compressMedia(file, maxWidth = 900) {
-        return new Promise((resolve, reject) => {
-            if (!file) {
-                resolve(null);
-                return;
-            }
-            
-            if (file.type.startsWith('video/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-                return;
-            }
-            
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        let quality = 0.8;
-                        let result = canvas.toDataURL('image/jpeg', quality);
-                        while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
-                            quality -= 0.1;
-                            result = canvas.toDataURL('image/jpeg', quality);
-                        }
-                        resolve(result);
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-                return;
-            }
-            
-            resolve(null);
-        });
-    }
-
+    // ========== ЗАГРУЗКА ДАННЫХ ==========
     async function loadData() {
         const usersSnapshot = await db.collection('users').get();
         users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -1921,14 +1703,21 @@
         posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const statsSnapshot = await db.collection('gameStats').get();
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
-        
         if (currentUser) {
             const userDoc = users.find(u => u.id === currentUser.uid);
-            if (userDoc) {
-                currentUser.isAdmin = userDoc.isAdmin === true;
-            }
+            if (userDoc) currentUser.isAdmin = userDoc.isAdmin === true;
             await loadNotifications();
         }
+    }
+
+    // ========== ОСНОВНЫЕ ФУНКЦИИ СОЦСЕТИ ==========
+    function isAdmin() { return currentUser && currentUser.isAdmin === true; }
+    
+    async function loadAdminStatus() {
+        if (!currentUser) return false;
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        currentUser.isAdmin = userDoc.data()?.isAdmin === true;
+        return currentUser.isAdmin;
     }
 
     async function savePost(text, mediaDataUrl, mediaType) {
@@ -1939,23 +1728,17 @@
             likes: [],
             comments: []
         };
-        
         if (mediaDataUrl) {
             postData.media = mediaDataUrl;
             postData.mediaType = mediaType;
-            if (mediaType === 'image') {
-                postData.photo = mediaDataUrl;
-            }
+            if (mediaType === 'image') postData.photo = mediaDataUrl;
         }
-        
         const docRef = await db.collection('posts').add(postData);
-        
-        // Уведомление подписчикам о новом посте
         const currentUserData = users.find(u => u.id === currentUser.uid);
         const followers = currentUserData?.followers || [];
         for (const followerId of followers) {
             await addNotification('new_post', currentUser.uid, `post_${docRef.id}`, '');
-               
+        }
         await loadData();
         await refreshAll();
     }
@@ -1964,16 +1747,12 @@
         const likes = post.likes || [];
         const index = likes.indexOf(currentUser.uid);
         const wasLiked = index !== -1;
-        
         if (index === -1) likes.push(currentUser.uid);
         else likes.splice(index, 1);
-        
         await db.collection('posts').doc(postId).update({ likes });
-        
         if (!wasLiked && post.userId !== currentUser.uid) {
             await addNotification('like', currentUser.uid, `post_${postId}`, '');
         }
-        
         await loadData();
         await refreshAll();
     }
@@ -1989,11 +1768,9 @@
             date: new Date().toISOString()
         });
         await db.collection('posts').doc(postId).update({ comments });
-        
         if (post.userId !== currentUser.uid) {
             await addNotification('comment', currentUser.uid, `post_${postId}`, commentText);
         }
-        
         await loadData();
         openComments[postId] = true;
         await refreshAll();
@@ -2002,107 +1779,11 @@
             if (input) input.value = '';
         }, 100);
     }
-    
-    async function deleteComment(postId, commentIndex) {
-        if (!confirm('Удалить комментарий?')) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments) return;
-        post.comments.splice(commentIndex, 1);
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotificationToast('🗑️ Комментарий удалён');
-    }
-    
-    function openEditCommentModal(postId, commentIndex, currentText) {
-        currentEditComment = { postId, commentIndex };
-        document.getElementById('editCommentText').value = currentText;
-        document.getElementById('editCommentModal').style.display = 'flex';
-    }
-    
-    async function saveCommentEdit() {
-        const { postId, commentIndex } = currentEditComment;
-        const newText = document.getElementById('editCommentText').value.trim();
-        
-        if (!newText) {
-            showNotificationToast('❌ Текст комментария не может быть пустым');
-            return;
-        }
-        
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments || !post.comments[commentIndex]) return;
-        
-        post.comments[commentIndex].text = newText;
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotificationToast('✏️ Комментарий обновлён');
-        closeEditCommentModal();
-    }
-    
-    function closeEditCommentModal() {
-        document.getElementById('editCommentModal').style.display = 'none';
-        currentEditComment = { postId: null, commentIndex: null };
-    }
-
-    async function deletePost(postId) {
-        if (confirm('Удалить этот пост?')) {
-            await db.collection('posts').doc(postId).delete();
-            await loadData();
-            await refreshAll();
-            showNotificationToast('🗑️ Пост удалён');
-        }
-    }
-    
-    async function deletePostAsAdmin(postId) {
-        if (!isAdmin()) {
-            showNotificationToast('❌ Только администратор может удалять чужие посты');
-            return;
-        }
-        
-        if (confirm('⚠️ ВНИМАНИЕ! Вы удаляете чужой пост. Это действие необратимо. Продолжить?')) {
-            await db.collection('posts').doc(postId).delete();
-            await loadData();
-            await refreshAll();
-            showNotificationToast('✅ Пост удалён администратором');
-        }
-    }
-
-    function openEditPostModal(postId, currentText) {
-        currentEditPostId = postId;
-        document.getElementById('editPostText').value = currentText;
-        document.getElementById('editPostModal').style.display = 'flex';
-    }
-    
-    async function savePostEdit() {
-        if (!currentEditPostId) return;
-        
-        const newText = document.getElementById('editPostText').value.trim();
-        if (!newText) {
-            showNotificationToast('❌ Текст поста не может быть пустым');
-            return;
-        }
-        
-        const post = posts.find(p => p.id === currentEditPostId);
-        if (!post) return;
-        
-        await db.collection('posts').doc(currentEditPostId).update({ text: newText });
-        await loadData();
-        await refreshAll();
-        showNotificationToast('✅ Пост обновлён');
-        closeEditPostModal();
-    }
-    
-    function closeEditPostModal() {
-        document.getElementById('editPostModal').style.display = 'none';
-        currentEditPostId = null;
-    }
 
     async function toggleFollow(targetUserId) {
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
         const isFollowing = following.includes(targetUserId);
-        
         if (isFollowing) {
             await db.collection('users').doc(currentUser.uid).update({
                 following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
@@ -2119,163 +1800,59 @@
             });
             await addNotification('follow', currentUser.uid, 'profile', '');
         }
-        
         await loadData();
         await refreshAll();
     }
 
-    async function updateUserProfile(newName, newBio, newAvatar) {
-        const updates = {};
-        if (newName && newName !== currentUser.name) updates.name = newName;
-        if (newBio !== undefined) updates.bio = newBio;
-        if (newAvatar) updates.avatar = newAvatar;
-        
-        if (Object.keys(updates).length > 0) {
-            await db.collection('users').doc(currentUser.uid).update(updates);
-            
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) {
-                users[userIndex] = { ...users[userIndex], ...updates };
-            }
-            
-            if (updates.name) currentUser.name = updates.name;
-            if (updates.bio) currentUser.bio = updates.bio;
-            if (updates.avatar) currentUser.avatar = updates.avatar;
-            
+    async function toggleVerification(targetUserId) {
+        if (!isAdmin()) {
+            showNotificationToast('❌ Только администратор может выдавать галочки');
+            return;
+        }
+        const userRef = db.collection('users').doc(targetUserId);
+        const userDoc = await userRef.get();
+        const isCurrentlyVerified = userDoc.data()?.verified === true;
+        await userRef.update({ verified: !isCurrentlyVerified });
+        await addNotification('verified', targetUserId, 'profile', isCurrentlyVerified ? 'remove' : 'give');
+        showNotificationToast(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
+        await loadData();
+        await refreshAll();
+    }
+
+    async function deletePost(postId) {
+        if (confirm('Удалить этот пост?')) {
+            await db.collection('posts').doc(postId).delete();
             await loadData();
             await refreshAll();
-            return true;
+            showNotificationToast('🗑️ Пост удалён');
         }
-        return false;
     }
 
-    function openEditProfileModal() {
-        const modal = document.getElementById('editProfileModal');
-        const profileUser = users.find(u => u.id === currentUser.uid);
-        if (!profileUser) return;
-        
-        document.getElementById('editProfileName').value = profileUser.name || '';
-        document.getElementById('editProfileBio').value = profileUser.bio || '';
-        const preview = document.getElementById('editAvatarPreview');
-        if (profileUser.avatar) {
-            preview.src = profileUser.avatar;
-        } else {
-            preview.src = 'https://via.placeholder.com/80?text=?';
+    async function deletePostAsAdmin(postId) {
+        if (!isAdmin()) {
+            showNotificationToast('❌ Только администратор может удалять чужие посты');
+            return;
         }
-        document.getElementById('editAvatarFileName').textContent = '';
-        document.getElementById('editProfileAvatar').value = '';
-        
-        modal.style.display = 'flex';
-    }
-    
-    function closeEditProfileModal() {
-        document.getElementById('editProfileModal').style.display = 'none';
-    }
-    
-    document.getElementById('editProfileAvatar')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                document.getElementById('editAvatarPreview').src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-            document.getElementById('editAvatarFileName').textContent = `📎 ${file.name}`;
+        if (confirm('⚠️ ВНИМАНИЕ! Вы удаляете чужой пост. Это действие необратимо. Продолжить?')) {
+            await db.collection('posts').doc(postId).delete();
+            await loadData();
+            await refreshAll();
+            showNotificationToast('✅ Пост удалён администратором');
         }
-    });
-    
-    document.getElementById('saveProfileEditBtn')?.addEventListener('click', async () => {
-        const saveBtn = document.getElementById('saveProfileEditBtn');
-        const originalText = saveBtn.textContent;
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Сохранение...';
-        
-        try {
-            const newName = document.getElementById('editProfileName').value.trim();
-            const newBio = document.getElementById('editProfileBio').value.trim();
-            const avatarFile = document.getElementById('editProfileAvatar').files[0];
-            let avatarBase64 = null;
-            
-            if (avatarFile) {
-                avatarBase64 = await compressMedia(avatarFile, 400);
-            }
-            
-            await updateUserProfile(newName, newBio, avatarBase64);
-            closeEditProfileModal();
-            showNotificationToast('✅ Профиль обновлён!');
-        } catch (error) {
-            console.error('Error saving profile:', error);
-            showNotificationToast('❌ Ошибка при сохранении');
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.textContent = originalText;
-        }
-    });
-    
-    document.getElementById('cancelProfileEditBtn')?.addEventListener('click', closeEditProfileModal);
-    document.getElementById('editProfileModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editProfileModal')) {
-            closeEditProfileModal();
-        }
-    });
-    
-    document.getElementById('savePostEditBtn')?.addEventListener('click', savePostEdit);
-    document.getElementById('cancelPostEditBtn')?.addEventListener('click', closeEditPostModal);
-    document.getElementById('editPostModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editPostModal')) {
-            closeEditPostModal();
-        }
-    });
-    
-    document.getElementById('saveCommentEditBtn')?.addEventListener('click', saveCommentEdit);
-    document.getElementById('cancelCommentEditBtn')?.addEventListener('click', closeEditCommentModal);
-    document.getElementById('editCommentModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editCommentModal')) {
-            closeEditCommentModal();
-        }
-    });
-    
-    document.getElementById('submitAdminCodeBtn')?.addEventListener('click', checkAdminCode);
-    document.getElementById('cancelAdminCodeBtn')?.addEventListener('click', closeAdminCodeModal);
-    document.getElementById('adminCodeModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('adminCodeModal')) {
-            closeAdminCodeModal();
-        }
-    });
-    
-    document.getElementById('adminCodeInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            checkAdminCode();
-        }
-    });
-
-    function openSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'flex';
-    }
-    
-    function closeSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'none';
-    }
-    
-    function logoutUser() {
-        closeSettings();
-        auth.signOut().then(() => {
-            currentUser = null;
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-            isLoginMode = false;
-            updateAuthButton();
-        });
-    }
-    
-    function toggleThemeGlobal() {
-        document.body.classList.toggle('light-theme');
-        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-        closeSettings();
     }
 
+    async function deleteComment(postId, commentIndex) {
+        if (!confirm('Удалить комментарий?')) return;
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments) return;
+        post.comments.splice(commentIndex, 1);
+        await db.collection('posts').doc(postId).update({ comments: post.comments });
+        await loadData();
+        await refreshAll();
+        showNotificationToast('🗑️ Комментарий удалён');
+    }
+
+    // ========== РЕНДЕР ФУНКЦИИ ==========
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -2283,10 +1860,8 @@
         const showComments = openComments[post.id] || false;
         const showMenu = openMenus[post.id];
         const comments = post.comments || [];
-        
         let mediaUrl = post.media || post.photo;
         let mediaType = post.mediaType || (post.photo ? 'image' : null);
-        
         let mediaHtml = '';
         if (mediaUrl) {
             if (mediaType === 'video') {
@@ -2295,7 +1870,6 @@
                 mediaHtml = `<img src="${mediaUrl}" class="post-media" onclick="openImageModal('${mediaUrl}')">`;
             }
         }
-        
         return `
             <div class="post" id="post-${post.id}">
                 <div class="post-header">
@@ -2348,7 +1922,6 @@
                 </div>
             `;
         }
-        
         return `
             <div class="comments-area">
                 ${comments.map((c, idx) => {
@@ -2383,13 +1956,6 @@
         `;
     }
 
-    async function refreshAll() {
-        await renderFeed();
-        await renderProfile();
-        renderGameTab();
-        updateNotificationBadge();
-    }
-
     async function renderFeed() {
         const container = document.getElementById('postsList');
         if (!posts.length) {
@@ -2403,14 +1969,11 @@
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
         if (!profileUser) return;
-        
         const isOwn = viewingUserId === currentUser.uid;
         const isAdminUser = isAdmin();
         document.getElementById('backBtn').classList.toggle('hidden', isOwn);
-        
         const userPosts = posts.filter(p => p.userId === viewingUserId);
         const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
-        
         container.innerHTML = `
             <div class="profile-card">
                 ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
@@ -2463,7 +2026,6 @@
             <div class="profile-posts-title">📝 Посты</div>
             <div id="profilePosts"></div>
         `;
-        
         const profilePostsContainer = document.getElementById('profilePosts');
         if (!userPosts.length) {
             profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
@@ -2472,21 +2034,26 @@
         }
     }
 
+    async function refreshAll() {
+        await renderFeed();
+        await renderProfile();
+        renderGameTab();
+        updateNotificationBadge();
+    }
+
+    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
         if (lastDate && lastDate >= today) {
             showNotificationToast('Вы уже играли сегодня! Завтра новая попытка.');
             return;
         }
-        
         const rolled = Math.floor(Math.random() * 16) - 5;
         const newTotal = (stats?.totalPoints || 0) + rolled;
         const newBest = Math.max(rolled, stats?.bestRoll || -5);
-        
         await db.collection('gameStats').doc(currentUser.uid).set({
             userId: currentUser.uid,
             totalPoints: newTotal,
@@ -2494,7 +2061,6 @@
             lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(),
             lastRollValue: rolled
         });
-        
         await loadData();
         renderGameTab();
         showNotificationToast(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
@@ -2507,9 +2073,7 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const canPlay = !lastDate || lastDate < today;
-        
         const currentUserData = users.find(u => u.id === currentUser.uid);
-        
         container.innerHTML = `
             <div class="game-card">
                 <div class="game-header">
@@ -2534,13 +2098,9 @@
             </div>
             <div id="leaderboardContainer"></div>
         `;
-        
         if (canPlay) {
             const rollBtn = document.getElementById('rollButton');
             if (rollBtn) rollBtn.addEventListener('click', runGame);
-        } else {
-            const rollBtn = document.getElementById('rollButton');
-            if (rollBtn) rollBtn.setAttribute('disabled', 'disabled');
         }
         await renderLeaderboard();
     }
@@ -2574,17 +2134,89 @@
         `;
     }
 
+    // ========== ПРОФИЛЬ И НАСТРОЙКИ ==========
+    function openEditProfileModal() {
+        const modal = document.getElementById('editProfileModal');
+        const profileUser = users.find(u => u.id === currentUser.uid);
+        if (!profileUser) return;
+        document.getElementById('editProfileName').value = profileUser.name || '';
+        document.getElementById('editProfileBio').value = profileUser.bio || '';
+        const preview = document.getElementById('editAvatarPreview');
+        preview.src = profileUser.avatar || 'https://via.placeholder.com/80?text=?';
+        document.getElementById('editAvatarFileName').textContent = '';
+        document.getElementById('editProfileAvatar').value = '';
+        modal.style.display = 'flex';
+    }
+    
+    function closeEditProfileModal() { document.getElementById('editProfileModal').style.display = 'none'; }
+    
+    async function updateUserProfile(newName, newBio, newAvatar) {
+        const updates = {};
+        if (newName && newName !== currentUser.name) updates.name = newName;
+        if (newBio !== undefined) updates.bio = newBio;
+        if (newAvatar) updates.avatar = newAvatar;
+        if (Object.keys(updates).length > 0) {
+            await db.collection('users').doc(currentUser.uid).update(updates);
+            await loadData();
+            await refreshAll();
+            return true;
+        }
+        return false;
+    }
+
+    function openSettings() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) modal.style.display = 'flex';
+    }
+    function closeSettings() { const modal = document.getElementById('settingsModal'); if (modal) modal.style.display = 'none'; }
+    function toggleThemeGlobal() {
+        document.body.classList.toggle('light-theme');
+        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        closeSettings();
+    }
+    
+    function openAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'flex'; document.getElementById('adminCodeInput').value = ''; document.getElementById('adminCodeError').textContent = ''; }
+    function closeAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'none'; }
+    
+    async function checkAdminCode() {
+        const enteredCode = document.getElementById('adminCodeInput').value.trim();
+        if (enteredCode === "7G#v2!kP$mQ9") {
+            await db.collection('users').doc(currentUser.uid).update({ isAdmin: true });
+            currentUser.isAdmin = true;
+            closeAdminCodeModal();
+            showNotificationToast('✅ Поздравляем! Вы теперь администратор!');
+            await addNotification('admin', null, null, '');
+            await refreshAll();
+        } else {
+            document.getElementById('adminCodeError').textContent = '❌ Неверный код';
+        }
+    }
+
+    function logoutUser() {
+        closeSettings();
+        auth.signOut().then(() => {
+            currentUser = null;
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            isLoginMode = false;
+            updateAuthButton();
+        });
+    }
+
+    // ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ HTML ==========
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input?.value;
         if (!text || !text.trim()) return;
         await addComment(postId, text);
     };
-    
     window.deleteComment = deleteComment;
-    window.openEditCommentModal = openEditCommentModal;
-    
-    function toggleComments(postId) {
+    window.openEditCommentModal = function(postId, commentIndex, currentText) {
+        currentEditComment = { postId, commentIndex };
+        document.getElementById('editCommentText').value = currentText;
+        document.getElementById('editCommentModal').style.display = 'flex';
+    };
+    window.toggleComments = function(postId) {
         openComments[postId] = !openComments[postId];
         refreshAll();
         if (openComments[postId]) {
@@ -2593,195 +2225,84 @@
                 if (input) input.focus();
             }, 150);
         }
-    }
-    
-    document.addEventListener('keypress', function(e) {
-        if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const postId = e.target.id.replace('comment-input-', '');
-                submitComment(postId);
-                e.target.value = '';
-            }
-        }
-    });
-    
+    };
     window.toggleMenu = function(postId) {
         if (openMenus[postId]) delete openMenus[postId];
         else { openMenus = {}; openMenus[postId] = true; }
         refreshAll();
     };
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.post-menu')) {
-            openMenus = {};
-            refreshAll();
-        }
-    });
-
     window.viewProfile = function(userId) {
         viewingUserId = userId;
         renderProfile();
         document.querySelector('.tab[data-tab="profile"]').click();
     };
-    
-    window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
-    window.toggleComments = toggleComments;
+    window.toggleFollow = toggleFollow;
     window.toggleVerification = toggleVerification;
-    window.openImageModal = openImageModal;
+    window.openImageModal = function(imageUrl) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        if (modal && modalImg && imageUrl) {
+            modalImg.src = imageUrl;
+            modal.style.display = 'flex';
+        }
+    };
     window.deletePost = deletePost;
     window.deletePostAsAdmin = deletePostAsAdmin;
     window.editPost = function(postId) {
         const post = posts.find(p => p.id === postId);
-        openEditPostModal(postId, post.text);
+        currentEditPostId = postId;
+        document.getElementById('editPostText').value = post.text;
+        document.getElementById('editPostModal').style.display = 'flex';
     };
-    
-    window.showFollowers = showFollowers;
-    window.showFollowing = showFollowing;
-    window.closeUsersListModal = closeUsersListModal;
+    window.showFollowers = function(userId) {
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+        const followersUsers = users.filter(u => (user.followers || []).includes(u.id));
+        document.getElementById('usersListTitle').textContent = `👥 Подписчики (${followersUsers.length})`;
+        const container = document.getElementById('usersListContainer');
+        if (followersUsers.length === 0) container.innerHTML = '<div class="no-users">😔 Нет подписчиков</div>';
+        else {
+            container.innerHTML = followersUsers.map(follower => `
+                <div class="user-list-item" onclick="viewProfile('${follower.id}'); closeUsersListModal();">
+                    <img class="user-list-avatar" src="${follower.avatar || 'https://via.placeholder.com/40'}">
+                    <div class="user-list-info">
+                        <div class="user-list-name">${escapeHtml(follower.name)}${follower.verified ? '<span class="verified-badge"></span>' : ''}${follower.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
+                        <div class="user-list-bio">${escapeHtml(follower.bio || 'Нет описания')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        document.getElementById('usersListModal').style.display = 'flex';
+    };
+    window.showFollowing = function(userId) {
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+        const followingUsers = users.filter(u => (user.following || []).includes(u.id));
+        document.getElementById('usersListTitle').textContent = `📌 Подписки (${followingUsers.length})`;
+        const container = document.getElementById('usersListContainer');
+        if (followingUsers.length === 0) container.innerHTML = '<div class="no-users">😔 Нет подписок</div>';
+        else {
+            container.innerHTML = followingUsers.map(follow => `
+                <div class="user-list-item" onclick="viewProfile('${follow.id}'); closeUsersListModal();">
+                    <img class="user-list-avatar" src="${follow.avatar || 'https://via.placeholder.com/40'}">
+                    <div class="user-list-info">
+                        <div class="user-list-name">${escapeHtml(follow.name)}${follow.verified ? '<span class="verified-badge"></span>' : ''}${follow.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
+                        <div class="user-list-bio">${escapeHtml(follow.bio || 'Нет описания')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        document.getElementById('usersListModal').style.display = 'flex';
+    };
+    window.closeUsersListModal = function() { document.getElementById('usersListModal').style.display = 'none'; };
     window.handleNotificationClick = handleNotificationClick;
+    window.closeImageModal = function() {
+        const modal = document.getElementById('imageModal');
+        if (modal) { modal.style.display = 'none'; document.getElementById('modalImage').src = ''; }
+    };
 
-    const settingsModal = document.createElement('div');
-    settingsModal.id = 'settingsModal';
-    settingsModal.className = 'settings-modal';
-    settingsModal.innerHTML = `
-        <div class="settings-modal-content">
-            <h3>⚙️ Настройки</h3>
-            <div class="settings-item">
-                <button id="settingsThemeBtn">🌓 Сменить тему</button>
-            </div>
-            <div class="settings-item">
-                <button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button>
-            </div>
-            <div class="settings-item">
-                <button id="settingsLogoutBtn">🚪 Выйти из аккаунта</button>
-            </div>
-            <div class="settings-item">
-                <button id="settingsCloseBtn">✖️ Закрыть</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(settingsModal);
-    
-    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
-    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
-    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
-    
-    settingsModal.addEventListener('click', (e) => {
-        if (e.target === settingsModal) closeSettings();
-    });
-    
-    window.openSettings = openSettings;
-    window.closeSettings = closeSettings;
-    
-    // Колокольчик
-    const bell = document.getElementById('notificationBell');
-    if (bell) {
-        bell.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const modal = document.getElementById('notificationsModal');
-            if (modal.style.display === 'flex') {
-                closeNotificationsModal();
-            } else {
-                openNotificationsModal();
-            }
-        });
-    }
-    
-    // Закрытие модалки уведомлений при клике вне
-    document.addEventListener('click', (e) => {
-        const modal = document.getElementById('notificationsModal');
-        const bellBtn = document.getElementById('notificationBell');
-        if (modal && modal.style.display === 'flex') {
-            if (!modal.contains(e.target) && !bellBtn?.contains(e.target)) {
-                closeNotificationsModal();
-            }
-        }
-    });
-    
-    document.getElementById('clearNotificationsBtn')?.addEventListener('click', clearAllNotifications);
-
-    document.getElementById('closeUsersListBtn')?.addEventListener('click', closeUsersListModal);
-    document.getElementById('usersListModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('usersListModal')) {
-            closeUsersListModal();
-        }
-    });
-
-    const forgotBtn = document.getElementById('forgotPasswordBtn');
-    const resetModal = document.getElementById('resetPasswordModal');
-    const confirmResetBtn = document.getElementById('confirmResetBtn');
-    const cancelResetBtn = document.getElementById('cancelResetBtn');
-    const resetEmailInput = document.getElementById('resetEmail');
-    const resetMessage = document.getElementById('resetMessage');
-
-    if (forgotBtn) {
-        forgotBtn.onclick = (e) => {
-            e.preventDefault();
-            resetModal.style.display = 'flex';
-            resetEmailInput.value = '';
-            resetMessage.textContent = '';
-            resetMessage.style.color = '';
-        };
-    }
-
-    if (cancelResetBtn) {
-        cancelResetBtn.onclick = () => {
-            resetModal.style.display = 'none';
-        };
-    }
-
-    if (resetModal) {
-        resetModal.onclick = (e) => {
-            if (e.target === resetModal) {
-                resetModal.style.display = 'none';
-            }
-        };
-    }
-
-    if (confirmResetBtn) {
-        confirmResetBtn.onclick = async () => {
-            const email = resetEmailInput.value.trim();
-            if (!email) {
-                resetMessage.textContent = 'Введите ваш email';
-                resetMessage.style.color = 'var(--accent)';
-                return;
-            }
-            try {
-                await auth.sendPasswordResetEmail(email);
-                resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
-                resetMessage.style.color = 'var(--success)';
-                resetEmailInput.value = '';
-                setTimeout(() => {
-                    resetModal.style.display = 'none';
-                }, 3000);
-            } catch (error) {
-                let errorMsg = 'Ошибка: ';
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMsg += 'Пользователь с таким email не найден';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMsg += 'Неверный формат email';
-                        break;
-                    default:
-                        errorMsg += error.message;
-                }
-                resetMessage.textContent = errorMsg;
-                resetMessage.style.color = 'var(--accent)';
-            }
-        };
-    }
-
-    if (resetEmailInput) {
-        resetEmailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                confirmResetBtn.click();
-            }
-        });
-    }
-
+    // ========== АУТЕНТИФИКАЦИЯ ==========
     const authScreen = document.getElementById('authScreen');
     const mainApp = document.getElementById('mainApp');
     const submitBtn = document.getElementById('submitAuthBtn');
@@ -2821,9 +2342,7 @@
                 await db.collection('gameStats').doc(userCredential.user.uid).set({
                     userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
                 });
-                await db.collection('notifications').doc(userCredential.user.uid).set({
-                    list: []
-                });
+                await db.collection('notifications').doc(userCredential.user.uid).set({ list: [] });
                 currentUser = userCredential.user;
                 currentUser.isAdmin = false;
                 await loadData();
@@ -2846,23 +2365,22 @@
         await refreshAll();
     }
 
-    const modal = document.getElementById('postModal');
-    const fabBtn = document.getElementById('fabBtn');
+    // ========== ЗАПУСК ==========
+    const phrases = ["Делай каждый день", "Бебебе", "Гигамонстрящим пони вход запрещён", "кремируйте ее быстрее", "огурцы", "типо как yo! только новый"];
+    function setRandomPhrase() {
+        const subElement = document.getElementById('randomSub');
+        if (subElement) subElement.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+    function initTheme() { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); }
+    
+    setRandomPhrase();
+    initTheme();
 
-    fabBtn.onclick = () => {
-        modal.style.display = 'flex';
-        document.getElementById('modalPostText').value = '';
-        document.getElementById('modalPostMedia').value = '';
-        document.getElementById('fileNameDisplay').textContent = '';
-        document.getElementById('modalPostText').focus();
-    };
-    document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-
-    document.getElementById('modalPublishBtn').onclick = async () => {
+    // Обработчики модалок
+    document.getElementById('modalCancelBtn')?.addEventListener('click', () => { document.getElementById('postModal').style.display = 'none'; });
+    document.getElementById('modalPublishBtn')?.addEventListener('click', async () => {
         const text = document.getElementById('modalPostText').value.trim();
         if (!text) { alert('Напишите текст'); return; }
-        
         const file = document.getElementById('modalPostMedia').files[0];
         if (file) {
             const compressed = await compressMedia(file);
@@ -2871,58 +2389,136 @@
         } else {
             await savePost(text, null, null);
         }
-        modal.style.display = 'none';
+        document.getElementById('postModal').style.display = 'none';
         showNotificationToast('Пост опубликован!');
-    };
-
-    document.getElementById('modalPostMedia')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('fileNameDisplay').textContent = `📎 ${file.name}`;
-        }
     });
-
+    document.getElementById('fabBtn')?.addEventListener('click', () => {
+        document.getElementById('postModal').style.display = 'flex';
+        document.getElementById('modalPostText').value = '';
+        document.getElementById('modalPostMedia').value = '';
+        document.getElementById('fileNameDisplay').textContent = '';
+    });
+    document.getElementById('modalPostMedia')?.addEventListener('change', (e) => {
+        if (e.target.files[0]) document.getElementById('fileNameDisplay').textContent = `📎 ${e.target.files[0].name}`;
+    });
+    document.getElementById('logoBtn')?.addEventListener('click', () => {
+        viewingUserId = currentUser.uid;
+        renderProfile();
+        document.querySelector('.tab[data-tab="profile"]').click();
+    });
+    document.getElementById('backBtn')?.addEventListener('click', () => {
+        viewingUserId = currentUser.uid;
+        renderProfile();
+    });
+    document.getElementById('notificationBell')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const modal = document.getElementById('notificationsModal');
+        if (modal.style.display === 'flex') closeNotificationsModal();
+        else openNotificationsModal();
+    });
+    document.getElementById('clearNotificationsBtn')?.addEventListener('click', clearAllNotifications);
+    document.getElementById('closeUsersListBtn')?.addEventListener('click', () => document.getElementById('usersListModal').style.display = 'none');
+    document.getElementById('savePostEditBtn')?.addEventListener('click', async () => {
+        const newText = document.getElementById('editPostText').value.trim();
+        if (!newText) { showNotificationToast('❌ Текст поста не может быть пустым'); return; }
+        await db.collection('posts').doc(currentEditPostId).update({ text: newText });
+        await loadData();
+        await refreshAll();
+        showNotificationToast('✅ Пост обновлён');
+        document.getElementById('editPostModal').style.display = 'none';
+        currentEditPostId = null;
+    });
+    document.getElementById('cancelPostEditBtn')?.addEventListener('click', () => document.getElementById('editPostModal').style.display = 'none');
+    document.getElementById('saveCommentEditBtn')?.addEventListener('click', async () => {
+        const newText = document.getElementById('editCommentText').value.trim();
+        if (!newText) { showNotificationToast('❌ Текст комментария не может быть пустым'); return; }
+        const { postId, commentIndex } = currentEditComment;
+        const post = posts.find(p => p.id === postId);
+        if (post && post.comments && post.comments[commentIndex]) {
+            post.comments[commentIndex].text = newText;
+            await db.collection('posts').doc(postId).update({ comments: post.comments });
+            await loadData();
+            await refreshAll();
+            showNotificationToast('✏️ Комментарий обновлён');
+        }
+        document.getElementById('editCommentModal').style.display = 'none';
+        currentEditComment = { postId: null, commentIndex: null };
+    });
+    document.getElementById('cancelCommentEditBtn')?.addEventListener('click', () => document.getElementById('editCommentModal').style.display = 'none');
+    document.getElementById('saveProfileEditBtn')?.addEventListener('click', async () => {
+        const newName = document.getElementById('editProfileName').value.trim();
+        const newBio = document.getElementById('editProfileBio').value.trim();
+        const avatarFile = document.getElementById('editProfileAvatar').files[0];
+        let avatarBase64 = null;
+        if (avatarFile) avatarBase64 = await compressMedia(avatarFile, 400);
+        await updateUserProfile(newName, newBio, avatarBase64);
+        closeEditProfileModal();
+        showNotificationToast('✅ Профиль обновлён!');
+    });
+    document.getElementById('cancelProfileEditBtn')?.addEventListener('click', closeEditProfileModal);
+    document.getElementById('submitAdminCodeBtn')?.addEventListener('click', checkAdminCode);
+    document.getElementById('cancelAdminCodeBtn')?.addEventListener('click', closeAdminCodeModal);
+    
+    const settingsModalDiv = document.createElement('div');
+    settingsModalDiv.id = 'settingsModal';
+    settingsModalDiv.className = 'settings-modal';
+    settingsModalDiv.innerHTML = `
+        <div class="settings-modal-content">
+            <h3>⚙️ Настройки</h3>
+            <div class="settings-item"><button id="settingsThemeBtn">🌓 Сменить тему</button></div>
+            <div class="settings-item"><button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button></div>
+            <div class="settings-item"><button id="settingsLogoutBtn">🚪 Выйти из аккаунта</button></div>
+            <div class="settings-item"><button id="settingsCloseBtn">✖️ Закрыть</button></div>
+        </div>
+    `;
+    document.body.appendChild(settingsModalDiv);
+    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
+    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
+    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
+    window.openSettings = openSettings;
+    window.closeSettings = closeSettings;
+    window.openAdminCodeModal = openAdminCodeModal;
+    
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('notificationsModal');
+        const bell = document.getElementById('notificationBell');
+        if (modal && modal.style.display === 'flex' && !modal.contains(e.target) && !bell?.contains(e.target)) {
+            closeNotificationsModal();
+        }
+        if (!e.target.closest('.post-menu')) { openMenus = {}; refreshAll(); }
+    });
+    
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const tabName = tab.dataset.tab;
-            if (tabName === 'feed') {
-                document.getElementById('feedTab').classList.remove('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                renderFeed();
-            } else if (tabName === 'game') {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.remove('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                renderGameTab();
-            } else {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.remove('hidden');
-                renderProfile();
-            }
+            document.getElementById('feedTab').classList.add('hidden');
+            document.getElementById('gameTab').classList.add('hidden');
+            document.getElementById('profileTab').classList.add('hidden');
+            if (tabName === 'feed') { document.getElementById('feedTab').classList.remove('hidden'); renderFeed(); }
+            else if (tabName === 'game') { document.getElementById('gameTab').classList.remove('hidden'); renderGameTab(); }
+            else { document.getElementById('profileTab').classList.remove('hidden'); renderProfile(); }
         };
     });
-
-    document.getElementById('logoBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-
-    document.getElementById('backBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-    };
-
-    function initTheme() {
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
-    }
     
-    setRandomPhrase();
-    initTheme();
+    const forgotBtn = document.getElementById('forgotPasswordBtn');
+    const resetModalDiv = document.getElementById('resetPasswordModal');
+    const confirmResetBtn = document.getElementById('confirmResetBtn');
+    const cancelResetBtn = document.getElementById('cancelResetBtn');
+    if (forgotBtn) forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
+    if (cancelResetBtn) cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
+    if (confirmResetBtn) {
+        confirmResetBtn.onclick = async () => {
+            const email = document.getElementById('resetEmail').value.trim();
+            if (!email) { document.getElementById('resetMessage').textContent = 'Введите email'; return; }
+            try {
+                await auth.sendPasswordResetEmail(email);
+                document.getElementById('resetMessage').textContent = '✅ Письмо отправлено!';
+                setTimeout(() => resetModalDiv.style.display = 'none', 2000);
+            } catch (error) { document.getElementById('resetMessage').textContent = '❌ Ошибка: ' + error.message; }
+        };
+    }
     
     auth.onAuthStateChanged(async (user) => {
         if (user) { currentUser = user; await loadData(); await loadAdminStatus(); showMainApp(); }
