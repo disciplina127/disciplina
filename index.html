@@ -601,7 +601,7 @@
             flex-wrap: wrap; 
         }
 
-        /* Модальное окно списка пользователей */
+        /* Модальное окно списка пользователей - ИСПРАВЛЕНО */
         .users-list-modal {
             display: none;
             position: fixed;
@@ -624,7 +624,8 @@
             max-width: 350px;
             border: 1px solid var(--border);
             max-height: 80vh;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         
         .users-list-content h3 {
@@ -632,11 +633,28 @@
             margin-bottom: 20px;
             text-align: center;
             font-size: 22px;
+            flex-shrink: 0;
         }
         
         .users-list {
             max-height: 60vh;
             overflow-y: auto;
+            padding-right: 4px;
+        }
+        
+        /* Красивый скроллбар */
+        .users-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .users-list::-webkit-scrollbar-track {
+            background: var(--bg-input);
+            border-radius: 10px;
+        }
+        
+        .users-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
         }
         
         .user-list-item {
