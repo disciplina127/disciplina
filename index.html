@@ -356,7 +356,7 @@
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 10px; color: var(--text-secondary); }
 
-        /* ========== КОММЕНТАРИИ - МОБИЛЬНАЯ ВЕРСИЯ ========== */
+        /* ========== КОММЕНТАРИИ С 3 ТОЧКАМИ ========== */
         .comments-area {
             margin-top: 10px;
             border-top: 1px solid var(--border);
@@ -368,9 +368,10 @@
             border-radius: 12px;
             padding: 10px;
             margin-bottom: 8px;
+            position: relative;
         }
         
-        .comment-item-header {
+        .comment-header {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -413,25 +414,55 @@
             margin: 4px 0 4px 36px;
         }
         
-        .comment-actions {
-            display: flex;
-            gap: 12px;
-            margin-left: 36px;
-            margin-top: 4px;
+        /* Меню комментария (3 точки) */
+        .comment-menu {
+            position: relative;
+            display: inline-block;
         }
         
-        .comment-actions button {
+        .comment-menu-dots {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 11px;
-            padding: 3px 6px;
+            font-size: 14px;
             cursor: pointer;
-            border-radius: 16px;
+            padding: 4px 8px;
             width: auto;
+            border-radius: 20px;
         }
         
-        /* Поле ввода комментария - мобильное */
+        .comment-menu-dots:hover {
+            background: var(--bg-input);
+        }
+        
+        .comment-menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 25px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 4px 0;
+            min-width: 120px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+        
+        .comment-menu-dropdown button {
+            background: none;
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            border-radius: 0;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+        
+        .comment-menu-dropdown button:hover {
+            background: var(--bg-input);
+        }
+        
+        /* Поле ввода комментария */
         .comment-input-wrapper {
             margin-top: 12px;
             background: var(--bg-input);
@@ -1010,6 +1041,7 @@
             .menu-dots { padding: 4px 8px; }
             .comment-input-wrapper input { font-size: 13px; padding: 8px 0; }
             .comment-input-wrapper button { padding: 5px 14px; font-size: 12px; }
+            .comment-menu-dots { padding: 2px 6px; font-size: 12px; }
         }
     </style>
 </head>
@@ -1082,7 +1114,7 @@
     </div>
 </div>
 
-<!-- Модальные окна (оставляем как есть) -->
+<!-- Модальные окна -->
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <div class="image-modal-close" onclick="closeImageModal()">✕</div>
     <img id="modalImage" src="" alt="Увеличенное фото">
@@ -1279,6 +1311,7 @@
     let gameStats = [];
     let openComments = {};
     let openMenus = {};
+    let openCommentMenus = {};
     let viewingUserId = null;
     let isLoginMode = false;
     let currentEditComment = { postId: null, commentIndex: null };
@@ -1519,6 +1552,12 @@
     function logoutUser() { closeSettings(); auth.signOut().then(() => { location.reload(); }); }
     function toggleThemeGlobal() { document.body.classList.toggle('light-theme'); localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); closeSettings(); }
 
+    function toggleCommentMenu(commentKey) {
+        if (openCommentMenus[commentKey]) delete openCommentMenus[commentKey];
+        else { openCommentMenus = {}; openCommentMenus[commentKey] = true; }
+        refreshAll();
+    }
+
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -1568,14 +1607,14 @@
         `;
     }
 
-    // УЛУЧШЕННЫЕ КОММЕНТАРИИ ДЛЯ МОБИЛЬНЫХ
+    // КОММЕНТАРИИ С 3 ТОЧКАМИ
     function renderCommentsSection(postId, comments) {
         if (!comments || comments.length === 0) {
             return `
                 <div class="comments-area">
                     <div class="no-comments-text">💬 Напишите первый комментарий</div>
                     <div class="comment-input-wrapper">
-                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send">
+                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send" autofocus>
                         <button onclick="submitComment('${postId}')">→</button>
                     </div>
                 </div>
@@ -1586,9 +1625,11 @@
                 ${comments.map((c, idx) => {
                     const commentAuthor = users.find(u => u.id === c.userId);
                     const isCommentOwner = c.userId === currentUser.uid;
+                    const commentKey = `${postId}-${idx}`;
+                    const showCommentMenu = openCommentMenus[commentKey];
                     return `
                         <div class="comment-item">
-                            <div class="comment-item-header">
+                            <div class="comment-header">
                                 <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/28'}" onclick="viewProfile('${c.userId}')">
                                 <button class="comment-author" onclick="viewProfile('${c.userId}')">
                                     ${escapeHtml(commentAuthor?.name || '?')}
@@ -1596,14 +1637,19 @@
                                     ${commentAuthor?.isAdmin ? '<span class="admin-badge"></span>' : ''}
                                 </button>
                                 <span class="comment-date">${formatDate(c.date)}</span>
+                                ${isCommentOwner ? `
+                                    <div class="comment-menu">
+                                        <button class="comment-menu-dots" onclick="event.stopPropagation(); toggleCommentMenu('${commentKey}')">⋮</button>
+                                        ${showCommentMenu ? `
+                                            <div class="comment-menu-dropdown">
+                                                <button onclick="openEditCommentModal('${postId}', ${idx}, '${escapeHtml(c.text).replace(/'/g, "\\'")}'); toggleCommentMenu('${commentKey}')">✏️ Редактировать</button>
+                                                <button onclick="deleteComment('${postId}', ${idx}); toggleCommentMenu('${commentKey}')">🗑️ Удалить</button>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
                             </div>
                             <div class="comment-text">${escapeHtml(c.text)}</div>
-                            ${isCommentOwner ? `
-                                <div class="comment-actions">
-                                    <button onclick="openEditCommentModal('${postId}', ${idx}, '${escapeHtml(c.text).replace(/'/g, "\\'")}')">✏️</button>
-                                    <button onclick="deleteComment('${postId}', ${idx})">🗑️</button>
-                                </div>
-                            ` : ''}
                         </div>
                     `;
                 }).join('')}
@@ -1716,11 +1762,15 @@
     };
     window.deleteComment = deleteComment;
     window.openEditCommentModal = openEditCommentModal;
+    window.toggleCommentMenu = toggleCommentMenu;
     
     function toggleComments(postId) {
         openComments[postId] = !openComments[postId];
         refreshAll();
-        if (openComments[postId]) setTimeout(() => document.getElementById(`comment-input-${postId}`)?.focus(), 150);
+        if (openComments[postId]) setTimeout(() => {
+            const input = document.getElementById(`comment-input-${postId}`);
+            if (input) input.focus();
+        }, 150);
     }
     
     document.addEventListener('keypress', (e) => {
@@ -1735,7 +1785,10 @@
         else { openMenus = {}; openMenus[postId] = true; }
         refreshAll();
     };
-    document.addEventListener('click', (e) => { if (!e.target.closest('.post-menu')) { openMenus = {}; refreshAll(); } });
+    document.addEventListener('click', (e) => { 
+        if (!e.target.closest('.post-menu')) { openMenus = {}; refreshAll(); }
+        if (!e.target.closest('.comment-menu')) { openCommentMenus = {}; refreshAll(); }
+    });
     window.viewProfile = function(userId) { viewingUserId = userId; renderProfile(); document.querySelector('.tab[data-tab="profile"]').click(); };
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
