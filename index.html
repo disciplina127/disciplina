@@ -55,16 +55,15 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
             color: white;
             border-radius: 50%;
-            font-size: 10px;
+            font-size: 8px;
             margin-left: 4px;
             vertical-align: middle;
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .verified-badge::before { content: "✓"; }
@@ -73,16 +72,15 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: linear-gradient(135deg, #FFD700, #FFA500);
             color: #8B4513;
             border-radius: 50%;
-            font-size: 10px;
+            font-size: 8px;
             margin-left: 4px;
             vertical-align: middle;
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .admin-badge::before { content: "★"; }
@@ -136,11 +134,11 @@
 
         input, textarea {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             margin: 8px 0;
             border: 1px solid var(--border);
-            border-radius: 14px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 15px;
             background: var(--bg-input);
             color: var(--text-primary);
         }
@@ -149,12 +147,12 @@
 
         button {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 14px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
         }
@@ -172,7 +170,7 @@
             color: var(--accent);
             margin-top: 8px;
             font-size: 14px;
-            padding: 10px;
+            padding: 8px;
         }
         
         .forgot-btn:hover {
@@ -237,8 +235,8 @@
 
         .post {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 12px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
         }
@@ -251,8 +249,8 @@
         }
 
         .post-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             background: var(--border);
@@ -284,8 +282,8 @@
         .menu-dots {
             background: none;
             width: auto;
-            padding: 8px 12px;
-            font-size: 20px;
+            padding: 6px 10px;
+            font-size: 18px;
             color: var(--text-secondary);
             cursor: pointer;
             border-radius: 30px;
@@ -295,11 +293,11 @@
         .menu-dropdown {
             position: absolute;
             right: 0;
-            top: 40px;
+            top: 35px;
             background: var(--bg-card);
-            border-radius: 14px;
-            padding: 8px 0;
-            min-width: 160px;
+            border-radius: 12px;
+            padding: 6px 0;
+            min-width: 140px;
             z-index: 999;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             border: 1px solid var(--border);
@@ -308,28 +306,28 @@
             background: none;
             width: 100%;
             text-align: left;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 0;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 15px; }
+        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 14px; }
         
         .post-media {
             max-width: 100%;
-            border-radius: 16px;
+            border-radius: 12px;
             margin: 8px 0;
-            max-height: 400px;
+            max-height: 350px;
             object-fit: cover;
             cursor: pointer;
         }
         
         .post-video {
             width: 100%;
-            border-radius: 16px;
+            border-radius: 12px;
             margin: 8px 0;
-            max-height: 400px;
+            max-height: 350px;
             background: #000;
         }
 
@@ -342,52 +340,46 @@
             border-top: 1px solid var(--border);
         }
 
-        .post-actions { display: flex; gap: 16px; }
+        .post-actions { display: flex; gap: 12px; }
         .like-btn, .comment-toggle-btn {
             cursor: pointer;
             background: none;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 30px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
         .like-btn.liked { color: var(--like); }
-        .post-time-footer { font-size: 11px; color: var(--text-secondary); }
+        .post-time-footer { font-size: 10px; color: var(--text-secondary); }
 
-        /* ========== УЛУЧШЕННЫЕ КОММЕНТАРИИ ========== */
+        /* ========== КОММЕНТАРИИ - МОБИЛЬНАЯ ВЕРСИЯ ========== */
         .comments-area {
-            margin-top: 12px;
+            margin-top: 10px;
             border-top: 1px solid var(--border);
-            padding-top: 12px;
+            padding-top: 10px;
         }
         
         .comment-item {
             background: var(--comment-bg);
-            border-radius: 16px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             margin-bottom: 8px;
-            transition: all 0.2s;
-        }
-        
-        .comment-item:hover {
-            background: var(--comment-hover);
         }
         
         .comment-item-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
+            margin-bottom: 6px;
         }
         
         .comment-avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
@@ -396,7 +388,7 @@
         
         .comment-author {
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--accent);
             cursor: pointer;
             background: none;
@@ -404,56 +396,51 @@
             padding: 0;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         
         .comment-date {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-secondary);
             margin-left: auto;
         }
         
         .comment-text {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-primary);
             word-break: break-word;
             line-height: 1.4;
-            margin: 6px 0 6px 40px;
+            margin: 4px 0 4px 36px;
         }
         
         .comment-actions {
             display: flex;
-            gap: 16px;
-            margin-left: 40px;
-            margin-top: 6px;
+            gap: 12px;
+            margin-left: 36px;
+            margin-top: 4px;
         }
         
         .comment-actions button {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 12px;
-            padding: 4px 8px;
+            font-size: 11px;
+            padding: 3px 6px;
             cursor: pointer;
-            border-radius: 20px;
+            border-radius: 16px;
             width: auto;
         }
         
-        .comment-actions button:hover {
-            background: var(--bg-input);
-        }
-        
-        /* Улучшенное поле ввода комментария */
+        /* Поле ввода комментария - мобильное */
         .comment-input-wrapper {
-            margin-top: 16px;
+            margin-top: 12px;
             background: var(--bg-input);
-            border-radius: 30px;
-            padding: 4px 4px 4px 16px;
+            border-radius: 25px;
+            padding: 4px 4px 4px 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             border: 1px solid var(--border);
-            transition: all 0.2s;
         }
         
         .comment-input-wrapper:focus-within {
@@ -464,54 +451,34 @@
             flex: 1;
             background: transparent;
             border: none;
-            padding: 12px 0;
+            padding: 10px 0;
             margin: 0;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text-primary);
             outline: none;
         }
         
         .comment-input-wrapper button {
             width: auto;
-            padding: 8px 20px;
+            padding: 6px 18px;
             margin: 0;
-            border-radius: 30px;
+            border-radius: 25px;
             background: var(--accent);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-        }
-        
-        .comment-input-wrapper button:active {
-            transform: scale(0.97);
         }
         
         .no-comments-text {
             text-align: center;
             color: var(--text-secondary);
-            font-size: 13px;
-            padding: 20px;
-        }
-        
-        /* Анимация нового комментария */
-        @keyframes commentSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .comment-new {
-            animation: commentSlideIn 0.3s ease;
+            font-size: 12px;
+            padding: 16px;
         }
 
         .profile-card {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 16px;
             text-align: center;
             border: 1px solid var(--border);
             margin-bottom: 16px;
@@ -519,19 +486,19 @@
         }
         
         .profile-avatar { 
-            width: 80px; 
-            height: 80px; 
+            width: 70px; 
+            height: 70px; 
             border-radius: 50%; 
             object-fit: cover; 
-            margin: 0 auto 12px; 
+            margin: 0 auto 10px; 
             background: var(--border); 
             border: 2px solid var(--accent); 
             cursor: pointer; 
         }
         
         .profile-name {
-            margin-top: 8px;
-            font-size: 20px;
+            margin-top: 6px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-primary);
         }
@@ -539,42 +506,37 @@
         .stats { 
             display: flex; 
             justify-content: center; 
-            gap: 32px; 
-            margin: 16px 0; 
+            gap: 24px; 
+            margin: 12px 0; 
             cursor: pointer;
         }
         
         .stat-item {
             text-align: center;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        
-        .stat-item:hover {
-            opacity: 0.8;
         }
         
         .stat-value { 
-            font-size: 20px; 
+            font-size: 18px; 
             font-weight: 700; 
             color: var(--accent); 
         }
         
         .stat-label { 
-            font-size: 12px; 
+            font-size: 11px; 
             color: var(--text-secondary); 
         }
         
         .settings-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 12px;
             background: none;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             padding: 0;
             border-radius: 50%;
-            font-size: 22px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -600,39 +562,33 @@
         
         .settings-modal-content {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 20px;
             width: 90%;
-            max-width: 320px;
+            max-width: 300px;
             border: 1px solid var(--border);
         }
         
         .settings-modal-content h3 {
             color: var(--text-primary);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
         }
         
         .settings-item {
-            margin: 16px 0;
+            margin: 12px 0;
         }
         
         .settings-item button {
             width: 100%;
-            padding: 14px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 14px;
             font-weight: 600;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 12px;
             background: var(--bg-input);
             color: var(--accent);
             border: 1px solid var(--accent);
-        }
-        
-        .settings-item button:active {
-            transform: scale(0.98);
         }
 
         .get-admin-settings-btn {
@@ -643,9 +599,9 @@
 
         .profile-buttons { 
             display: flex; 
-            gap: 12px; 
+            gap: 10px; 
             justify-content: center; 
-            margin-top: 16px; 
+            margin-top: 12px; 
             flex-wrap: wrap; 
         }
 
@@ -665,8 +621,8 @@
         
         .users-list-content {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 20px;
             width: 90%;
             max-width: 350px;
             border: 1px solid var(--border);
@@ -677,9 +633,9 @@
         
         .users-list-content h3 {
             color: var(--text-primary);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             text-align: center;
-            font-size: 22px;
+            font-size: 18px;
             flex-shrink: 0;
         }
         
@@ -689,29 +645,14 @@
             padding-right: 4px;
         }
         
-        .users-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .users-list::-webkit-scrollbar-track {
-            background: var(--bg-input);
-            border-radius: 10px;
-        }
-        
-        .users-list::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-        
         .user-list-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 16px;
-            margin-bottom: 8px;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
             cursor: pointer;
-            transition: background 0.2s;
         }
         
         .user-list-item:hover {
@@ -719,8 +660,8 @@
         }
         
         .user-list-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
             background: var(--border);
@@ -733,14 +674,14 @@
         .user-list-name {
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 15px;
+            font-size: 14px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
         
         .user-list-bio {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
             margin-top: 2px;
         }
@@ -748,10 +689,10 @@
         .no-users {
             text-align: center;
             color: var(--text-secondary);
-            padding: 40px;
+            padding: 30px;
         }
 
-        .edit-profile-modal {
+        .edit-profile-modal, .edit-post-modal, .edit-comment-modal, .admin-code-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -765,34 +706,29 @@
             backdrop-filter: blur(8px);
         }
         
-        .edit-profile-content {
+        .edit-profile-content, .edit-post-content, .edit-comment-content, .admin-code-content {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 20px;
             width: 90%;
-            max-width: 380px;
+            max-width: 350px;
             border: 1px solid var(--border);
         }
         
-        .edit-profile-content h3 {
+        .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3, .admin-code-content h3 {
             color: var(--text-primary);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             text-align: center;
-            font-size: 22px;
+            font-size: 18px;
         }
         
-        .edit-profile-content input,
-        .edit-profile-content textarea {
-            margin-bottom: 15px;
-        }
-        
-        .edit-buttons {
+        .edit-buttons, .admin-code-buttons {
             display: flex;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 16px;
         }
         
-        .edit-buttons button {
+        .edit-buttons button, .admin-code-buttons button {
             flex: 1;
         }
         
@@ -803,86 +739,15 @@
         
         .avatar-preview {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .avatar-preview img {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .edit-post-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2002;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        
-        .edit-post-content {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
-            width: 90%;
-            max-width: 380px;
-            border: 1px solid var(--border);
-        }
-        
-        .edit-post-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 22px;
-        }
-        
-        .edit-post-content textarea {
-            margin-bottom: 15px;
-            min-height: 120px;
-        }
-
-        .edit-comment-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2001;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        
-        .edit-comment-content {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
-            width: 90%;
-            max-width: 380px;
-            border: 1px solid var(--border);
-        }
-        
-        .edit-comment-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 22px;
-        }
-        
-        .edit-comment-content textarea {
-            margin-bottom: 15px;
-            min-height: 100px;
         }
 
         .image-modal {
@@ -904,70 +769,22 @@
             max-height: 95%;
             object-fit: contain;
             border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
         
         .image-modal-close {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 20px;
             color: white;
-        }
-
-        .admin-code-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2003;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        
-        .admin-code-content {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
-            width: 90%;
-            max-width: 350px;
-            border: 1px solid var(--border);
-        }
-        
-        .admin-code-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 22px;
-        }
-        
-        .admin-code-content input {
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-        
-        .admin-code-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .admin-code-buttons button {
-            flex: 1;
         }
 
         .upload-btn { 
@@ -988,54 +805,55 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 12px;
+            padding: 10px;
             cursor: pointer;
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
         
         .file-name { 
-            font-size: 12px; 
+            font-size: 11px; 
             color: var(--accent); 
-            margin-top: 8px; 
+            margin-top: 6px; 
             display: block; 
             text-align: center; 
         }
 
         .profile-posts-title { 
-            font-size: 15px; 
+            font-size: 14px; 
             font-weight: 600; 
-            margin: 16px 0 12px 0; 
+            margin: 12px 0 10px 0; 
             color: var(--text-primary); 
         }
         
         .back-btn { 
             background: var(--bg-input); 
             width: auto; 
-            padding: 8px 16px; 
+            padding: 6px 14px; 
             border-radius: 30px; 
             color: var(--text-primary); 
+            font-size: 13px;
         }
 
         .fab {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
+            bottom: 16px;
+            right: 16px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent), var(--accent-hover));
             color: white;
-            font-size: 30px;
+            font-size: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 200;
             border: none;
         }
@@ -1055,32 +873,32 @@
         }
         .modal-content {
             background: var(--bg-card);
-            border-radius: 28px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 20px;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             border: 1px solid var(--border);
         }
-        .modal-content h3 { margin-bottom: 16px; color: var(--text-primary); font-size: 20px; text-align: center; }
+        .modal-content h3 { margin-bottom: 14px; color: var(--text-primary); font-size: 18px; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
         .modal-buttons button { flex: 1; }
         .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
 
         .game-card {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
             border: 1px solid var(--border);
         }
         
-        .game-header { text-align: center; margin-bottom: 20px; }
-        .game-icon { font-size: 48px; }
-        .game-title { font-size: 22px; font-weight: bold; color: var(--accent); margin: 10px 0; }
+        .game-header { text-align: center; margin-bottom: 16px; }
+        .game-icon { font-size: 40px; }
+        .game-title { font-size: 18px; font-weight: bold; color: var(--accent); margin: 8px 0; }
         
         .player-name {
-            margin-top: 8px;
-            font-size: 15px;
+            margin-top: 6px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-primary);
             display: inline-flex;
@@ -1088,29 +906,30 @@
             gap: 4px;
         }
         
-        .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 20px; padding: 30px; text-align: center; margin: 20px 0; }
-        .dice-value { font-size: 70px; font-weight: bold; margin: 20px 0; }
+        .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 16px; padding: 24px; text-align: center; margin: 16px 0; }
+        .dice-value { font-size: 56px; font-weight: bold; margin: 16px 0; }
         .dice-value.positive { color: var(--success); }
         .dice-value.negative { color: #f44336; }
-        .roll-button { font-size: 18px; padding: 14px; border-radius: 50px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .stat-card { background: var(--bg-input); border-radius: 16px; padding: 15px; text-align: center; }
+        .roll-button { font-size: 16px; padding: 12px; border-radius: 40px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+        .stat-card { background: var(--bg-input); border-radius: 14px; padding: 12px; text-align: center; }
 
-        .leaderboard { background: var(--bg-card); border-radius: 20px; padding: 16px; }
-        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .leaderboard-title { font-size: 18px; font-weight: bold; color: var(--text-primary); }
-        .leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; }
-        .leaderboard-rank { font-weight: bold; min-width: 35px; color: var(--accent); }
+        .leaderboard { background: var(--bg-card); border-radius: 16px; padding: 12px; }
+        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .leaderboard-title { font-size: 16px; font-weight: bold; color: var(--text-primary); }
+        .leaderboard-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; margin-bottom: 4px; cursor: pointer; }
+        .leaderboard-rank { font-weight: bold; min-width: 30px; font-size: 14px; color: var(--accent); }
         .rank-1 { color: #ffd700; }
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
-        .leaderboard-name { flex: 1; font-weight: 600; color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; }
+        .leaderboard-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text-primary); display: inline-flex; align-items: center; gap: 3px; }
 
         .follow-btn {
             background: var(--bg-input);
             color: var(--accent);
             border: 1px solid var(--accent);
-            transition: all 0.2s;
+            font-size: 13px;
+            padding: 8px 14px;
         }
         .follow-btn.following {
             background: var(--accent);
@@ -1131,21 +950,22 @@
         }
         .reset-modal-content {
             background: var(--bg-card);
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 20px;
+            padding: 20px;
             width: 90%;
-            max-width: 350px;
+            max-width: 320px;
             border: 1px solid var(--border);
         }
         .reset-modal-content h3 {
             color: var(--text-primary);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             text-align: center;
+            font-size: 18px;
         }
         .reset-buttons {
             display: flex;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 16px;
         }
         .reset-buttons button {
             flex: 1;
@@ -1155,8 +975,8 @@
             color: var(--text-primary);
         }
         .reset-message {
-            font-size: 13px;
-            margin-top: 12px;
+            font-size: 12px;
+            margin-top: 10px;
             text-align: center;
         }
 
@@ -1167,8 +987,9 @@
             transform: translateX(-50%);
             background: var(--success);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 30px;
+            font-size: 13px;
             z-index: 10000;
             animation: fadeInOut 2s ease;
         }
@@ -1183,19 +1004,12 @@
         /* Мобильные улучшения */
         @media (max-width: 500px) {
             .content { padding: 8px; }
-            .fab { width: 55px; height: 55px; font-size: 28px; bottom: 15px; right: 15px; }
-            .post-actions { gap: 8px; }
-            .like-btn, .comment-toggle-btn { padding: 6px 10px; font-size: 13px; }
-            .comment-avatar { width: 28px; height: 28px; }
-            .comment-text { margin-left: 36px; font-size: 13px; }
-            .comment-actions { margin-left: 36px; gap: 12px; }
-            .comment-actions button { font-size: 11px; padding: 4px 6px; }
-            .comment-input-wrapper { padding: 4px 4px 4px 12px; }
-            .comment-input-wrapper input { font-size: 14px; padding: 10px 0; }
-            .comment-input-wrapper button { padding: 6px 16px; font-size: 13px; }
-            .settings-btn { width: 35px; height: 35px; font-size: 18px; top: 10px; right: 10px; }
-            .stats { gap: 20px; }
-            .stat-value { font-size: 16px; }
+            .fab { width: 48px; height: 48px; font-size: 24px; bottom: 12px; right: 12px; }
+            .post-avatar { width: 36px; height: 36px; }
+            .post-author { font-size: 14px; }
+            .menu-dots { padding: 4px 8px; }
+            .comment-input-wrapper input { font-size: 13px; padding: 8px 0; }
+            .comment-input-wrapper button { padding: 5px 14px; font-size: 12px; }
         }
     </style>
 </head>
@@ -1257,7 +1071,7 @@
             <textarea id="modalPostText" rows="3" placeholder="Что у тебя нового?"></textarea>
             <div class="upload-btn">
                 <input type="file" id="modalPostMedia" accept="image/*,video/*">
-                <div class="upload-label"><span>📷/🎥</span><span>Выбрать фото или видео</span></div>
+                <div class="upload-label"><span>📷/🎥</span><span>Выбрать</span></div>
                 <span id="fileNameDisplay" class="file-name"></span>
             </div>
             <div class="modal-buttons">
@@ -1268,25 +1082,21 @@
     </div>
 </div>
 
-<!-- Модальное окно для просмотра фото -->
+<!-- Модальные окна (оставляем как есть) -->
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <div class="image-modal-close" onclick="closeImageModal()">✕</div>
     <img id="modalImage" src="" alt="Увеличенное фото">
 </div>
 
-<!-- Модальное окно редактирования профиля -->
 <div id="editProfileModal" class="edit-profile-modal">
     <div class="edit-profile-content">
-        <h3>✏️ Редактировать профиль</h3>
-        <div class="avatar-preview">
-            <img id="editAvatarPreview" src="https://via.placeholder.com/80?text=?" alt="avatar">
-        </div>
+        <h3>✏️ Редактировать</h3>
+        <div class="avatar-preview"><img id="editAvatarPreview" src="https://via.placeholder.com/70?text=?"></div>
         <input type="text" id="editProfileName" placeholder="Имя">
         <textarea id="editProfileBio" rows="3" placeholder="О себе"></textarea>
         <div class="upload-btn">
             <input type="file" id="editProfileAvatar" accept="image/*">
-            <div class="upload-label"><span>📷</span><span>Выбрать аватар</span></div>
-            <span id="editAvatarFileName" class="file-name"></span>
+            <div class="upload-label"><span>📷</span><span>Новый аватар</span></div>
         </div>
         <div class="edit-buttons">
             <button id="saveProfileEditBtn">Сохранить</button>
@@ -1295,12 +1105,11 @@
     </div>
 </div>
 
-<!-- Модальное окно для ввода кода администратора -->
 <div id="adminCodeModal" class="admin-code-modal">
     <div class="admin-code-content">
         <h3>⭐ Стать администратором</h3>
-        <input type="password" id="adminCodeInput" placeholder="Введите секретный код" maxlength="20">
-        <div id="adminCodeError" style="color: var(--accent); font-size: 12px; text-align: center; margin-bottom: 10px;"></div>
+        <input type="password" id="adminCodeInput" placeholder="Секретный код">
+        <div id="adminCodeError" style="color: var(--accent); font-size: 12px; text-align: center;"></div>
         <div class="admin-code-buttons">
             <button id="submitAdminCodeBtn">Подтвердить</button>
             <button id="cancelAdminCodeBtn" class="cancel-edit-btn">Отмена</button>
@@ -1308,10 +1117,9 @@
     </div>
 </div>
 
-<!-- Модальное окно редактирования поста -->
 <div id="editPostModal" class="edit-post-modal">
     <div class="edit-post-content">
-        <h3>✏️ Редактировать пост</h3>
+        <h3>✏️ Редактировать</h3>
         <textarea id="editPostText" rows="4" placeholder="Текст поста"></textarea>
         <div class="edit-buttons">
             <button id="savePostEditBtn">Сохранить</button>
@@ -1320,10 +1128,9 @@
     </div>
 </div>
 
-<!-- Модальное окно редактирования комментария -->
 <div id="editCommentModal" class="edit-comment-modal">
     <div class="edit-comment-content">
-        <h3>✏️ Редактировать комментарий</h3>
+        <h3>✏️ Редактировать</h3>
         <textarea id="editCommentText" rows="3" placeholder="Текст комментария"></textarea>
         <div class="edit-buttons">
             <button id="saveCommentEditBtn">Сохранить</button>
@@ -1332,19 +1139,16 @@
     </div>
 </div>
 
-<!-- Модальное окно списка пользователей (подписчики/подписки) -->
 <div id="usersListModal" class="users-list-modal">
     <div class="users-list-content">
         <h3 id="usersListTitle">Подписчики</h3>
         <div id="usersListContainer" class="users-list"></div>
-        <div class="edit-buttons" style="margin-top: 20px;">
-            <button id="closeUsersListBtn" class="cancel-edit-btn">Закрыть</button>
-        </div>
+        <button id="closeUsersListBtn" class="cancel-edit-btn" style="margin-top: 16px;">Закрыть</button>
     </div>
 </div>
 
 <script>
-    // ========== ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ ФОТО ==========
+    // ========== ОТКРЫТИЕ ФОТО ==========
     function openImageModal(imageUrl) {
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
@@ -1362,162 +1166,94 @@
         }
     }
     
-    // ========== ФУНКЦИИ ДЛЯ ПРОСМОТРА ПОДПИСЧИКОВ/ПОДПИСОК ==========
+    // ========== ПОДПИСЧИКИ/ПОДПИСКИ ==========
     function showFollowers(userId) {
         const user = users.find(u => u.id === userId);
         if (!user) return;
-        
         const followers = user.followers || [];
         const followersUsers = users.filter(u => followers.includes(u.id));
-        
-        const title = document.getElementById('usersListTitle');
+        document.getElementById('usersListTitle').textContent = `👥 Подписчики (${followersUsers.length})`;
         const container = document.getElementById('usersListContainer');
-        
-        title.textContent = `👥 Подписчики (${followersUsers.length})`;
-        
         if (followersUsers.length === 0) {
             container.innerHTML = '<div class="no-users">😔 Нет подписчиков</div>';
         } else {
             container.innerHTML = followersUsers.map(follower => `
                 <div class="user-list-item" onclick="viewProfile('${follower.id}'); closeUsersListModal();">
-                    <img class="user-list-avatar" src="${follower.avatar || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
+                    <img class="user-list-avatar" src="${follower.avatar || 'https://via.placeholder.com/36'}">
                     <div class="user-list-info">
-                        <div class="user-list-name">
-                            ${escapeHtml(follower.name)}
-                            ${follower.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                            ${follower.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                        </div>
+                        <div class="user-list-name">${escapeHtml(follower.name)}${follower.verified ? '<span class="verified-badge"></span>' : ''}${follower.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
                         <div class="user-list-bio">${escapeHtml(follower.bio || 'Нет описания')}</div>
                     </div>
                 </div>
             `).join('');
         }
-        
         document.getElementById('usersListModal').style.display = 'flex';
     }
     
     function showFollowing(userId) {
         const user = users.find(u => u.id === userId);
         if (!user) return;
-        
         const following = user.following || [];
         const followingUsers = users.filter(u => following.includes(u.id));
-        
-        const title = document.getElementById('usersListTitle');
+        document.getElementById('usersListTitle').textContent = `📌 Подписки (${followingUsers.length})`;
         const container = document.getElementById('usersListContainer');
-        
-        title.textContent = `📌 Подписки (${followingUsers.length})`;
-        
         if (followingUsers.length === 0) {
             container.innerHTML = '<div class="no-users">😔 Нет подписок</div>';
         } else {
             container.innerHTML = followingUsers.map(follow => `
                 <div class="user-list-item" onclick="viewProfile('${follow.id}'); closeUsersListModal();">
-                    <img class="user-list-avatar" src="${follow.avatar || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
+                    <img class="user-list-avatar" src="${follow.avatar || 'https://via.placeholder.com/36'}">
                     <div class="user-list-info">
-                        <div class="user-list-name">
-                            ${escapeHtml(follow.name)}
-                            ${follow.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                            ${follow.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                        </div>
+                        <div class="user-list-name">${escapeHtml(follow.name)}${follow.verified ? '<span class="verified-badge"></span>' : ''}${follow.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
                         <div class="user-list-bio">${escapeHtml(follow.bio || 'Нет описания')}</div>
                     </div>
                 </div>
             `).join('');
         }
-        
         document.getElementById('usersListModal').style.display = 'flex';
     }
     
-    function closeUsersListModal() {
-        document.getElementById('usersListModal').style.display = 'none';
-    }
+    function closeUsersListModal() { document.getElementById('usersListModal').style.display = 'none'; }
 
     // ========== РАНДОМНАЯ ФРАЗА ==========
-    const phrases = [
-        "Делай каждый день",
-        "Бебебе",
-        "Гигамонстрящим пони вход запрещён",
-        "кремируйте ее быстрее",
-        "огурцы",
-        "типо как yo! только новый"
-    ];
-    
+    const phrases = ["Делай каждый день", "Бебебе", "Гигамонстрящим пони вход запрещён", "кремируйте ее быстрее", "огурцы", "типо как yo! только новый"];
     function setRandomPhrase() {
-        const randomIndex = Math.floor(Math.random() * phrases.length);
         const subElement = document.getElementById('randomSub');
-        if (subElement) {
-            subElement.textContent = phrases[randomIndex];
-        }
+        if (subElement) subElement.textContent = phrases[Math.floor(Math.random() * phrases.length)];
     }
 
-    // ========== АДМИНИСТРИРОВАНИЕ ==========
+    // ========== АДМИН ==========
     const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
-    
-    function isAdmin() {
-        return currentUser && currentUser.isAdmin === true;
-    }
+    function isAdmin() { return currentUser && currentUser.isAdmin === true; }
     
     async function loadAdminStatus() {
         if (!currentUser) return false;
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        const isAdminFlag = userDoc.data()?.isAdmin === true;
-        currentUser.isAdmin = isAdminFlag;
-        return isAdminFlag;
+        currentUser.isAdmin = userDoc.data()?.isAdmin === true;
+        return currentUser.isAdmin;
     }
     
-    function openAdminCodeModal() {
-        document.getElementById('adminCodeModal').style.display = 'flex';
-        document.getElementById('adminCodeInput').value = '';
-        document.getElementById('adminCodeError').textContent = '';
-    }
-    
-    function closeAdminCodeModal() {
-        document.getElementById('adminCodeModal').style.display = 'none';
-    }
+    function openAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'flex'; document.getElementById('adminCodeInput').value = ''; document.getElementById('adminCodeError').textContent = ''; }
+    function closeAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'none'; }
     
     async function checkAdminCode() {
         const enteredCode = document.getElementById('adminCodeInput').value.trim();
-        const errorDiv = document.getElementById('adminCodeError');
-        
-        if (!enteredCode) {
-            errorDiv.textContent = 'Введите код';
-            return;
-        }
-        
+        if (!enteredCode) { document.getElementById('adminCodeError').textContent = 'Введите код'; return; }
         if (enteredCode === ADMIN_SECRET_CODE) {
-            await db.collection('users').doc(currentUser.uid).update({
-                isAdmin: true
-            });
-            
+            await db.collection('users').doc(currentUser.uid).update({ isAdmin: true });
             currentUser.isAdmin = true;
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) {
-                users[userIndex].isAdmin = true;
-            }
-            
             closeAdminCodeModal();
-            showNotification('✅ Поздравляем! Вы теперь администратор!');
+            showNotification('✅ Вы администратор!');
             await refreshAll();
-        } else {
-            errorDiv.textContent = '❌ Неверный код';
-        }
+        } else { document.getElementById('adminCodeError').textContent = '❌ Неверный код'; }
     }
     
     async function toggleVerification(targetUserId) {
-        if (!isAdmin()) {
-            showNotification('❌ Только администратор может выдавать галочки');
-            return;
-        }
-        
+        if (!isAdmin()) { showNotification('❌ Только админ'); return; }
         const userRef = db.collection('users').doc(targetUserId);
         const userDoc = await userRef.get();
         const isCurrentlyVerified = userDoc.data()?.verified === true;
-        
-        await userRef.update({
-            verified: !isCurrentlyVerified
-        });
-        
+        await userRef.update({ verified: !isCurrentlyVerified });
         showNotification(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
         await loadData();
         await refreshAll();
@@ -1545,12 +1281,7 @@
     let openMenus = {};
     let viewingUserId = null;
     let isLoginMode = false;
-    
-    let currentEditComment = {
-        postId: null,
-        commentIndex: null
-    };
-    
+    let currentEditComment = { postId: null, commentIndex: null };
     let currentEditPostId = null;
 
     function showNotification(message) {
@@ -1579,11 +1310,7 @@
 
     async function compressMedia(file, maxWidth = 900) {
         return new Promise((resolve, reject) => {
-            if (!file) {
-                resolve(null);
-                return;
-            }
-            
+            if (!file) { resolve(null); return; }
             if (file.type.startsWith('video/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => resolve(e.target.result);
@@ -1591,21 +1318,15 @@
                 reader.readAsDataURL(file);
                 return;
             }
-            
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
+                        let width = img.width, height = img.height;
+                        if (width > maxWidth) { height = (height * maxWidth) / width; width = maxWidth; }
                         const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
+                        canvas.width = width; canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         let quality = 0.8;
@@ -1623,7 +1344,6 @@
                 reader.readAsDataURL(file);
                 return;
             }
-            
             resolve(null);
         });
     }
@@ -1635,32 +1355,15 @@
         posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const statsSnapshot = await db.collection('gameStats').get();
         gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
-        
         if (currentUser) {
             const userDoc = users.find(u => u.id === currentUser.uid);
-            if (userDoc) {
-                currentUser.isAdmin = userDoc.isAdmin === true;
-            }
+            if (userDoc) currentUser.isAdmin = userDoc.isAdmin === true;
         }
     }
 
     async function savePost(text, mediaDataUrl, mediaType) {
-        const postData = {
-            userId: currentUser.uid,
-            text: text,
-            date: firebase.firestore.FieldValue.serverTimestamp(),
-            likes: [],
-            comments: []
-        };
-        
-        if (mediaDataUrl) {
-            postData.media = mediaDataUrl;
-            postData.mediaType = mediaType;
-            if (mediaType === 'image') {
-                postData.photo = mediaDataUrl;
-            }
-        }
-        
+        const postData = { userId: currentUser.uid, text: text, date: firebase.firestore.FieldValue.serverTimestamp(), likes: [], comments: [] };
+        if (mediaDataUrl) { postData.media = mediaDataUrl; postData.mediaType = mediaType; if (mediaType === 'image') postData.photo = mediaDataUrl; }
         await db.collection('posts').add(postData);
         await loadData();
         await refreshAll();
@@ -1681,28 +1384,14 @@
         const post = posts.find(p => p.id === postId);
         if (!post) return;
         const comments = post.comments || [];
-        comments.push({
-            userId: currentUser.uid,
-            text: commentText.trim(),
-            date: new Date().toISOString()
-        });
+        comments.push({ userId: currentUser.uid, text: commentText.trim(), date: new Date().toISOString() });
         await db.collection('posts').doc(postId).update({ comments });
         await loadData();
         openComments[postId] = true;
         await refreshAll();
-        
-        // Прокрутка к новому комментарию и фокус на поле ввода
         setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
-            if (input) {
-                input.value = '';
-                input.focus();
-            }
-            // Плавная прокрутка к области комментариев
-            const commentsArea = document.querySelector(`#post-${postId} .comments-area`);
-            if (commentsArea) {
-                commentsArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            if (input) input.value = '';
         }, 100);
     }
     
@@ -1726,99 +1415,48 @@
     async function saveCommentEdit() {
         const { postId, commentIndex } = currentEditComment;
         const newText = document.getElementById('editCommentText').value.trim();
-        
-        if (!newText) {
-            showNotification('❌ Текст комментария не может быть пустым');
-            return;
-        }
-        
+        if (!newText) { showNotification('❌ Пустой комментарий'); return; }
         const post = posts.find(p => p.id === postId);
         if (!post || !post.comments || !post.comments[commentIndex]) return;
-        
         post.comments[commentIndex].text = newText;
         await db.collection('posts').doc(postId).update({ comments: post.comments });
         await loadData();
         await refreshAll();
-        showNotification('✏️ Комментарий обновлён');
+        showNotification('✏️ Обновлено');
         closeEditCommentModal();
     }
     
-    function closeEditCommentModal() {
-        document.getElementById('editCommentModal').style.display = 'none';
-        currentEditComment = { postId: null, commentIndex: null };
-    }
+    function closeEditCommentModal() { document.getElementById('editCommentModal').style.display = 'none'; currentEditComment = { postId: null, commentIndex: null }; }
 
     async function deletePost(postId) {
-        if (confirm('Удалить этот пост?')) {
-            await db.collection('posts').doc(postId).delete();
-            await loadData();
-            await refreshAll();
-            showNotification('🗑️ Пост удалён');
-        }
+        if (confirm('Удалить пост?')) { await db.collection('posts').doc(postId).delete(); await loadData(); await refreshAll(); showNotification('🗑️ Пост удалён'); }
     }
     
     async function deletePostAsAdmin(postId) {
-        if (!isAdmin()) {
-            showNotification('❌ Только администратор может удалять чужие посты');
-            return;
-        }
-        
-        if (confirm('⚠️ ВНИМАНИЕ! Вы удаляете чужой пост. Это действие необратимо. Продолжить?')) {
-            await db.collection('posts').doc(postId).delete();
-            await loadData();
-            await refreshAll();
-            showNotification('✅ Пост удалён администратором');
-        }
+        if (!isAdmin()) { showNotification('❌ Только админ'); return; }
+        if (confirm('Удалить чужой пост?')) { await db.collection('posts').doc(postId).delete(); await loadData(); await refreshAll(); showNotification('✅ Удалено'); }
     }
 
-    function openEditPostModal(postId, currentText) {
-        currentEditPostId = postId;
-        document.getElementById('editPostText').value = currentText;
-        document.getElementById('editPostModal').style.display = 'flex';
-    }
-    
+    function openEditPostModal(postId, currentText) { currentEditPostId = postId; document.getElementById('editPostText').value = currentText; document.getElementById('editPostModal').style.display = 'flex'; }
     async function savePostEdit() {
         if (!currentEditPostId) return;
-        
         const newText = document.getElementById('editPostText').value.trim();
-        if (!newText) {
-            showNotification('❌ Текст поста не может быть пустым');
-            return;
-        }
-        
-        const post = posts.find(p => p.id === currentEditPostId);
-        if (!post) return;
-        
+        if (!newText) { showNotification('❌ Пустой пост'); return; }
         await db.collection('posts').doc(currentEditPostId).update({ text: newText });
-        await loadData();
-        await refreshAll();
-        showNotification('✅ Пост обновлён');
-        closeEditPostModal();
+        await loadData(); await refreshAll(); showNotification('✅ Пост обновлён'); closeEditPostModal();
     }
-    
-    function closeEditPostModal() {
-        document.getElementById('editPostModal').style.display = 'none';
-        currentEditPostId = null;
-    }
+    function closeEditPostModal() { document.getElementById('editPostModal').style.display = 'none'; currentEditPostId = null; }
 
     async function toggleFollow(targetUserId) {
         const currentUserDoc = users.find(u => u.id === currentUser.uid);
         const following = currentUserDoc?.following || [];
         const isFollowing = following.includes(targetUserId);
         if (isFollowing) {
-            await db.collection('users').doc(currentUser.uid).update({
-                following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
-            });
-            await db.collection('users').doc(targetUserId).update({
-                followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-            });
+            await db.collection('users').doc(currentUser.uid).update({ following: firebase.firestore.FieldValue.arrayRemove(targetUserId) });
+            await db.collection('users').doc(targetUserId).update({ followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
         } else {
-            await db.collection('users').doc(currentUser.uid).update({
-                following: firebase.firestore.FieldValue.arrayUnion(targetUserId)
-            });
-            await db.collection('users').doc(targetUserId).update({
-                followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
-            });
+            await db.collection('users').doc(currentUser.uid).update({ following: firebase.firestore.FieldValue.arrayUnion(targetUserId) });
+            await db.collection('users').doc(targetUserId).update({ followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
         }
         await loadData();
         await refreshAll();
@@ -1829,19 +1467,8 @@
         if (newName && newName !== currentUser.name) updates.name = newName;
         if (newBio !== undefined) updates.bio = newBio;
         if (newAvatar) updates.avatar = newAvatar;
-        
         if (Object.keys(updates).length > 0) {
             await db.collection('users').doc(currentUser.uid).update(updates);
-            
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) {
-                users[userIndex] = { ...users[userIndex], ...updates };
-            }
-            
-            if (updates.name) currentUser.name = updates.name;
-            if (updates.bio) currentUser.bio = updates.bio;
-            if (updates.avatar) currentUser.avatar = updates.avatar;
-            
             await loadData();
             await refreshAll();
             return true;
@@ -1850,131 +1477,47 @@
     }
 
     function openEditProfileModal() {
-        const modal = document.getElementById('editProfileModal');
         const profileUser = users.find(u => u.id === currentUser.uid);
         if (!profileUser) return;
-        
         document.getElementById('editProfileName').value = profileUser.name || '';
         document.getElementById('editProfileBio').value = profileUser.bio || '';
-        const preview = document.getElementById('editAvatarPreview');
-        if (profileUser.avatar) {
-            preview.src = profileUser.avatar;
-        } else {
-            preview.src = 'https://via.placeholder.com/80?text=?';
-        }
-        document.getElementById('editAvatarFileName').textContent = '';
+        document.getElementById('editAvatarPreview').src = profileUser.avatar || 'https://via.placeholder.com/70?text=?';
         document.getElementById('editProfileAvatar').value = '';
-        
-        modal.style.display = 'flex';
+        document.getElementById('editProfileModal').style.display = 'flex';
     }
-    
-    function closeEditProfileModal() {
-        document.getElementById('editProfileModal').style.display = 'none';
-    }
-    
+    function closeEditProfileModal() { document.getElementById('editProfileModal').style.display = 'none'; }
+
     document.getElementById('editProfileAvatar')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
-                document.getElementById('editAvatarPreview').src = ev.target.result;
-            };
+            reader.onload = (ev) => { document.getElementById('editAvatarPreview').src = ev.target.result; };
             reader.readAsDataURL(file);
-            document.getElementById('editAvatarFileName').textContent = `📎 ${file.name}`;
         }
     });
     
     document.getElementById('saveProfileEditBtn')?.addEventListener('click', async () => {
-        const saveBtn = document.getElementById('saveProfileEditBtn');
-        const originalText = saveBtn.textContent;
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Сохранение...';
-        
-        try {
-            const newName = document.getElementById('editProfileName').value.trim();
-            const newBio = document.getElementById('editProfileBio').value.trim();
-            const avatarFile = document.getElementById('editProfileAvatar').files[0];
-            let avatarBase64 = null;
-            
-            if (avatarFile) {
-                avatarBase64 = await compressMedia(avatarFile, 400);
-            }
-            
-            await updateUserProfile(newName, newBio, avatarBase64);
-            closeEditProfileModal();
-            showNotification('✅ Профиль обновлён!');
-        } catch (error) {
-            console.error('Error saving profile:', error);
-            showNotification('❌ Ошибка при сохранении');
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.textContent = originalText;
-        }
+        const newName = document.getElementById('editProfileName').value.trim();
+        const newBio = document.getElementById('editProfileBio').value.trim();
+        const avatarFile = document.getElementById('editProfileAvatar').files[0];
+        let avatarBase64 = null;
+        if (avatarFile) avatarBase64 = await compressMedia(avatarFile, 400);
+        await updateUserProfile(newName, newBio, avatarBase64);
+        closeEditProfileModal();
+        showNotification('✅ Профиль обновлён!');
     });
-    
     document.getElementById('cancelProfileEditBtn')?.addEventListener('click', closeEditProfileModal);
-    document.getElementById('editProfileModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editProfileModal')) {
-            closeEditProfileModal();
-        }
-    });
-    
     document.getElementById('savePostEditBtn')?.addEventListener('click', savePostEdit);
     document.getElementById('cancelPostEditBtn')?.addEventListener('click', closeEditPostModal);
-    document.getElementById('editPostModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editPostModal')) {
-            closeEditPostModal();
-        }
-    });
-    
     document.getElementById('saveCommentEditBtn')?.addEventListener('click', saveCommentEdit);
     document.getElementById('cancelCommentEditBtn')?.addEventListener('click', closeEditCommentModal);
-    document.getElementById('editCommentModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('editCommentModal')) {
-            closeEditCommentModal();
-        }
-    });
-    
     document.getElementById('submitAdminCodeBtn')?.addEventListener('click', checkAdminCode);
     document.getElementById('cancelAdminCodeBtn')?.addEventListener('click', closeAdminCodeModal);
-    document.getElementById('adminCodeModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('adminCodeModal')) {
-            closeAdminCodeModal();
-        }
-    });
-    
-    document.getElementById('adminCodeInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            checkAdminCode();
-        }
-    });
 
-    function openSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'flex';
-    }
-    
-    function closeSettings() {
-        const modal = document.getElementById('settingsModal');
-        if (modal) modal.style.display = 'none';
-    }
-    
-    function logoutUser() {
-        closeSettings();
-        auth.signOut().then(() => {
-            currentUser = null;
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-            isLoginMode = false;
-            updateAuthButton();
-        });
-    }
-    
-    function toggleThemeGlobal() {
-        document.body.classList.toggle('light-theme');
-        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-        closeSettings();
-    }
+    function openSettings() { const modal = document.getElementById('settingsModal'); if (modal) modal.style.display = 'flex'; }
+    function closeSettings() { const modal = document.getElementById('settingsModal'); if (modal) modal.style.display = 'none'; }
+    function logoutUser() { closeSettings(); auth.signOut().then(() => { location.reload(); }); }
+    function toggleThemeGlobal() { document.body.classList.toggle('light-theme'); localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); closeSettings(); }
 
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
@@ -1983,41 +1526,30 @@
         const showComments = openComments[post.id] || false;
         const showMenu = openMenus[post.id];
         const comments = post.comments || [];
-        
         let mediaUrl = post.media || post.photo;
         let mediaType = post.mediaType || (post.photo ? 'image' : null);
-        
         let mediaHtml = '';
         if (mediaUrl) {
-            if (mediaType === 'video') {
-                mediaHtml = `<video class="post-video" controls onclick="event.stopPropagation()"><source src="${mediaUrl}" type="video/mp4">Ваш браузер не поддерживает видео</video>`;
-            } else {
-                mediaHtml = `<img src="${mediaUrl}" class="post-media" onclick="openImageModal('${mediaUrl}')">`;
-            }
+            if (mediaType === 'video') mediaHtml = `<video class="post-video" controls onclick="event.stopPropagation()"><source src="${mediaUrl}"></video>`;
+            else mediaHtml = `<img src="${mediaUrl}" class="post-media" onclick="openImageModal('${mediaUrl}')">`;
         }
-        
         return `
             <div class="post" id="post-${post.id}">
                 <div class="post-header">
-                    <img class="post-avatar" src="${author?.avatar || 'https://via.placeholder.com/36'}" onclick="viewProfile('${post.userId}')">
+                    <img class="post-avatar" src="${author?.avatar || 'https://via.placeholder.com/40'}" onclick="viewProfile('${post.userId}')">
                     <div class="post-author-info">
                         <button class="post-author" onclick="viewProfile('${post.userId}')">
                             ${escapeHtml(author?.name || '?')}
-                            ${author?.verified ? '<span class="verified-badge" title="Верифицированный аккаунт"></span>' : ''}
-                            ${author?.isAdmin ? '<span class="admin-badge" title="Администратор"></span>' : ''}
+                            ${author?.verified ? '<span class="verified-badge"></span>' : ''}
+                            ${author?.isAdmin ? '<span class="admin-badge"></span>' : ''}
                         </button>
                     </div>
                     <div class="post-menu">
                         <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
                         ${showMenu ? `
                             <div class="menu-dropdown">
-                                ${isAuthor ? `
-                                    <button onclick="editPost('${post.id}')">✏️ Редактировать</button>
-                                    <button onclick="deletePost('${post.id}')">🗑️ Удалить</button>
-                                ` : ''}
-                                ${isAdmin() && !isAuthor ? `
-                                    <button onclick="deletePostAsAdmin('${post.id}')" style="color: #ff4444;">⚠️ Удалить пост (админ)</button>
-                                ` : ''}
+                                ${isAuthor ? `<button onclick="editPost('${post.id}')">✏️ Редактировать</button><button onclick="deletePost('${post.id}')">🗑️ Удалить</button>` : ''}
+                                ${isAdmin() && !isAuthor ? `<button onclick="deletePostAsAdmin('${post.id}')" style="color:#ff4444;">⚠️ Удалить (админ)</button>` : ''}
                             </div>
                         ` : ''}
                     </div>
@@ -2036,33 +1568,32 @@
         `;
     }
 
-    // УЛУЧШЕННАЯ СЕКЦИЯ КОММЕНТАРИЕВ
+    // УЛУЧШЕННЫЕ КОММЕНТАРИИ ДЛЯ МОБИЛЬНЫХ
     function renderCommentsSection(postId, comments) {
         if (!comments || comments.length === 0) {
             return `
                 <div class="comments-area">
                     <div class="no-comments-text">💬 Напишите первый комментарий</div>
                     <div class="comment-input-wrapper">
-                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off" enterkeyhint="send">
+                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send">
                         <button onclick="submitComment('${postId}')">→</button>
                     </div>
                 </div>
             `;
         }
-        
         return `
             <div class="comments-area">
                 ${comments.map((c, idx) => {
                     const commentAuthor = users.find(u => u.id === c.userId);
                     const isCommentOwner = c.userId === currentUser.uid;
                     return `
-                        <div class="comment-item" id="comment-${postId}-${idx}" data-comment-idx="${idx}">
+                        <div class="comment-item">
                             <div class="comment-item-header">
-                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/32'}" onclick="viewProfile('${c.userId}')">
+                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/28'}" onclick="viewProfile('${c.userId}')">
                                 <button class="comment-author" onclick="viewProfile('${c.userId}')">
                                     ${escapeHtml(commentAuthor?.name || '?')}
-                                    ${commentAuthor?.verified ? '<span class="verified-badge" title="Верифицированный аккаунт"></span>' : ''}
-                                    ${commentAuthor?.isAdmin ? '<span class="admin-badge" title="Администратор"></span>' : ''}
+                                    ${commentAuthor?.verified ? '<span class="verified-badge"></span>' : ''}
+                                    ${commentAuthor?.isAdmin ? '<span class="admin-badge"></span>' : ''}
                                 </button>
                                 <span class="comment-date">${formatDate(c.date)}</span>
                             </div>
@@ -2077,25 +1608,18 @@
                     `;
                 }).join('')}
                 <div class="comment-input-wrapper">
-                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." autocomplete="off" enterkeyhint="send">
+                    <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send">
                     <button onclick="submitComment('${postId}')">→</button>
                 </div>
             </div>
         `;
     }
 
-    async function refreshAll() {
-        await renderFeed();
-        await renderProfile();
-        renderGameTab();
-    }
+    async function refreshAll() { await renderFeed(); await renderProfile(); renderGameTab(); }
 
     async function renderFeed() {
         const container = document.getElementById('postsList');
-        if (!posts.length) {
-            container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>';
-            return;
-        }
+        if (!posts.length) { container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>'; return; }
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
     }
 
@@ -2103,98 +1627,54 @@
         const container = document.getElementById('profileContainer');
         const profileUser = users.find(u => u.id === viewingUserId);
         if (!profileUser) return;
-        
         const isOwn = viewingUserId === currentUser.uid;
         const isAdminUser = isAdmin();
         document.getElementById('backBtn').classList.toggle('hidden', isOwn);
-        
         const userPosts = posts.filter(p => p.userId === viewingUserId);
         const userStats = gameStats.find(s => s.userId === viewingUserId) || { totalPoints: 0, bestRoll: -5 };
-        
         container.innerHTML = `
             <div class="profile-card">
                 ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/80?text=?'}" class="profile-avatar" onclick="viewProfile('${viewingUserId}')">
+                <img src="${profileUser.avatar || 'https://via.placeholder.com/70?text=?'}" class="profile-avatar" onclick="viewProfile('${viewingUserId}')">
                 <div class="profile-name">
                     ${escapeHtml(profileUser.name)}
-                    ${profileUser?.verified ? '<span class="verified-badge" title="Верифицированный аккаунт"></span>' : ''}
-                    ${profileUser?.isAdmin ? '<span class="admin-badge" title="Администратор"></span>' : ''}
+                    ${profileUser?.verified ? '<span class="verified-badge"></span>' : ''}
+                    ${profileUser?.isAdmin ? '<span class="admin-badge"></span>' : ''}
                 </div>
-                <p style="color:var(--text-secondary); margin-top: 6px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <p style="color:var(--text-secondary); margin-top: 6px; font-size: 13px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
-                    <div class="stat-item" onclick="showFollowing('${viewingUserId}')">
-                        <div class="stat-value">${profileUser.following?.length || 0}</div>
-                        <div class="stat-label">подписки</div>
-                    </div>
-                    <div class="stat-item" onclick="showFollowers('${viewingUserId}')">
-                        <div class="stat-value">${profileUser.followers?.length || 0}</div>
-                        <div class="stat-label">подписчики</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">${userPosts.length}</div>
-                        <div class="stat-label">посты</div>
-                    </div>
+                    <div class="stat-item" onclick="showFollowing('${viewingUserId}')"><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
+                    <div class="stat-item" onclick="showFollowers('${viewingUserId}')"><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
+                    <div class="stat-item"><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
                 </div>
                 <div class="stats" style="margin-top: 5px;">
-                    <div class="stat-item">
-                        <div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div>
-                        <div class="stat-label">очков</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div>
-                        <div class="stat-label">лучший бросок</div>
-                    </div>
+                    <div class="stat-item"><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
+                    <div class="stat-item"><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
                 </div>
                 <div class="profile-buttons">
                     ${!isOwn ? `
-                        ${isAdminUser ? `
-                            <button id="verifyUserBtn" class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${viewingUserId}')">
-                                ${profileUser?.verified ? '🔹 Забрать галочку' : '⭐ Выдать галочку'}
-                            </button>
-                        ` : ''}
-                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">
-                            ${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}
-                        </button>
-                    ` : `
-                        <button id="editProfileBtn" onclick="openEditProfileModal()">✏️ Редактировать</button>
-                    `}
+                        ${isAdminUser ? `<button id="verifyUserBtn" class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${viewingUserId}')">${profileUser?.verified ? '🔹 Забрать' : '⭐ Выдать'}</button>` : ''}
+                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}</button>
+                    ` : `<button id="editProfileBtn" onclick="openEditProfileModal()">✏️ Редактировать</button>`}
                 </div>
             </div>
             <div class="profile-posts-title">📝 Посты</div>
             <div id="profilePosts"></div>
         `;
-        
         const profilePostsContainer = document.getElementById('profilePosts');
-        if (!userPosts.length) {
-            profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
-        } else {
-            profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
-        }
+        if (!userPosts.length) profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
+        else profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
     }
 
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (lastDate && lastDate >= today) {
-            showNotification('Вы уже играли сегодня! Завтра новая попытка.');
-            return;
-        }
-        
+        const today = new Date(); today.setHours(0,0,0,0);
+        if (lastDate && lastDate >= today) { showNotification('Вы уже играли сегодня!'); return; }
         const rolled = Math.floor(Math.random() * 16) - 5;
         const newTotal = (stats?.totalPoints || 0) + rolled;
         const newBest = Math.max(rolled, stats?.bestRoll || -5);
-        
-        await db.collection('gameStats').doc(currentUser.uid).set({
-            userId: currentUser.uid,
-            totalPoints: newTotal,
-            bestRoll: newBest,
-            lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(),
-            lastRollValue: rolled
-        });
-        
+        await db.collection('gameStats').doc(currentUser.uid).set({ userId: currentUser.uid, totalPoints: newTotal, bestRoll: newBest, lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(), lastRollValue: rolled });
         await loadData();
         renderGameTab();
         showNotification(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
@@ -2204,104 +1684,49 @@
         const container = document.getElementById('gameContainer');
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date(); today.setHours(0,0,0,0);
         const canPlay = !lastDate || lastDate < today;
-        
         const currentUserData = users.find(u => u.id === currentUser.uid);
-        
         container.innerHTML = `
             <div class="game-card">
-                <div class="game-header">
-                    <div class="game-icon">🎲</div>
-                    <div class="game-title">Пиписа бот</div>
-                    <div class="player-name">
-                        ${escapeHtml(currentUserData?.name || currentUser.name)}
-                        ${currentUserData?.verified ? '<span class="verified-badge" title="Верифицированный аккаунт"></span>' : ''}
-                        ${currentUserData?.isAdmin ? '<span class="admin-badge" title="Администратор"></span>' : ''}
-                    </div>
-                </div>
-                <div class="dice-container">
-                    <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">
-                        ${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}
-                    </div>
-                </div>
+                <div class="game-header"><div class="game-icon">🎲</div><div class="game-title">Пиписа бот</div><div class="player-name">${escapeHtml(currentUserData?.name || currentUser.name)}${currentUserData?.verified ? '<span class="verified-badge"></span>' : ''}${currentUserData?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div></div>
+                <div class="dice-container"><div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}</div></div>
                 <button id="rollButton" class="roll-button">${canPlay ? '🎲 Бросить кубик!' : '⏰ Завтра'}</button>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div>
-                    <div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div>
-                </div>
+                <div class="stats-grid"><div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div><div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div></div>
             </div>
             <div id="leaderboardContainer"></div>
         `;
-        
-        if (canPlay) {
-            const rollBtn = document.getElementById('rollButton');
-            if (rollBtn) rollBtn.addEventListener('click', runGame);
-        } else {
-            const rollBtn = document.getElementById('rollButton');
-            if (rollBtn) rollBtn.setAttribute('disabled', 'disabled');
-        }
+        if (canPlay) document.getElementById('rollButton')?.addEventListener('click', runGame);
+        else document.getElementById('rollButton')?.setAttribute('disabled', 'disabled');
         await renderLeaderboard();
     }
 
     async function renderLeaderboard() {
         const container = document.getElementById('leaderboardContainer');
         const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
-        if (!data.length) {
-            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:40px;color:var(--text-secondary);">Пока нет участников</div></div>`;
-            return;
-        }
+        if (!data.length) { container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:30px;color:var(--text-secondary);">Пока нет участников</div></div>`; return; }
         const usersMap = new Map(users.map(u => [u.id, u]));
-        container.innerHTML = `
-            <div class="leaderboard">
-                <div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>
-                ${data.map((item, idx) => {
-                    const user = usersMap.get(item.userId);
-                    return `
-                        <div class="leaderboard-item" onclick="viewProfile('${item.userId}')">
-                            <div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div>
-                            <div class="leaderboard-name">
-                                ${escapeHtml(user?.name || '?')}
-                                ${user?.verified ? '<span class="verified-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                                ${user?.isAdmin ? '<span class="admin-badge" style="width:14px;height:14px;font-size:9px;"></span>' : ''}
-                            </div>
-                            <div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
+        container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>${data.map((item, idx) => { const user = usersMap.get(item.userId); return `<div class="leaderboard-item" onclick="viewProfile('${item.userId}')"><div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div><div class="leaderboard-name">${escapeHtml(user?.name || '?')}${user?.verified ? '<span class="verified-badge"></span>' : ''}${user?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div><div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div></div>`; }).join('')}</div>`;
     }
 
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
-        const text = input?.value;
-        if (!text || !text.trim()) return;
-        await addComment(postId, text);
+        if (!input?.value?.trim()) return;
+        await addComment(postId, input.value);
     };
-    
     window.deleteComment = deleteComment;
     window.openEditCommentModal = openEditCommentModal;
     
     function toggleComments(postId) {
         openComments[postId] = !openComments[postId];
         refreshAll();
-        if (openComments[postId]) {
-            setTimeout(() => {
-                const input = document.getElementById(`comment-input-${postId}`);
-                if (input) input.focus();
-            }, 150);
-        }
+        if (openComments[postId]) setTimeout(() => document.getElementById(`comment-input-${postId}`)?.focus(), 150);
     }
     
-    document.addEventListener('keypress', function(e) {
-        if (e.target && e.target.id && e.target.id.startsWith('comment-input-')) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const postId = e.target.id.replace('comment-input-', '');
-                submitComment(postId);
-            }
+    document.addEventListener('keypress', (e) => {
+        if (e.target?.id?.startsWith('comment-input-') && e.key === 'Enter') {
+            e.preventDefault();
+            submitComment(e.target.id.replace('comment-input-', ''));
         }
     });
     
@@ -2310,32 +1735,15 @@
         else { openMenus = {}; openMenus[postId] = true; }
         refreshAll();
     };
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.post-menu')) {
-            openMenus = {};
-            refreshAll();
-        }
-    });
-
-    window.viewProfile = function(userId) {
-        viewingUserId = userId;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-    
+    document.addEventListener('click', (e) => { if (!e.target.closest('.post-menu')) { openMenus = {}; refreshAll(); } });
+    window.viewProfile = function(userId) { viewingUserId = userId; renderProfile(); document.querySelector('.tab[data-tab="profile"]').click(); };
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
     window.toggleComments = toggleComments;
     window.toggleVerification = toggleVerification;
-    window.openImageModal = openImageModal;
     window.deletePost = deletePost;
     window.deletePostAsAdmin = deletePostAsAdmin;
-    window.editPost = function(postId) {
-        const post = posts.find(p => p.id === postId);
-        openEditPostModal(postId, post.text);
-    };
-    
+    window.editPost = function(postId) { openEditPostModal(postId, posts.find(p => p.id === postId).text); };
     window.showFollowers = showFollowers;
     window.showFollowing = showFollowing;
     window.closeUsersListModal = closeUsersListModal;
@@ -2343,121 +1751,42 @@
     const settingsModal = document.createElement('div');
     settingsModal.id = 'settingsModal';
     settingsModal.className = 'settings-modal';
-    settingsModal.innerHTML = `
-        <div class="settings-modal-content">
-            <h3>⚙️ Настройки</h3>
-            <div class="settings-item">
-                <button id="settingsThemeBtn">🌓 Сменить тему</button>
-            </div>
-            <div class="settings-item">
-                <button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать администратором</button>
-            </div>
-            <div class="settings-item">
-                <button id="settingsLogoutBtn">🚪 Выйти из аккаунта</button>
-            </div>
-            <div class="settings-item">
-                <button id="settingsCloseBtn">✖️ Закрыть</button>
-            </div>
-        </div>
-    `;
+    settingsModal.innerHTML = `<div class="settings-modal-content"><h3>⚙️ Настройки</h3><div class="settings-item"><button id="settingsThemeBtn">🌓 Сменить тему</button></div><div class="settings-item"><button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать админом</button></div><div class="settings-item"><button id="settingsLogoutBtn">🚪 Выйти</button></div><div class="settings-item"><button id="settingsCloseBtn">✖️ Закрыть</button></div></div>`;
     document.body.appendChild(settingsModal);
-    
     document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
     document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
-    
-    settingsModal.addEventListener('click', (e) => {
-        if (e.target === settingsModal) closeSettings();
-    });
-    
+    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
     window.openSettings = openSettings;
     window.closeSettings = closeSettings;
 
     document.getElementById('closeUsersListBtn')?.addEventListener('click', closeUsersListModal);
-    document.getElementById('usersListModal')?.addEventListener('click', (e) => {
-        if (e.target === document.getElementById('usersListModal')) {
-            closeUsersListModal();
-        }
-    });
+    document.getElementById('usersListModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('usersListModal')) closeUsersListModal(); });
 
+    // Восстановление пароля
     const forgotBtn = document.getElementById('forgotPasswordBtn');
-    const resetModal = document.getElementById('resetPasswordModal');
+    const resetModalDiv = document.getElementById('resetPasswordModal');
     const confirmResetBtn = document.getElementById('confirmResetBtn');
     const cancelResetBtn = document.getElementById('cancelResetBtn');
-    const resetEmailInput = document.getElementById('resetEmail');
-    const resetMessage = document.getElementById('resetMessage');
-
-    if (forgotBtn) {
-        forgotBtn.onclick = (e) => {
-            e.preventDefault();
-            resetModal.style.display = 'flex';
-            resetEmailInput.value = '';
-            resetMessage.textContent = '';
-            resetMessage.style.color = '';
-        };
-    }
-
-    if (cancelResetBtn) {
-        cancelResetBtn.onclick = () => {
-            resetModal.style.display = 'none';
-        };
-    }
-
-    if (resetModal) {
-        resetModal.onclick = (e) => {
-            if (e.target === resetModal) {
-                resetModal.style.display = 'none';
-            }
-        };
-    }
-
+    if (forgotBtn) forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
+    if (cancelResetBtn) cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
     if (confirmResetBtn) {
         confirmResetBtn.onclick = async () => {
-            const email = resetEmailInput.value.trim();
-            if (!email) {
-                resetMessage.textContent = 'Введите ваш email';
-                resetMessage.style.color = 'var(--accent)';
-                return;
-            }
+            const email = document.getElementById('resetEmail').value.trim();
+            if (!email) { document.getElementById('resetMessage').textContent = 'Введите email'; return; }
             try {
                 await auth.sendPasswordResetEmail(email);
-                resetMessage.textContent = '✅ Письмо для сброса пароля отправлено! Проверьте почту.';
-                resetMessage.style.color = 'var(--success)';
-                resetEmailInput.value = '';
-                setTimeout(() => {
-                    resetModal.style.display = 'none';
-                }, 3000);
-            } catch (error) {
-                let errorMsg = 'Ошибка: ';
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMsg += 'Пользователь с таким email не найден';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMsg += 'Неверный формат email';
-                        break;
-                    default:
-                        errorMsg += error.message;
-                }
-                resetMessage.textContent = errorMsg;
-                resetMessage.style.color = 'var(--accent)';
-            }
+                document.getElementById('resetMessage').textContent = '✅ Письмо отправлено!';
+                setTimeout(() => resetModalDiv.style.display = 'none', 2000);
+            } catch (error) { document.getElementById('resetMessage').textContent = '❌ ' + error.message; }
         };
     }
 
-    if (resetEmailInput) {
-        resetEmailInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                confirmResetBtn.click();
-            }
-        });
-    }
-
-    const authScreen = document.getElementById('authScreen');
-    const mainApp = document.getElementById('mainApp');
+    const authScreenDiv = document.getElementById('authScreen');
+    const mainAppDiv = document.getElementById('mainApp');
     const submitBtn = document.getElementById('submitAuthBtn');
     const switchBtn = document.getElementById('switchModeBtn');
-    const authError = document.getElementById('authError');
+    const authErrorDiv = document.getElementById('authError');
 
     function updateAuthButton() {
         if (isLoginMode) {
@@ -2471,29 +1800,19 @@
         }
     }
 
-    switchBtn.onclick = () => {
-        isLoginMode = !isLoginMode;
-        updateAuthButton();
-        authError.textContent = '';
-    };
-
+    switchBtn.onclick = () => { isLoginMode = !isLoginMode; updateAuthButton(); authErrorDiv.textContent = ''; };
     submitBtn.onclick = async () => {
         const name = document.getElementById('regName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
-        if (!email || !password) { authError.textContent = 'Заполните email и пароль'; return; }
+        if (!email || !password) { authErrorDiv.textContent = 'Заполните email и пароль'; return; }
         try {
             if (!isLoginMode) {
-                if (!name) { authError.textContent = 'Введите имя'; return; }
+                if (!name) { authErrorDiv.textContent = 'Введите имя'; return; }
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({
-                    name, email, bio: '', avatar: null, followers: [], following: [], isAdmin: false, verified: false
-                });
-                await db.collection('gameStats').doc(userCredential.user.uid).set({
-                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null
-                });
+                await db.collection('users').doc(userCredential.user.uid).set({ name, email, bio: '', avatar: null, followers: [], following: [], isAdmin: false, verified: false });
+                await db.collection('gameStats').doc(userCredential.user.uid).set({ userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null });
                 currentUser = userCredential.user;
-                currentUser.isAdmin = false;
                 await loadData();
                 showMainApp();
             } else {
@@ -2502,98 +1821,58 @@
                 await loadData();
                 showMainApp();
             }
-        } catch (error) { authError.textContent = error.message; }
+        } catch (error) { authErrorDiv.textContent = error.message; }
     };
 
     async function showMainApp() {
         viewingUserId = currentUser.uid;
         await loadAdminStatus();
-        authScreen.style.display = 'none';
-        mainApp.style.display = 'block';
+        authScreenDiv.style.display = 'none';
+        mainAppDiv.style.display = 'block';
         await refreshAll();
     }
 
-    const modal = document.getElementById('postModal');
+    const postModal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
-
-    fabBtn.onclick = () => {
-        modal.style.display = 'flex';
-        document.getElementById('modalPostText').value = '';
-        document.getElementById('modalPostMedia').value = '';
-        document.getElementById('fileNameDisplay').textContent = '';
-        document.getElementById('modalPostText').focus();
-    };
-    document.getElementById('modalCancelBtn').onclick = () => { modal.style.display = 'none'; };
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-
+    fabBtn.onclick = () => { postModal.style.display = 'flex'; document.getElementById('modalPostText').value = ''; document.getElementById('modalPostMedia').value = ''; document.getElementById('fileNameDisplay').textContent = ''; };
+    document.getElementById('modalCancelBtn').onclick = () => { postModal.style.display = 'none'; };
+    postModal.onclick = (e) => { if (e.target === postModal) postModal.style.display = 'none'; };
     document.getElementById('modalPublishBtn').onclick = async () => {
         const text = document.getElementById('modalPostText').value.trim();
         if (!text) { alert('Напишите текст'); return; }
-        
         const file = document.getElementById('modalPostMedia').files[0];
         if (file) {
             const compressed = await compressMedia(file);
             const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
             await savePost(text, compressed, mediaType);
-        } else {
-            await savePost(text, null, null);
-        }
-        modal.style.display = 'none';
+        } else { await savePost(text, null, null); }
+        postModal.style.display = 'none';
         showNotification('Пост опубликован!');
     };
-
-    document.getElementById('modalPostMedia')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('fileNameDisplay').textContent = `📎 ${file.name}`;
-        }
-    });
+    document.getElementById('modalPostMedia')?.addEventListener('change', (e) => { if (e.target.files[0]) document.getElementById('fileNameDisplay').textContent = `📎 ${e.target.files[0].name}`; });
 
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const tabName = tab.dataset.tab;
-            if (tabName === 'feed') {
-                document.getElementById('feedTab').classList.remove('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                renderFeed();
-            } else if (tabName === 'game') {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.remove('hidden');
-                document.getElementById('profileTab').classList.add('hidden');
-                renderGameTab();
-            } else {
-                document.getElementById('feedTab').classList.add('hidden');
-                document.getElementById('gameTab').classList.add('hidden');
-                document.getElementById('profileTab').classList.remove('hidden');
-                renderProfile();
-            }
+            document.getElementById('feedTab').classList.add('hidden');
+            document.getElementById('gameTab').classList.add('hidden');
+            document.getElementById('profileTab').classList.add('hidden');
+            if (tabName === 'feed') { document.getElementById('feedTab').classList.remove('hidden'); renderFeed(); }
+            else if (tabName === 'game') { document.getElementById('gameTab').classList.remove('hidden'); renderGameTab(); }
+            else { document.getElementById('profileTab').classList.remove('hidden'); renderProfile(); }
         };
     });
 
-    document.getElementById('logoBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-        document.querySelector('.tab[data-tab="profile"]').click();
-    };
-
-    document.getElementById('backBtn').onclick = () => {
-        viewingUserId = currentUser.uid;
-        renderProfile();
-    };
-
-    function initTheme() {
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
-    }
+    document.getElementById('logoBtn').onclick = () => { viewingUserId = currentUser.uid; renderProfile(); document.querySelector('.tab[data-tab="profile"]').click(); };
+    document.getElementById('backBtn').onclick = () => { viewingUserId = currentUser.uid; renderProfile(); };
+    function initTheme() { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); }
     
     setRandomPhrase();
     initTheme();
     
-    auth.onAuthStateChanged(async (user) => {
-        if (user) { currentUser = user; await loadData(); await loadAdminStatus(); showMainApp(); }
-    });
+    auth.onAuthStateChanged(async (user) => { if (user) { currentUser = user; await loadData(); await loadAdminStatus(); showMainApp(); } });
 </script>
 </body>
 </html>
