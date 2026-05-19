@@ -12,7 +12,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         :root {
             --bg-primary: #0a0c12;
             --bg-secondary: #141820;
@@ -27,7 +33,9 @@
             --comment-bg: #0d1119;
             --comment-hover: #151b26;
             --success: #4caf50;
+            --comment-like: #ff3b5c;
         }
+
         body.light-theme {
             --bg-primary: #f5f7fb;
             --bg-secondary: #ffffff;
@@ -42,156 +50,884 @@
             --comment-bg: #f8f9fc;
             --comment-hover: #f0f2f6;
         }
+
         body { background: var(--bg-primary); }
-        .verified-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #1DA1F2, #0D8BD9); color: white; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
+            color: white;
+            border-radius: 50%;
+            font-size: 8px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
         .verified-badge::before { content: "✓"; }
-        .admin-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            border-radius: 50%;
+            font-size: 8px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
         .admin-badge::before { content: "★"; }
-        .auth-screen { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0a0c12 0%, #141820 100%); padding: 16px; }
-        .auth-card { background: var(--bg-card); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
-        .auth-card h1 { text-align: center; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 34px; margin-bottom: 8px; }
-        .sub { text-align: center; color: var(--text-secondary); margin-bottom: 24px; font-size: 13px; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; background: var(--bg-input); color: var(--text-primary); }
+
+        .auth-screen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0c12 0%, #141820 100%);
+            padding: 16px;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid var(--border);
+        }
+
+        .auth-card h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #ff5722, #ff8a4c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
         textarea { resize: none; font-family: inherit; }
-        button { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .switch-btn { text-align: center; margin-top: 16px; color: var(--accent); cursor: pointer; padding: 8px; }
-        .forgot-btn { background: none; color: var(--accent); margin-top: 8px; font-size: 14px; padding: 8px; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .switch-btn {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .forgot-btn {
+            background: none;
+            color: var(--accent);
+            margin-top: 8px;
+            font-size: 14px;
+            padding: 8px;
+        }
         .forgot-btn:hover { background: rgba(255, 87, 34, 0.1); }
+
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
-        .main-app { display: none; max-width: 600px; margin: 0 auto; background: var(--bg-primary); min-height: 100vh; padding-bottom: 80px; }
-        .header { background: var(--bg-secondary); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-        .logo { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
+
+        .main-app {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff5722, #ff8a4c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
         .header-actions { display: flex; gap: 10px; align-items: center; }
-        .back-btn { background: var(--bg-input); width: auto; padding: 6px 14px; border-radius: 30px; color: var(--text-primary); font-size: 13px; border: none; }
-        .tabs { display: flex; background: var(--bg-secondary); gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-secondary); border-radius: 30px; }
+        .back-btn {
+            background: var(--bg-input);
+            width: auto;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            gap: 4px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
         .tab.active { background: var(--accent); color: white; }
+
         .content { padding: 12px; }
         .hidden { display: none; }
-        .post { background: var(--bg-card); border-radius: 16px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .post-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--border); cursor: pointer; }
+
+        /* ========== ПОСТЫ ========== */
+        .post {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .post:hover { border-color: var(--accent); }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--border);
+            cursor: pointer;
+        }
+
         .post-author-info { flex: 1; }
-        .post-author { font-weight: 700; font-size: 15px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; text-align: left; display: inline-flex; align-items: center; flex-wrap: wrap; }
+        .post-author {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
         .post-menu { position: relative; }
-        .menu-dots { background: none; width: auto; padding: 6px 10px; font-size: 18px; color: var(--text-secondary); cursor: pointer; border-radius: 30px; border: none; }
-        .menu-dropdown { position: absolute; right: 0; top: 35px; background: var(--bg-card); border-radius: 12px; padding: 6px 0; min-width: 140px; z-index: 999; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid var(--border); }
-        .menu-dropdown button { background: none; width: 100%; text-align: left; padding: 10px 14px; border-radius: 0; color: var(--text-primary); font-size: 13px; }
-        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 14px; word-break: break-word; }
-        .post-media { max-width: 100%; border-radius: 12px; margin: 8px 0; max-height: 350px; object-fit: cover; cursor: pointer; }
-        .post-video { width: 100%; border-radius: 12px; margin: 8px 0; max-height: 350px; background: #000; }
-        .post-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-        .post-actions { display: flex; gap: 12px; }
-        .like-btn, .comment-toggle-btn { cursor: pointer; background: none; border: none; padding: 6px 10px; border-radius: 30px; display: flex; align-items: center; gap: 5px; color: var(--text-secondary); font-size: 13px; }
+        .menu-dots {
+            background: none;
+            width: auto;
+            padding: 6px 10px;
+            font-size: 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 30px;
+            border: none;
+        }
+        .menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 35px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 6px 0;
+            min-width: 150px;
+            z-index: 999;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+        .menu-dropdown button {
+            background: none;
+            width: 100%;
+            text-align: left;
+            padding: 10px 14px;
+            border-radius: 0;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+        .menu-dropdown button:hover { background: var(--bg-input); }
+
+        .post-text { margin: 10px 0; color: var(--text-primary); line-height: 1.5; font-size: 14px; word-break: break-word; }
+        .post-media { max-width: 100%; border-radius: 16px; margin: 8px 0; max-height: 400px; object-fit: cover; cursor: pointer; }
+        .post-video { width: 100%; border-radius: 16px; margin: 8px 0; max-height: 400px; background: #000; }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .post-actions { display: flex; gap: 16px; }
+        .like-btn, .comment-toggle-btn {
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            transition: all 0.2s;
+        }
         .like-btn.liked { color: var(--like); }
+        .like-btn:hover, .comment-toggle-btn:hover { background: var(--bg-input); }
         .post-time-footer { font-size: 10px; color: var(--text-secondary); }
-        .comments-area { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
-        .comment-item { background: var(--comment-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px; position: relative; }
-        .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
-        .comment-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; cursor: pointer; flex-shrink: 0; }
-        .comment-author { font-weight: 600; font-size: 12px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; display: inline-flex; align-items: center; gap: 3px; }
-        .comment-date { font-size: 9px; color: var(--text-secondary); margin-left: auto; }
-        .comment-text { font-size: 13px; color: var(--text-primary); word-break: break-word; line-height: 1.4; margin: 4px 0 4px 36px; }
-        .comment-menu { position: relative; display: inline-block; }
-        .comment-menu-dots { background: none; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; padding: 4px 8px; width: auto; border-radius: 20px; }
+
+        /* ========== КРАСИВЫЕ КОММЕНТАРИИ ========== */
+        .comments-area {
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+
+        .comment-item {
+            background: var(--comment-bg);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            animation: commentFadeIn 0.3s ease;
+        }
+        @keyframes commentFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .comment-item:hover { background: var(--comment-hover); }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .comment-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .comment-date {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        .comment-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            word-break: break-word;
+            line-height: 1.45;
+            margin-left: 42px;
+            margin-bottom: 8px;
+        }
+        .comment-footer {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: 42px;
+        }
+        .comment-like-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 20px;
+            width: auto;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .comment-like-btn:hover { background: var(--bg-input); }
+        .comment-like-btn.liked { color: var(--comment-like); }
+        .comment-menu {
+            position: relative;
+            display: inline-block;
+        }
+        .comment-menu-dots {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px 8px;
+            width: auto;
+            border-radius: 20px;
+        }
         .comment-menu-dots:hover { background: var(--bg-input); }
-        .comment-menu-dropdown { position: absolute; right: 0; top: 25px; background: var(--bg-card); border-radius: 10px; padding: 4px 0; min-width: 120px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid var(--border); }
-        .comment-menu-dropdown button { background: none; width: 100%; text-align: left; padding: 8px 12px; border-radius: 0; color: var(--text-primary); font-size: 12px; }
-        .comment-input-wrapper { margin-top: 12px; background: var(--bg-input); border-radius: 25px; padding: 4px 4px 4px 14px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); }
-        .comment-input-wrapper:focus-within { border-color: var(--accent); }
-        .comment-input-wrapper input { flex: 1; background: transparent; border: none; padding: 10px 0; margin: 0; font-size: 14px; color: var(--text-primary); outline: none; }
-        .comment-input-wrapper button { width: auto; padding: 6px 18px; margin: 0; border-radius: 25px; background: var(--accent); font-size: 13px; font-weight: 600; }
-        .no-comments-text { text-align: center; color: var(--text-secondary); font-size: 12px; padding: 16px; }
-        .profile-card { background: var(--bg-card); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--border); margin-bottom: 16px; position: relative; }
-        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
-        .profile-name { margin-top: 6px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
-        .stats { display: flex; justify-content: center; gap: 24px; margin: 12px 0; cursor: pointer; }
-        .stat-item { text-align: center; cursor: pointer; }
-        .stat-value { font-size: 18px; font-weight: 700; color: var(--accent); }
-        .stat-label { font-size: 11px; color: var(--text-secondary); }
-        .settings-btn { position: absolute; top: 12px; right: 12px; background: none; width: 36px; height: 36px; padding: 0; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; background: var(--bg-input); color: var(--text-secondary); cursor: pointer; border: none; }
-        .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .settings-modal-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 300px; border: 1px solid var(--border); }
-        .settings-modal-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; }
+        .comment-menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 25px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 4px 0;
+            min-width: 130px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
+        .comment-menu-dropdown button {
+            background: none;
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            border-radius: 0;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+        .comment-menu-dropdown button:hover { background: var(--bg-input); }
+
+        /* Поле ввода комментария */
+        .comment-input-wrapper {
+            margin-top: 12px;
+            background: var(--bg-input);
+            border-radius: 30px;
+            padding: 6px 6px 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .comment-input-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+        }
+        .comment-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px 0;
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+        }
+        .comment-input-wrapper button {
+            width: auto;
+            padding: 6px 20px;
+            margin: 0;
+            border-radius: 30px;
+            background: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .no-comments-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        /* ========== ПРОФИЛЬ (ИСПРАВЛЕН) ========== */
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 12px;
+            background: var(--border);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+        }
+        .profile-name {
+            margin-top: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .profile-bio {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 16px 0;
+        }
+        .stat-item {
+            text-align: center;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .stat-item:hover { opacity: 0.8; }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .settings-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: none;
+        }
+        .profile-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .profile-posts-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 16px 0 12px 0;
+            color: var(--text-primary);
+        }
+
+        /* Настройки */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .settings-modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            width: 90%;
+            max-width: 300px;
+            border: 1px solid var(--border);
+        }
+        .settings-modal-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 18px;
+        }
         .settings-item { margin: 12px 0; }
-        .settings-item button { width: 100%; padding: 12px; font-size: 14px; font-weight: 600; border-radius: 12px; background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); }
-        .get-admin-settings-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border: none; }
-        .profile-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
-        .users-list-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2004; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .users-list-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); max-height: 80vh; display: flex; flex-direction: column; }
-        .users-list-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; flex-shrink: 0; }
-        .users-list { max-height: 60vh; overflow-y: auto; padding-right: 4px; }
-        .user-list-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; }
+        .settings-item button {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        .get-admin-settings-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            border: none;
+        }
+
+        /* Модалки */
+        .users-list-modal, .admin-code-modal, .edit-profile-modal, .edit-post-modal, .edit-comment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .users-list-content, .admin-code-content, .edit-profile-content, .edit-post-content, .edit-comment-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            width: 90%;
+            max-width: 350px;
+            border: 1px solid var(--border);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .users-list-content h3, .admin-code-content h3, .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .users-list {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .user-list-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
         .user-list-item:hover { background: var(--bg-input); }
-        .user-list-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--border); }
+        .user-list-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--border);
+        }
         .user-list-info { flex: 1; }
-        .user-list-name { font-weight: 600; color: var(--text-primary); font-size: 14px; display: inline-flex; align-items: center; gap: 3px; }
+        .user-list-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
         .user-list-bio { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .no-users { text-align: center; color: var(--text-secondary); padding: 30px; }
-        .edit-profile-modal, .edit-post-modal, .edit-comment-modal, .admin-code-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .edit-profile-content, .edit-post-content, .edit-comment-content, .admin-code-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); }
-        .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3, .admin-code-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; }
+
         .edit-buttons, .admin-code-buttons { display: flex; gap: 10px; margin-top: 16px; }
         .edit-buttons button, .admin-code-buttons button { flex: 1; }
         .cancel-edit-btn { background: var(--bg-input); color: var(--text-primary); }
         .avatar-preview { text-align: center; margin-bottom: 12px; }
-        .avatar-preview img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
-        .image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; cursor: pointer; }
+        .avatar-preview img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
         .image-modal img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 12px; }
-        .image-modal-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; color: white; }
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+        }
+
         .upload-btn { position: relative; margin: 8px 0; }
         .upload-btn input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
-        .upload-label { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); border-radius: 12px; padding: 10px; cursor: pointer; color: white; font-size: 13px; font-weight: 600; }
+        .upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+        }
         .file-name { font-size: 11px; color: var(--accent); margin-top: 6px; display: block; text-align: center; }
-        .profile-posts-title { font-size: 14px; font-weight: 600; margin: 12px 0 10px 0; color: var(--text-primary); }
-        .fab { position: fixed; bottom: 16px; right: 16px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 200; border: none; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
+
+        .fab {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 200;
+            border: none;
+            transition: transform 0.2s;
+        }
+        .fab:active { transform: scale(0.95); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid var(--border);
+        }
         .modal-content h3 { margin-bottom: 14px; color: var(--text-primary); font-size: 18px; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
         .modal-buttons button { flex: 1; }
         .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
-        .game-card { background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+
+        /* Игра */
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
         .game-header { text-align: center; margin-bottom: 16px; }
-        .game-icon { font-size: 40px; }
-        .game-title { font-size: 18px; font-weight: bold; color: var(--accent); margin: 8px 0; }
-        .player-name { margin-top: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; }
-        .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 16px; padding: 24px; text-align: center; margin: 16px 0; }
-        .dice-value { font-size: 56px; font-weight: bold; margin: 16px 0; }
+        .game-icon { font-size: 48px; }
+        .game-title { font-size: 20px; font-weight: bold; color: var(--accent); margin: 8px 0; }
+        .player-name {
+            margin-top: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .dice-container {
+            background: linear-gradient(135deg, var(--bg-input), var(--bg-card));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 16px 0;
+        }
+        .dice-value { font-size: 64px; font-weight: bold; margin: 16px 0; }
         .dice-value.positive { color: var(--success); }
         .dice-value.negative { color: #f44336; }
         .roll-button { font-size: 16px; padding: 12px; border-radius: 40px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
-        .stat-card { background: var(--bg-input); border-radius: 14px; padding: 12px; text-align: center; }
-        .leaderboard { background: var(--bg-card); border-radius: 16px; padding: 12px; }
-        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+        .stat-card { background: var(--bg-input); border-radius: 16px; padding: 14px; text-align: center; }
+
+        .leaderboard { background: var(--bg-card); border-radius: 20px; padding: 16px; }
+        .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
         .leaderboard-title { font-size: 16px; font-weight: bold; color: var(--text-primary); }
-        .leaderboard-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; margin-bottom: 4px; cursor: pointer; }
-        .leaderboard-rank { font-weight: bold; min-width: 30px; font-size: 14px; color: var(--accent); }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+        .leaderboard-item:hover { background: var(--bg-input); }
+        .leaderboard-rank { font-weight: bold; min-width: 32px; font-size: 14px; color: var(--accent); }
         .rank-1 { color: #ffd700; }
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
-        .leaderboard-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text-primary); display: inline-flex; align-items: center; gap: 3px; }
-        .follow-btn { background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); font-size: 13px; padding: 8px 14px; }
-        .follow-btn.following { background: var(--accent); color: white; }
-        .reset-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
-        .reset-modal-content { background: var(--bg-card); border-radius: 20px; padding: 20px; width: 90%; max-width: 320px; border: 1px solid var(--border); }
+        .leaderboard-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; }
+        .leaderboard-score { color: var(--accent); font-weight: bold; }
+
+        .follow-btn {
+            background: var(--bg-input);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            font-size: 13px;
+            padding: 8px 16px;
+        }
+        .follow-btn.following { background: var(--accent); color: white; border: none; }
+
+        .reset-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .reset-modal-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 320px;
+            border: 1px solid var(--border);
+        }
         .reset-modal-content h3 { color: var(--text-primary); margin-bottom: 14px; text-align: center; font-size: 18px; }
         .reset-buttons { display: flex; gap: 10px; margin-top: 16px; }
         .reset-buttons button { flex: 1; }
         .cancel-reset-btn { background: var(--bg-input); color: var(--text-primary); }
         .reset-message { font-size: 12px; margin-top: 10px; text-align: center; }
-        .notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 8px 16px; border-radius: 30px; font-size: 13px; z-index: 10000; animation: fadeInOut 2s ease; }
-        @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 15% { opacity: 1; transform: translateX(-50%) translateY(0); } 85% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+
+        .notification {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            z-index: 10000;
+            animation: fadeInOut 2s ease;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+
         @media (max-width: 500px) {
             .content { padding: 8px; }
-            .fab { width: 48px; height: 48px; font-size: 24px; bottom: 12px; right: 12px; }
-            .post-avatar { width: 36px; height: 36px; }
+            .fab { width: 52px; height: 52px; font-size: 24px; bottom: 12px; right: 12px; }
+            .post-avatar { width: 40px; height: 40px; }
             .post-author { font-size: 14px; }
             .menu-dots { padding: 4px 8px; }
             .comment-input-wrapper input { font-size: 13px; padding: 8px 0; }
-            .comment-input-wrapper button { padding: 5px 14px; font-size: 12px; }
-            .comment-menu-dots { padding: 2px 6px; font-size: 12px; }
+            .comment-input-wrapper button { padding: 5px 16px; font-size: 12px; }
+            .comment-avatar { width: 28px; height: 28px; }
+            .comment-text { margin-left: 38px; font-size: 12px; }
+            .comment-footer { margin-left: 38px; }
+            .profile-avatar { width: 70px; height: 70px; }
+            .stats { gap: 20px; }
+            .stat-value { font-size: 18px; }
         }
     </style>
 </head>
@@ -356,8 +1092,6 @@
     let isLoginMode = false;
     let currentEditComment = { postId: null, commentIndex: null };
     let currentEditPostId = null;
-    
-    // Секретный код админа (лучше хранить в переменной окружения, но для демо так)
     const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
@@ -366,7 +1100,7 @@
         notification.className = 'notification';
         notification.textContent = message;
         document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
+        setTimeout(() => notification.remove(), 2500);
     }
 
     function formatDate(date) {
@@ -385,12 +1119,10 @@
         return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    // Загрузка файла в Firebase Storage
     async function uploadToStorage(file, path) {
         return new Promise((resolve, reject) => {
             const storageRef = storage.ref(path);
             const uploadTask = storageRef.put(file);
-            
             uploadTask.on('state_changed', null,
                 (error) => reject(error),
                 async () => {
@@ -401,14 +1133,12 @@
         });
     }
 
-    // Компрессия изображения (всё ещё нужна для предпросмотра и уменьшения размера)
     async function compressImage(file, maxWidth = 900) {
         return new Promise((resolve, reject) => {
             if (!file || !file.type.startsWith('image/')) {
                 resolve(file);
                 return;
             }
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
@@ -429,7 +1159,6 @@
                         quality -= 0.1;
                         result = canvas.toDataURL('image/jpeg', quality);
                     }
-                    // Конвертируем dataURL обратно в Blob для загрузки
                     fetch(result)
                         .then(res => res.blob())
                         .then(blob => resolve(new File([blob], file.name, { type: 'image/jpeg' })));
@@ -507,7 +1236,6 @@
     // ========== ПОСТЫ И КОММЕНТАРИИ ==========
     async function savePost(text, file, mediaType) {
         let mediaUrl = null;
-        
         if (file) {
             try {
                 const compressedFile = mediaType === 'image' ? await compressImage(file) : file;
@@ -515,12 +1243,11 @@
                 const fileName = `${currentUser.uid}/${Date.now()}.${ext}`;
                 mediaUrl = await uploadToStorage(compressedFile, `posts/${fileName}`);
             } catch (error) {
-                console.error('Ошибка загрузки файла:', error);
+                console.error('Ошибка загрузки:', error);
                 showNotification('❌ Ошибка загрузки медиа');
                 return;
             }
         }
-        
         const postData = { 
             userId: currentUser.uid, 
             text: text, 
@@ -532,20 +1259,17 @@
             postData.media = mediaUrl;
             postData.mediaType = mediaType;
         }
-        
         await db.collection('posts').add(postData);
         await loadData();
         await refreshAll();
     }
 
-    // Оптимистичное обновление лайка
     async function toggleLike(postId, post) {
         const wasLiked = post.likes?.includes(currentUser.uid);
         const newLikes = wasLiked 
             ? (post.likes || []).filter(id => id !== currentUser.uid)
             : [...(post.likes || []), currentUser.uid];
         
-        // Оптимистичное обновление UI
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].likes = newLikes;
@@ -555,7 +1279,6 @@
         try {
             await db.collection('posts').doc(postId).update({ likes: newLikes });
         } catch (error) {
-            // Откат при ошибке
             const revertLikes = wasLiked 
                 ? [...(post.likes || []), currentUser.uid]
                 : (post.likes || []).filter(id => id !== currentUser.uid);
@@ -563,9 +1286,8 @@
                 posts[postIndex].likes = revertLikes;
                 await renderFeed();
             }
-            showNotification('❌ Ошибка при обновлении лайка');
+            showNotification('❌ Ошибка');
         }
-        
         await loadData();
     }
 
@@ -580,7 +1302,6 @@
             date: new Date().toISOString() 
         });
         
-        // Оптимистичное обновление
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].comments = comments;
@@ -591,7 +1312,7 @@
         try {
             await db.collection('posts').doc(postId).update({ comments });
         } catch (error) {
-            showNotification('❌ Ошибка при добавлении комментария');
+            showNotification('❌ Ошибка');
             await loadData();
             await refreshAll();
         }
@@ -609,7 +1330,6 @@
         const newComments = [...post.comments];
         newComments.splice(commentIndex, 1);
         
-        // Оптимистичное обновление
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].comments = newComments;
@@ -620,7 +1340,7 @@
             await db.collection('posts').doc(postId).update({ comments: newComments });
             showNotification('🗑️ Комментарий удалён');
         } catch (error) {
-            showNotification('❌ Ошибка при удалении');
+            showNotification('❌ Ошибка');
             await loadData();
             await refreshAll();
         }
@@ -655,7 +1375,7 @@
             await db.collection('posts').doc(postId).update({ comments: newComments });
             showNotification('✏️ Обновлено');
         } catch (error) {
-            showNotification('❌ Ошибка при обновлении');
+            showNotification('❌ Ошибка');
             await loadData();
             await refreshAll();
         }
@@ -742,7 +1462,6 @@
     // ========== ПРОФИЛЬ ==========
     async function updateUserProfile(newName, newBio, newAvatarFile) {
         let avatarUrl = null;
-        
         if (newAvatarFile) {
             try {
                 const compressedFile = await compressImage(newAvatarFile);
@@ -754,12 +1473,10 @@
                 return false;
             }
         }
-        
         const updates = {};
         if (newName && newName !== currentUser.name) updates.name = newName;
         if (newBio !== undefined) updates.bio = newBio;
         if (avatarUrl) updates.avatar = avatarUrl;
-        
         if (Object.keys(updates).length > 0) {
             await db.collection('users').doc(currentUser.uid).update(updates);
             await loadData();
@@ -795,7 +1512,7 @@
             container.innerHTML = '<div class="no-users">😔 Нет подписчиков</div>';
         } else {
             container.innerHTML = followersUsers.map(follower => `
-                <div class="user-list-item" onclick="viewProfile('${follower.id}'); closeUsersListModal();">
+                <div class="user-list-item" onclick="viewProfile('${escapeHtml(follower.id)}'); closeUsersListModal();">
                     <img class="user-list-avatar" src="${follower.avatar || 'https://via.placeholder.com/36'}">
                     <div class="user-list-info">
                         <div class="user-list-name">${escapeHtml(follower.name)}${follower.verified ? '<span class="verified-badge"></span>' : ''}${follower.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
@@ -818,7 +1535,7 @@
             container.innerHTML = '<div class="no-users">😔 Нет подписок</div>';
         } else {
             container.innerHTML = followingUsers.map(follow => `
-                <div class="user-list-item" onclick="viewProfile('${follow.id}'); closeUsersListModal();">
+                <div class="user-list-item" onclick="viewProfile('${escapeHtml(follow.id)}'); closeUsersListModal();">
                     <img class="user-list-avatar" src="${follow.avatar || 'https://via.placeholder.com/36'}">
                     <div class="user-list-info">
                         <div class="user-list-name">${escapeHtml(follow.name)}${follow.verified ? '<span class="verified-badge"></span>' : ''}${follow.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
@@ -843,7 +1560,6 @@
             modal.style.display = 'flex';
         }
     }
-    
     function closeImageModal() {
         const modal = document.getElementById('imageModal');
         if (modal) {
@@ -881,8 +1597,8 @@
                     return `
                         <div class="comment-item">
                             <div class="comment-header">
-                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/28'}" onclick="viewProfile('${c.userId}')">
-                                <button class="comment-author" onclick="viewProfile('${c.userId}')">
+                                <img class="comment-avatar" src="${commentAuthor?.avatar || 'https://via.placeholder.com/32'}" onclick="viewProfile('${escapeHtml(c.userId)}')">
+                                <button class="comment-author" onclick="viewProfile('${escapeHtml(c.userId)}')">
                                     ${escapeHtml(commentAuthor?.name || '?')}
                                     ${commentAuthor?.verified ? '<span class="verified-badge"></span>' : ''}
                                     ${commentAuthor?.isAdmin ? '<span class="admin-badge"></span>' : ''}
@@ -901,6 +1617,9 @@
                                 ` : ''}
                             </div>
                             <div class="comment-text">${escapeHtml(c.text)}</div>
+                            <div class="comment-footer">
+                                <button class="comment-like-btn" onclick="alert('В разработке')">❤️ 0</button>
+                            </div>
                         </div>
                     `;
                 }).join('')}
@@ -912,7 +1631,6 @@
         `;
     }
 
-    // БЕЗОПАСНЫЙ РЕНДЕР ПОСТА - ИСПРАВЛЕНА XSS УЯЗВИМОСТЬ
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -930,7 +1648,7 @@
         return `
             <div class="post" id="post-${post.id}">
                 <div class="post-header">
-                    <img class="post-avatar" src="${escapeHtml(author?.avatar || 'https://via.placeholder.com/40')}" onclick="viewProfile('${escapeHtml(post.userId)}')">
+                    <img class="post-avatar" src="${escapeHtml(author?.avatar || 'https://via.placeholder.com/44')}" onclick="viewProfile('${escapeHtml(post.userId)}')">
                     <div class="post-author-info">
                         <button class="post-author" onclick="viewProfile('${escapeHtml(post.userId)}')">
                             ${escapeHtml(author?.name || '?')}
@@ -952,7 +1670,7 @@
                 ${mediaHtml}
                 <div class="post-footer">
                     <div class="post-actions">
-                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${isLiked}">❤️ ${post.likes?.length || 0}</button>
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">❤️ ${post.likes?.length || 0}</button>
                         <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
                     </div>
                     <div class="post-time-footer">${formatDate(post.date)}</div>
@@ -962,7 +1680,6 @@
         `;
     }
 
-    // Обработчик лайков через data-атрибуты (безопасно)
     document.addEventListener('click', async (e) => {
         const likeBtn = e.target.closest('.like-btn');
         if (likeBtn && likeBtn.dataset.postId) {
@@ -987,7 +1704,6 @@
         }
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
         
-        // Обновляем data-атрибуты для кнопок лайков после рендера
         document.querySelectorAll('.like-btn').forEach(btn => {
             const postId = btn.closest('.post')?.id?.replace('post-', '');
             if (postId) {
@@ -1015,27 +1731,42 @@
         container.innerHTML = `
             <div class="profile-card">
                 ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
-                <img src="${escapeHtml(profileUser.avatar || 'https://via.placeholder.com/70?text=?')}" class="profile-avatar" onclick="viewProfile('${escapeHtml(viewingUserId)}')">
+                <img src="${escapeHtml(profileUser.avatar || 'https://via.placeholder.com/80?text=?')}" class="profile-avatar" onclick="viewProfile('${escapeHtml(viewingUserId)}')">
                 <div class="profile-name">
                     ${escapeHtml(profileUser.name)}
                     ${profileUser?.verified ? '<span class="verified-badge"></span>' : ''}
                     ${profileUser?.isAdmin ? '<span class="admin-badge"></span>' : ''}
                 </div>
-                <p style="color:var(--text-secondary); margin-top: 6px; font-size: 13px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
+                <div class="profile-bio">${escapeHtml(profileUser.bio || 'Нет описания')}</div>
                 <div class="stats">
-                    <div class="stat-item" onclick="showFollowing('${escapeHtml(viewingUserId)}')"><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
-                    <div class="stat-item" onclick="showFollowers('${escapeHtml(viewingUserId)}')"><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
-                    <div class="stat-item"><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
+                    <div class="stat-item" onclick="showFollowing('${escapeHtml(viewingUserId)}')">
+                        <div class="stat-value">${profileUser.following?.length || 0}</div>
+                        <div class="stat-label">подписки</div>
+                    </div>
+                    <div class="stat-item" onclick="showFollowers('${escapeHtml(viewingUserId)}')">
+                        <div class="stat-value">${profileUser.followers?.length || 0}</div>
+                        <div class="stat-label">подписчики</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${userPosts.length}</div>
+                        <div class="stat-label">посты</div>
+                    </div>
                 </div>
-                <div class="stats" style="margin-top: 5px;">
-                    <div class="stat-item"><div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div><div class="stat-label">очков</div></div>
-                    <div class="stat-item"><div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div><div class="stat-label">лучший бросок</div></div>
+                <div class="stats" style="margin-top: 0;">
+                    <div class="stat-item">
+                        <div class="stat-value" style="color:var(--success);">${userStats.totalPoints}</div>
+                        <div class="stat-label">очков</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color:#ff9800;">${userStats.bestRoll >= 0 ? '+' : ''}${userStats.bestRoll}</div>
+                        <div class="stat-label">лучший бросок</div>
+                    </div>
                 </div>
                 <div class="profile-buttons">
                     ${!isOwn ? `
-                        ${isAdminUser ? `<button id="verifyUserBtn" class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${escapeHtml(viewingUserId)}')">${profileUser?.verified ? '🔹 Забрать' : '⭐ Выдать'}</button>` : ''}
+                        ${isAdminUser ? `<button class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${escapeHtml(viewingUserId)}')">${profileUser?.verified ? '🔹 Забрать' : '⭐ Выдать'}</button>` : ''}
                         <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${escapeHtml(viewingUserId)}')">${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}</button>
-                    ` : `<button id="editProfileBtn" onclick="openEditProfileModal()">✏️ Редактировать</button>`}
+                    ` : `<button onclick="openEditProfileModal()">✏️ Редактировать</button>`}
                 </div>
             </div>
             <div class="profile-posts-title">📝 Посты</div>
@@ -1045,7 +1776,6 @@
         if (!userPosts.length) profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
         else profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
         
-        // Обновляем data-атрибуты для лайков в профиле
         document.querySelectorAll('#profilePosts .like-btn').forEach(btn => {
             const postId = btn.closest('.post')?.id?.replace('post-', '');
             if (postId) {
@@ -1094,10 +1824,19 @@
         const currentUserData = users.find(u => u.id === currentUser.uid);
         container.innerHTML = `
             <div class="game-card">
-                <div class="game-header"><div class="game-icon">🎲</div><div class="game-title">Пиписа бот</div><div class="player-name">${escapeHtml(currentUserData?.name || currentUser.name)}${currentUserData?.verified ? '<span class="verified-badge"></span>' : ''}${currentUserData?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div></div>
-                <div class="dice-container"><div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}</div></div>
+                <div class="game-header">
+                    <div class="game-icon">🎲</div>
+                    <div class="game-title">Пиписа бот</div>
+                    <div class="player-name">${escapeHtml(currentUserData?.name || currentUser.name)}${currentUserData?.verified ? '<span class="verified-badge"></span>' : ''}${currentUserData?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div>
+                </div>
+                <div class="dice-container">
+                    <div class="dice-value ${stats?.lastRollValue >= 0 ? 'positive' : 'negative'}">${stats?.lastRollValue !== undefined && !canPlay ? `${stats.lastRollValue >= 0 ? '+' : ''}${stats.lastRollValue}` : '🎲'}</div>
+                </div>
                 <button id="rollButton" class="roll-button">${canPlay ? '🎲 Бросить кубик!' : '⏰ Завтра'}</button>
-                <div class="stats-grid"><div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div><div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div></div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-label">Всего очков</div><div class="stat-value" style="color:var(--accent);">${stats?.totalPoints || 0}</div></div>
+                    <div class="stat-card"><div class="stat-label">Лучший бросок</div><div class="stat-value" style="color:#ff9800;">${stats?.bestRoll >= 0 ? '+' : ''}${stats?.bestRoll || -5}</div></div>
+                </div>
             </div>
             <div id="leaderboardContainer"></div>
         `;
@@ -1116,7 +1855,7 @@
         const usersMap = new Map(users.map(u => [u.id, u]));
         container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>${data.map((item, idx) => { 
             const user = usersMap.get(item.userId); 
-            return `<div class="leaderboard-item" onclick="viewProfile('${escapeHtml(item.userId)}')"><div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div><div class="leaderboard-name">${escapeHtml(user?.name || '?')}${user?.verified ? '<span class="verified-badge"></span>' : ''}${user?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div><div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div></div>`; 
+            return `<div class="leaderboard-item" onclick="viewProfile('${escapeHtml(item.userId)}')"><div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div><div class="leaderboard-name">${escapeHtml(user?.name || '?')}${user?.verified ? '<span class="verified-badge"></span>' : ''}${user?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div><div class="leaderboard-score">${item.totalPoints}</div></div>`; 
         }).join('')}</div>`;
     }
 
@@ -1127,18 +1866,9 @@
     settingsModal.innerHTML = `<div class="settings-modal-content"><h3>⚙️ Настройки</h3><div class="settings-item"><button id="settingsThemeBtn">🌓 Сменить тему</button></div><div class="settings-item"><button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать админом</button></div><div class="settings-item"><button id="settingsLogoutBtn">🚪 Выйти</button></div><div class="settings-item"><button id="settingsCloseBtn">✖️ Закрыть</button></div></div>`;
     document.body.appendChild(settingsModal);
     
-    function openSettings() { 
-        document.getElementById('settingsModal').style.display = 'flex'; 
-    }
-    function closeSettings() { 
-        document.getElementById('settingsModal').style.display = 'none'; 
-    }
-    function logoutUser() { 
-        closeSettings(); 
-        auth.signOut().then(() => { 
-            location.reload(); 
-        }); 
-    }
+    function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
+    function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
+    function logoutUser() { closeSettings(); auth.signOut().then(() => { location.reload(); }); }
     function toggleThemeGlobal() { 
         document.body.classList.toggle('light-theme'); 
         localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); 
@@ -1148,9 +1878,7 @@
     document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
     document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
-    settingsModal.addEventListener('click', (e) => { 
-        if (e.target === settingsModal) closeSettings(); 
-    });
+    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
 
     // ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ HTML ==========
     window.submitComment = async function(postId) {
@@ -1180,7 +1908,6 @@
         document.querySelector('.tab[data-tab="profile"]').click(); 
     };
     window.toggleFollow = toggleFollow;
-    window.toggleLike = toggleLike;
     window.toggleVerification = toggleVerification;
     window.deletePost = deletePost;
     window.deletePostAsAdmin = deletePostAsAdmin;
@@ -1193,15 +1920,14 @@
     window.openSettings = openSettings;
     window.closeSettings = closeSettings;
     window.openAdminCodeModal = openAdminCodeModal;
+    window.openEditProfileModal = openEditProfileModal;
 
     // ========== ОБРАБОТЧИКИ ==========
     document.getElementById('editProfileAvatar')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (ev) => { 
-                document.getElementById('editAvatarPreview').src = ev.target.result; 
-            };
+            reader.onload = (ev) => { document.getElementById('editAvatarPreview').src = ev.target.result; };
             reader.readAsDataURL(file);
         }
     });
@@ -1233,12 +1959,8 @@
     const confirmResetBtn = document.getElementById('confirmResetBtn');
     const cancelResetBtn = document.getElementById('cancelResetBtn');
     
-    if (forgotBtn) {
-        forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
-    }
-    if (cancelResetBtn) {
-        cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
-    }
+    if (forgotBtn) forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
+    if (cancelResetBtn) cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
     if (confirmResetBtn) {
         confirmResetBtn.onclick = async () => {
             const email = document.getElementById('resetEmail').value.trim();
