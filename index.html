@@ -9,15 +9,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
             --bg-primary: #0a0c12;
             --bg-secondary: #141820;
@@ -33,7 +28,6 @@
             --comment-hover: #151b26;
             --success: #4caf50;
         }
-
         body.light-theme {
             --bg-primary: #f5f7fb;
             --bg-secondary: #ffffff;
@@ -48,895 +42,120 @@
             --comment-bg: #f8f9fc;
             --comment-hover: #f0f2f6;
         }
-
         body { background: var(--bg-primary); }
-
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 14px;
-            height: 14px;
-            background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
-            color: white;
-            border-radius: 50%;
-            font-size: 8px;
-            margin-left: 4px;
-            vertical-align: middle;
-            cursor: pointer;
-        }
-
+        .verified-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #1DA1F2, #0D8BD9); color: white; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
         .verified-badge::before { content: "✓"; }
-
-        .admin-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 14px;
-            height: 14px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #8B4513;
-            border-radius: 50%;
-            font-size: 8px;
-            margin-left: 4px;
-            vertical-align: middle;
-            cursor: pointer;
-        }
-
+        .admin-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
         .admin-badge::before { content: "★"; }
-
-        .verify-user-btn {
-            background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
-            color: white;
-            border: none;
-        }
-
-        .verify-user-btn.unverify {
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-        }
-
-        .auth-screen {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0a0c12 0%, #141820 100%);
-            padding: 16px;
-        }
-
-        .auth-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 24px;
-            width: 100%;
-            max-width: 380px;
-            border: 1px solid var(--border);
-        }
-
-        .auth-card h1 {
-            text-align: center;
-            background: linear-gradient(135deg, #ff5722, #ff8a4c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 34px;
-            margin-bottom: 8px;
-        }
-
-        .sub {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-size: 13px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 15px;
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-
+        .auth-screen { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0a0c12 0%, #141820 100%); padding: 16px; }
+        .auth-card { background: var(--bg-card); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
+        .auth-card h1 { text-align: center; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 34px; margin-bottom: 8px; }
+        .sub { text-align: center; color: var(--text-secondary); margin-bottom: 24px; font-size: 13px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 15px; background: var(--bg-input); color: var(--text-primary); }
         textarea { resize: none; font-family: inherit; }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .switch-btn {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .forgot-btn {
-            background: none;
-            color: var(--accent);
-            margin-top: 8px;
-            font-size: 14px;
-            padding: 8px;
-        }
-        
-        .forgot-btn:hover {
-            background: rgba(255, 87, 34, 0.1);
-        }
-
+        button { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .switch-btn { text-align: center; margin-top: 16px; color: var(--accent); cursor: pointer; padding: 8px; }
+        .forgot-btn { background: none; color: var(--accent); margin-top: 8px; font-size: 14px; padding: 8px; }
+        .forgot-btn:hover { background: rgba(255, 87, 34, 0.1); }
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
-
-        .main-app {
-            display: none;
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--bg-primary);
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .header {
-            background: var(--bg-secondary);
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ff5722, #ff8a4c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .tabs {
-            display: flex;
-            background: var(--bg-secondary);
-            gap: 4px;
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-secondary);
-            border-radius: 30px;
-        }
-
+        .main-app { display: none; max-width: 600px; margin: 0 auto; background: var(--bg-primary); min-height: 100vh; padding-bottom: 80px; }
+        .header { background: var(--bg-secondary); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        .logo { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .back-btn { background: var(--bg-input); width: auto; padding: 6px 14px; border-radius: 30px; color: var(--text-primary); font-size: 13px; border: none; }
+        .tabs { display: flex; background: var(--bg-secondary); gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-secondary); border-radius: 30px; }
         .tab.active { background: var(--accent); color: white; }
-
         .content { padding: 12px; }
         .hidden { display: none; }
-
-        .post {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .post-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: var(--border);
-            cursor: pointer;
-        }
-
-        .post-author-info {
-            flex: 1;
-        }
-
-        .post-author {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--accent);
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            text-align: left;
-            display: inline-flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .post-menu {
-            position: relative;
-        }
-
-        .menu-dots {
-            background: none;
-            width: auto;
-            padding: 6px 10px;
-            font-size: 18px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 30px;
-            border: none;
-        }
-
-        .menu-dropdown {
-            position: absolute;
-            right: 0;
-            top: 35px;
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 6px 0;
-            min-width: 140px;
-            z-index: 999;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-        .menu-dropdown button {
-            background: none;
-            width: 100%;
-            text-align: left;
-            padding: 10px 14px;
-            border-radius: 0;
-            color: var(--text-primary);
-            font-size: 13px;
-        }
-
-        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 14px; }
-        
-        .post-media {
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 8px 0;
-            max-height: 350px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-        
-        .post-video {
-            width: 100%;
-            border-radius: 12px;
-            margin: 8px 0;
-            max-height: 350px;
-            background: #000;
-        }
-
-        .post-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border);
-        }
-
+        .post { background: var(--bg-card); border-radius: 16px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .post-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--border); cursor: pointer; }
+        .post-author-info { flex: 1; }
+        .post-author { font-weight: 700; font-size: 15px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; text-align: left; display: inline-flex; align-items: center; flex-wrap: wrap; }
+        .post-menu { position: relative; }
+        .menu-dots { background: none; width: auto; padding: 6px 10px; font-size: 18px; color: var(--text-secondary); cursor: pointer; border-radius: 30px; border: none; }
+        .menu-dropdown { position: absolute; right: 0; top: 35px; background: var(--bg-card); border-radius: 12px; padding: 6px 0; min-width: 140px; z-index: 999; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+        .menu-dropdown button { background: none; width: 100%; text-align: left; padding: 10px 14px; border-radius: 0; color: var(--text-primary); font-size: 13px; }
+        .post-text { margin: 8px 0; color: var(--text-primary); line-height: 1.45; font-size: 14px; word-break: break-word; }
+        .post-media { max-width: 100%; border-radius: 12px; margin: 8px 0; max-height: 350px; object-fit: cover; cursor: pointer; }
+        .post-video { width: 100%; border-radius: 12px; margin: 8px 0; max-height: 350px; background: #000; }
+        .post-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
         .post-actions { display: flex; gap: 12px; }
-        .like-btn, .comment-toggle-btn {
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
+        .like-btn, .comment-toggle-btn { cursor: pointer; background: none; border: none; padding: 6px 10px; border-radius: 30px; display: flex; align-items: center; gap: 5px; color: var(--text-secondary); font-size: 13px; }
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 10px; color: var(--text-secondary); }
-
-        /* ========== КОММЕНТАРИИ С 3 ТОЧКАМИ ========== */
-        .comments-area {
-            margin-top: 10px;
-            border-top: 1px solid var(--border);
-            padding-top: 10px;
-        }
-        
-        .comment-item {
-            background: var(--comment-bg);
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 8px;
-            position: relative;
-        }
-        
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        
-        .comment-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        
-        .comment-author {
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--accent);
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-        }
-        
-        .comment-date {
-            font-size: 9px;
-            color: var(--text-secondary);
-            margin-left: auto;
-        }
-        
-        .comment-text {
-            font-size: 13px;
-            color: var(--text-primary);
-            word-break: break-word;
-            line-height: 1.4;
-            margin: 4px 0 4px 36px;
-        }
-        
-        /* Меню комментария (3 точки) */
-        .comment-menu {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .comment-menu-dots {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 14px;
-            cursor: pointer;
-            padding: 4px 8px;
-            width: auto;
-            border-radius: 20px;
-        }
-        
-        .comment-menu-dots:hover {
-            background: var(--bg-input);
-        }
-        
-        .comment-menu-dropdown {
-            position: absolute;
-            right: 0;
-            top: 25px;
-            background: var(--bg-card);
-            border-radius: 10px;
-            padding: 4px 0;
-            min-width: 120px;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-        
-        .comment-menu-dropdown button {
-            background: none;
-            width: 100%;
-            text-align: left;
-            padding: 8px 12px;
-            border-radius: 0;
-            color: var(--text-primary);
-            font-size: 12px;
-        }
-        
-        .comment-menu-dropdown button:hover {
-            background: var(--bg-input);
-        }
-        
-        /* Поле ввода комментария */
-        .comment-input-wrapper {
-            margin-top: 12px;
-            background: var(--bg-input);
-            border-radius: 25px;
-            padding: 4px 4px 4px 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--border);
-        }
-        
-        .comment-input-wrapper:focus-within {
-            border-color: var(--accent);
-        }
-        
-        .comment-input-wrapper input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 10px 0;
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-primary);
-            outline: none;
-        }
-        
-        .comment-input-wrapper button {
-            width: auto;
-            padding: 6px 18px;
-            margin: 0;
-            border-radius: 25px;
-            background: var(--accent);
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .no-comments-text {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 12px;
-            padding: 16px;
-        }
-
-        .profile-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-            position: relative;
-        }
-        
-        .profile-avatar { 
-            width: 70px; 
-            height: 70px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            margin: 0 auto 10px; 
-            background: var(--border); 
-            border: 2px solid var(--accent); 
-            cursor: pointer; 
-        }
-        
-        .profile-name {
-            margin-top: 6px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        
-        .stats { 
-            display: flex; 
-            justify-content: center; 
-            gap: 24px; 
-            margin: 12px 0; 
-            cursor: pointer;
-        }
-        
-        .stat-item {
-            text-align: center;
-            cursor: pointer;
-        }
-        
-        .stat-value { 
-            font-size: 18px; 
-            font-weight: 700; 
-            color: var(--accent); 
-        }
-        
-        .stat-label { 
-            font-size: 11px; 
-            color: var(--text-secondary); 
-        }
-        
-        .settings-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: none;
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            border-radius: 50%;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            cursor: pointer;
-            border: none;
-        }
-        
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        
-        .settings-modal-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            width: 90%;
-            max-width: 300px;
-            border: 1px solid var(--border);
-        }
-        
-        .settings-modal-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            text-align: center;
-            font-size: 18px;
-        }
-        
-        .settings-item {
-            margin: 12px 0;
-        }
-        
-        .settings-item button {
-            width: 100%;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 12px;
-            background: var(--bg-input);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .get-admin-settings-btn {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #8B4513;
-            border: none;
-        }
-
-        .profile-buttons { 
-            display: flex; 
-            gap: 10px; 
-            justify-content: center; 
-            margin-top: 12px; 
-            flex-wrap: wrap; 
-        }
-
-        .users-list-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2004;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        
-        .users-list-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            width: 90%;
-            max-width: 350px;
-            border: 1px solid var(--border);
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .users-list-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            text-align: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        
-        .users-list {
-            max-height: 60vh;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-        
-        .user-list-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 12px;
-            margin-bottom: 6px;
-            cursor: pointer;
-        }
-        
-        .user-list-item:hover {
-            background: var(--bg-input);
-        }
-        
-        .user-list-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: var(--border);
-        }
-        
-        .user-list-info {
-            flex: 1;
-        }
-        
-        .user-list-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-        }
-        
-        .user-list-bio {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        
-        .no-users {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 30px;
-        }
-
-        .edit-profile-modal, .edit-post-modal, .edit-comment-modal, .admin-code-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-        
-        .edit-profile-content, .edit-post-content, .edit-comment-content, .admin-code-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            width: 90%;
-            max-width: 350px;
-            border: 1px solid var(--border);
-        }
-        
-        .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3, .admin-code-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 16px;
-            text-align: center;
-            font-size: 18px;
-        }
-        
-        .edit-buttons, .admin-code-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        
-        .edit-buttons button, .admin-code-buttons button {
-            flex: 1;
-        }
-        
-        .cancel-edit-btn {
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-        
-        .avatar-preview {
-            text-align: center;
-            margin-bottom: 12px;
-        }
-        
-        .avatar-preview img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-        }
-
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .image-modal img {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
-            border-radius: 12px;
-        }
-        
-        .image-modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            color: white;
-        }
-
-        .upload-btn { 
-            position: relative; 
-            margin: 8px 0; 
-        }
-        
-        .upload-btn input[type="file"] { 
-            position: absolute; 
-            opacity: 0; 
-            width: 100%; 
-            height: 100%; 
-            cursor: pointer; 
-            z-index: 2; 
-        }
-        
-        .upload-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .file-name { 
-            font-size: 11px; 
-            color: var(--accent); 
-            margin-top: 6px; 
-            display: block; 
-            text-align: center; 
-        }
-
-        .profile-posts-title { 
-            font-size: 14px; 
-            font-weight: 600; 
-            margin: 12px 0 10px 0; 
-            color: var(--text-primary); 
-        }
-        
-        .back-btn { 
-            background: var(--bg-input); 
-            width: auto; 
-            padding: 6px 14px; 
-            border-radius: 30px; 
-            color: var(--text-primary); 
-            font-size: 13px;
-        }
-
-        .fab {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            color: white;
-            font-size: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 200;
-            border: none;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 300;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 380px;
-            border: 1px solid var(--border);
-        }
+        .comments-area { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+        .comment-item { background: var(--comment-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px; position: relative; }
+        .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+        .comment-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; cursor: pointer; flex-shrink: 0; }
+        .comment-author { font-weight: 600; font-size: 12px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; display: inline-flex; align-items: center; gap: 3px; }
+        .comment-date { font-size: 9px; color: var(--text-secondary); margin-left: auto; }
+        .comment-text { font-size: 13px; color: var(--text-primary); word-break: break-word; line-height: 1.4; margin: 4px 0 4px 36px; }
+        .comment-menu { position: relative; display: inline-block; }
+        .comment-menu-dots { background: none; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; padding: 4px 8px; width: auto; border-radius: 20px; }
+        .comment-menu-dots:hover { background: var(--bg-input); }
+        .comment-menu-dropdown { position: absolute; right: 0; top: 25px; background: var(--bg-card); border-radius: 10px; padding: 4px 0; min-width: 120px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+        .comment-menu-dropdown button { background: none; width: 100%; text-align: left; padding: 8px 12px; border-radius: 0; color: var(--text-primary); font-size: 12px; }
+        .comment-input-wrapper { margin-top: 12px; background: var(--bg-input); border-radius: 25px; padding: 4px 4px 4px 14px; display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); }
+        .comment-input-wrapper:focus-within { border-color: var(--accent); }
+        .comment-input-wrapper input { flex: 1; background: transparent; border: none; padding: 10px 0; margin: 0; font-size: 14px; color: var(--text-primary); outline: none; }
+        .comment-input-wrapper button { width: auto; padding: 6px 18px; margin: 0; border-radius: 25px; background: var(--accent); font-size: 13px; font-weight: 600; }
+        .no-comments-text { text-align: center; color: var(--text-secondary); font-size: 12px; padding: 16px; }
+        .profile-card { background: var(--bg-card); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--border); margin-bottom: 16px; position: relative; }
+        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
+        .profile-name { margin-top: 6px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .stats { display: flex; justify-content: center; gap: 24px; margin: 12px 0; cursor: pointer; }
+        .stat-item { text-align: center; cursor: pointer; }
+        .stat-value { font-size: 18px; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 11px; color: var(--text-secondary); }
+        .settings-btn { position: absolute; top: 12px; right: 12px; background: none; width: 36px; height: 36px; padding: 0; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; background: var(--bg-input); color: var(--text-secondary); cursor: pointer; border: none; }
+        .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .settings-modal-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 300px; border: 1px solid var(--border); }
+        .settings-modal-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; }
+        .settings-item { margin: 12px 0; }
+        .settings-item button { width: 100%; padding: 12px; font-size: 14px; font-weight: 600; border-radius: 12px; background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); }
+        .get-admin-settings-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border: none; }
+        .profile-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+        .users-list-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2004; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .users-list-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); max-height: 80vh; display: flex; flex-direction: column; }
+        .users-list-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; flex-shrink: 0; }
+        .users-list { max-height: 60vh; overflow-y: auto; padding-right: 4px; }
+        .user-list-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; }
+        .user-list-item:hover { background: var(--bg-input); }
+        .user-list-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--border); }
+        .user-list-info { flex: 1; }
+        .user-list-name { font-weight: 600; color: var(--text-primary); font-size: 14px; display: inline-flex; align-items: center; gap: 3px; }
+        .user-list-bio { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+        .no-users { text-align: center; color: var(--text-secondary); padding: 30px; }
+        .edit-profile-modal, .edit-post-modal, .edit-comment-modal, .admin-code-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .edit-profile-content, .edit-post-content, .edit-comment-content, .admin-code-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); }
+        .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3, .admin-code-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; }
+        .edit-buttons, .admin-code-buttons { display: flex; gap: 10px; margin-top: 16px; }
+        .edit-buttons button, .admin-code-buttons button { flex: 1; }
+        .cancel-edit-btn { background: var(--bg-input); color: var(--text-primary); }
+        .avatar-preview { text-align: center; margin-bottom: 12px; }
+        .avatar-preview img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+        .image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; cursor: pointer; }
+        .image-modal img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 12px; }
+        .image-modal-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; color: white; }
+        .upload-btn { position: relative; margin: 8px 0; }
+        .upload-btn input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+        .upload-label { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); border-radius: 12px; padding: 10px; cursor: pointer; color: white; font-size: 13px; font-weight: 600; }
+        .file-name { font-size: 11px; color: var(--accent); margin-top: 6px; display: block; text-align: center; }
+        .profile-posts-title { font-size: 14px; font-weight: 600; margin: 12px 0 10px 0; color: var(--text-primary); }
+        .fab { position: fixed; bottom: 16px; right: 16px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 200; border: none; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
         .modal-content h3 { margin-bottom: 14px; color: var(--text-primary); font-size: 18px; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
         .modal-buttons button { flex: 1; }
         .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
-
-        .game-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-        }
-        
+        .game-card { background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
         .game-header { text-align: center; margin-bottom: 16px; }
         .game-icon { font-size: 40px; }
         .game-title { font-size: 18px; font-weight: bold; color: var(--accent); margin: 8px 0; }
-        
-        .player-name {
-            margin-top: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-primary);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
+        .player-name { margin-top: 6px; font-size: 13px; font-weight: 500; color: var(--text-primary); display: inline-flex; align-items: center; gap: 4px; }
         .dice-container { background: linear-gradient(135deg, var(--bg-input), var(--bg-card)); border-radius: 16px; padding: 24px; text-align: center; margin: 16px 0; }
         .dice-value { font-size: 56px; font-weight: bold; margin: 16px 0; }
         .dice-value.positive { color: var(--success); }
@@ -944,7 +163,6 @@
         .roll-button { font-size: 16px; padding: 12px; border-radius: 40px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
         .stat-card { background: var(--bg-input); border-radius: 14px; padding: 12px; text-align: center; }
-
         .leaderboard { background: var(--bg-card); border-radius: 16px; padding: 12px; }
         .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .leaderboard-title { font-size: 16px; font-weight: bold; color: var(--text-primary); }
@@ -954,85 +172,17 @@
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
         .leaderboard-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text-primary); display: inline-flex; align-items: center; gap: 3px; }
-
-        .follow-btn {
-            background: var(--bg-input);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            font-size: 13px;
-            padding: 8px 14px;
-        }
-        .follow-btn.following {
-            background: var(--accent);
-            color: white;
-        }
-
-        .reset-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .reset-modal-content {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            width: 90%;
-            max-width: 320px;
-            border: 1px solid var(--border);
-        }
-        .reset-modal-content h3 {
-            color: var(--text-primary);
-            margin-bottom: 14px;
-            text-align: center;
-            font-size: 18px;
-        }
-        .reset-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .reset-buttons button {
-            flex: 1;
-        }
-        .cancel-reset-btn {
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-        .reset-message {
-            font-size: 12px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--success);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            z-index: 10000;
-            animation: fadeInOut 2s ease;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-        }
-
-        /* Мобильные улучшения */
+        .follow-btn { background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); font-size: 13px; padding: 8px 14px; }
+        .follow-btn.following { background: var(--accent); color: white; }
+        .reset-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+        .reset-modal-content { background: var(--bg-card); border-radius: 20px; padding: 20px; width: 90%; max-width: 320px; border: 1px solid var(--border); }
+        .reset-modal-content h3 { color: var(--text-primary); margin-bottom: 14px; text-align: center; font-size: 18px; }
+        .reset-buttons { display: flex; gap: 10px; margin-top: 16px; }
+        .reset-buttons button { flex: 1; }
+        .cancel-reset-btn { background: var(--bg-input); color: var(--text-primary); }
+        .reset-message { font-size: 12px; margin-top: 10px; text-align: center; }
+        .notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 8px 16px; border-radius: 30px; font-size: 13px; z-index: 10000; animation: fadeInOut 2s ease; }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 15% { opacity: 1; transform: translateX(-50%) translateY(0); } 85% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
         @media (max-width: 500px) {
             .content { padding: 8px; }
             .fab { width: 48px; height: 48px; font-size: 24px; bottom: 12px; right: 12px; }
@@ -1066,7 +216,7 @@
 <div id="resetPasswordModal" class="reset-modal">
     <div class="reset-modal-content">
         <h3>Сброс пароля</h3>
-        <input type="email" id="resetEmail" placeholder="Введите ваш Email" style="width: 100%;">
+        <input type="email" id="resetEmail" placeholder="Введите ваш Email">
         <div class="reset-buttons">
             <button id="confirmResetBtn">Отправить</button>
             <button id="cancelResetBtn" class="cancel-reset-btn">Отмена</button>
@@ -1114,10 +264,9 @@
     </div>
 </div>
 
-<!-- Модальные окна -->
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
     <div class="image-modal-close" onclick="closeImageModal()">✕</div>
-    <img id="modalImage" src="" alt="Увеличенное фото">
+    <img id="modalImage" src="">
 </div>
 
 <div id="editProfileModal" class="edit-profile-modal">
@@ -1180,24 +329,460 @@
 </div>
 
 <script>
-    // ========== ОТКРЫТИЕ ФОТО ==========
-    function openImageModal(imageUrl) {
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImage');
-        if (modal && modalImg && imageUrl) {
-            modalImg.src = imageUrl;
-            modal.style.display = 'flex';
+    // ========== FIREBASE ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
+        authDomain: "disciplina-8ac49.firebaseapp.com",
+        projectId: "disciplina-8ac49",
+        storageBucket: "disciplina-8ac49.firebasestorage.app",
+        messagingSenderId: "826961979878",
+        appId: "1:826961979878:web:3d3b62f747253e4fcd8e27"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+    let currentUser = null;
+    let posts = [];
+    let users = [];
+    let gameStats = [];
+    let openComments = {};
+    let openMenus = {};
+    let openCommentMenus = {};
+    let viewingUserId = null;
+    let isLoginMode = false;
+    let currentEditComment = { postId: null, commentIndex: null };
+    let currentEditPostId = null;
+    
+    // Секретный код админа (лучше хранить в переменной окружения, но для демо так)
+    const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2000);
+    }
+
+    function formatDate(date) {
+        if (!date) return 'только что';
+        const d = date.toDate ? date.toDate() : new Date(date);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return 'только что';
+        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
+        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    // Загрузка файла в Firebase Storage
+    async function uploadToStorage(file, path) {
+        return new Promise((resolve, reject) => {
+            const storageRef = storage.ref(path);
+            const uploadTask = storageRef.put(file);
+            
+            uploadTask.on('state_changed', null,
+                (error) => reject(error),
+                async () => {
+                    const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                    resolve(downloadURL);
+                }
+            );
+        });
+    }
+
+    // Компрессия изображения (всё ещё нужна для предпросмотра и уменьшения размера)
+    async function compressImage(file, maxWidth = 900) {
+        return new Promise((resolve, reject) => {
+            if (!file || !file.type.startsWith('image/')) {
+                resolve(file);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width, height = img.height;
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    let quality = 0.8;
+                    let result = canvas.toDataURL('image/jpeg', quality);
+                    while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
+                        quality -= 0.1;
+                        result = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    // Конвертируем dataURL обратно в Blob для загрузки
+                    fetch(result)
+                        .then(res => res.blob())
+                        .then(blob => resolve(new File([blob], file.name, { type: 'image/jpeg' })));
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // ========== ЗАГРУЗКА ДАННЫХ ==========
+    async function loadData() {
+        const usersSnapshot = await db.collection('users').get();
+        users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const postsSnapshot = await db.collection('posts').orderBy('date', 'desc').get();
+        posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const statsSnapshot = await db.collection('gameStats').get();
+        gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
+        if (currentUser) {
+            const userDoc = users.find(u => u.id === currentUser.uid);
+            if (userDoc) currentUser.isAdmin = userDoc.isAdmin === true;
+        }
+    }
+
+    // ========== АДМИН ==========
+    function isAdmin() { return currentUser && currentUser.isAdmin === true; }
+    
+    async function loadAdminStatus() {
+        if (!currentUser) return false;
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        currentUser.isAdmin = userDoc.data()?.isAdmin === true;
+        return currentUser.isAdmin;
+    }
+    
+    function openAdminCodeModal() { 
+        document.getElementById('adminCodeModal').style.display = 'flex'; 
+        document.getElementById('adminCodeInput').value = ''; 
+        document.getElementById('adminCodeError').textContent = ''; 
+    }
+    function closeAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'none'; }
+    
+    async function checkAdminCode() {
+        const enteredCode = document.getElementById('adminCodeInput').value.trim();
+        if (!enteredCode) { 
+            document.getElementById('adminCodeError').textContent = 'Введите код'; 
+            return; 
+        }
+        if (enteredCode === ADMIN_SECRET_CODE) {
+            await db.collection('users').doc(currentUser.uid).update({ isAdmin: true });
+            currentUser.isAdmin = true;
+            closeAdminCodeModal();
+            showNotification('✅ Вы администратор!');
+            await refreshAll();
+        } else { 
+            document.getElementById('adminCodeError').textContent = '❌ Неверный код'; 
         }
     }
     
-    function closeImageModal() {
-        const modal = document.getElementById('imageModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.getElementById('modalImage').src = '';
+    async function toggleVerification(targetUserId) {
+        if (!isAdmin()) { 
+            showNotification('❌ Только админ'); 
+            return; 
+        }
+        const userRef = db.collection('users').doc(targetUserId);
+        const userDoc = await userRef.get();
+        const isCurrentlyVerified = userDoc.data()?.verified === true;
+        await userRef.update({ verified: !isCurrentlyVerified });
+        showNotification(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
+        await loadData();
+        await refreshAll();
+    }
+
+    // ========== ПОСТЫ И КОММЕНТАРИИ ==========
+    async function savePost(text, file, mediaType) {
+        let mediaUrl = null;
+        
+        if (file) {
+            try {
+                const compressedFile = mediaType === 'image' ? await compressImage(file) : file;
+                const ext = file.name.split('.').pop();
+                const fileName = `${currentUser.uid}/${Date.now()}.${ext}`;
+                mediaUrl = await uploadToStorage(compressedFile, `posts/${fileName}`);
+            } catch (error) {
+                console.error('Ошибка загрузки файла:', error);
+                showNotification('❌ Ошибка загрузки медиа');
+                return;
+            }
+        }
+        
+        const postData = { 
+            userId: currentUser.uid, 
+            text: text, 
+            date: firebase.firestore.FieldValue.serverTimestamp(), 
+            likes: [], 
+            comments: [] 
+        };
+        if (mediaUrl) {
+            postData.media = mediaUrl;
+            postData.mediaType = mediaType;
+        }
+        
+        await db.collection('posts').add(postData);
+        await loadData();
+        await refreshAll();
+    }
+
+    // Оптимистичное обновление лайка
+    async function toggleLike(postId, post) {
+        const wasLiked = post.likes?.includes(currentUser.uid);
+        const newLikes = wasLiked 
+            ? (post.likes || []).filter(id => id !== currentUser.uid)
+            : [...(post.likes || []), currentUser.uid];
+        
+        // Оптимистичное обновление UI
+        const postIndex = posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            posts[postIndex].likes = newLikes;
+            await renderFeed();
+        }
+        
+        try {
+            await db.collection('posts').doc(postId).update({ likes: newLikes });
+        } catch (error) {
+            // Откат при ошибке
+            const revertLikes = wasLiked 
+                ? [...(post.likes || []), currentUser.uid]
+                : (post.likes || []).filter(id => id !== currentUser.uid);
+            if (postIndex !== -1) {
+                posts[postIndex].likes = revertLikes;
+                await renderFeed();
+            }
+            showNotification('❌ Ошибка при обновлении лайка');
+        }
+        
+        await loadData();
+    }
+
+    async function addComment(postId, commentText) {
+        if (!commentText || !commentText.trim()) return;
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+        const comments = [...(post.comments || [])];
+        comments.push({ 
+            userId: currentUser.uid, 
+            text: commentText.trim(), 
+            date: new Date().toISOString() 
+        });
+        
+        // Оптимистичное обновление
+        const postIndex = posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            posts[postIndex].comments = comments;
+            openComments[postId] = true;
+            await refreshAll();
+        }
+        
+        try {
+            await db.collection('posts').doc(postId).update({ comments });
+        } catch (error) {
+            showNotification('❌ Ошибка при добавлении комментария');
+            await loadData();
+            await refreshAll();
+        }
+        
+        setTimeout(() => {
+            const input = document.getElementById(`comment-input-${postId}`);
+            if (input) input.value = '';
+        }, 100);
+    }
+    
+    async function deleteComment(postId, commentIndex) {
+        if (!confirm('Удалить комментарий?')) return;
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments) return;
+        const newComments = [...post.comments];
+        newComments.splice(commentIndex, 1);
+        
+        // Оптимистичное обновление
+        const postIndex = posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            posts[postIndex].comments = newComments;
+            await refreshAll();
+        }
+        
+        try {
+            await db.collection('posts').doc(postId).update({ comments: newComments });
+            showNotification('🗑️ Комментарий удалён');
+        } catch (error) {
+            showNotification('❌ Ошибка при удалении');
+            await loadData();
+            await refreshAll();
         }
     }
     
+    function openEditCommentModal(postId, commentIndex, currentText) {
+        currentEditComment = { postId, commentIndex };
+        document.getElementById('editCommentText').value = currentText;
+        document.getElementById('editCommentModal').style.display = 'flex';
+    }
+    
+    async function saveCommentEdit() {
+        const { postId, commentIndex } = currentEditComment;
+        const newText = document.getElementById('editCommentText').value.trim();
+        if (!newText) { 
+            showNotification('❌ Пустой комментарий'); 
+            return; 
+        }
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments || !post.comments[commentIndex]) return;
+        
+        const newComments = [...post.comments];
+        newComments[commentIndex].text = newText;
+        
+        const postIndex = posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            posts[postIndex].comments = newComments;
+            await refreshAll();
+        }
+        
+        try {
+            await db.collection('posts').doc(postId).update({ comments: newComments });
+            showNotification('✏️ Обновлено');
+        } catch (error) {
+            showNotification('❌ Ошибка при обновлении');
+            await loadData();
+            await refreshAll();
+        }
+        closeEditCommentModal();
+    }
+    
+    function closeEditCommentModal() { 
+        document.getElementById('editCommentModal').style.display = 'none'; 
+        currentEditComment = { postId: null, commentIndex: null }; 
+    }
+
+    async function deletePost(postId) {
+        if (confirm('Удалить пост?')) { 
+            await db.collection('posts').doc(postId).delete(); 
+            await loadData(); 
+            await refreshAll(); 
+            showNotification('🗑️ Пост удалён'); 
+        }
+    }
+    
+    async function deletePostAsAdmin(postId) {
+        if (!isAdmin()) { 
+            showNotification('❌ Только админ'); 
+            return; 
+        }
+        if (confirm('Удалить чужой пост?')) { 
+            await db.collection('posts').doc(postId).delete(); 
+            await loadData(); 
+            await refreshAll(); 
+            showNotification('✅ Удалено'); 
+        }
+    }
+
+    function openEditPostModal(postId, currentText) { 
+        currentEditPostId = postId; 
+        document.getElementById('editPostText').value = currentText; 
+        document.getElementById('editPostModal').style.display = 'flex'; 
+    }
+    
+    async function savePostEdit() {
+        if (!currentEditPostId) return;
+        const newText = document.getElementById('editPostText').value.trim();
+        if (!newText) { 
+            showNotification('❌ Пустой пост'); 
+            return; 
+        }
+        await db.collection('posts').doc(currentEditPostId).update({ text: newText });
+        await loadData(); 
+        await refreshAll(); 
+        showNotification('✅ Пост обновлён'); 
+        closeEditPostModal();
+    }
+    
+    function closeEditPostModal() { 
+        document.getElementById('editPostModal').style.display = 'none'; 
+        currentEditPostId = null; 
+    }
+
+    // ========== ПОДПИСКИ ==========
+    async function toggleFollow(targetUserId) {
+        const currentUserDoc = users.find(u => u.id === currentUser.uid);
+        const following = currentUserDoc?.following || [];
+        const isFollowing = following.includes(targetUserId);
+        
+        if (isFollowing) {
+            await db.collection('users').doc(currentUser.uid).update({ 
+                following: firebase.firestore.FieldValue.arrayRemove(targetUserId) 
+            });
+            await db.collection('users').doc(targetUserId).update({ 
+                followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) 
+            });
+        } else {
+            await db.collection('users').doc(currentUser.uid).update({ 
+                following: firebase.firestore.FieldValue.arrayUnion(targetUserId) 
+            });
+            await db.collection('users').doc(targetUserId).update({ 
+                followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) 
+            });
+        }
+        await loadData();
+        await refreshAll();
+    }
+
+    // ========== ПРОФИЛЬ ==========
+    async function updateUserProfile(newName, newBio, newAvatarFile) {
+        let avatarUrl = null;
+        
+        if (newAvatarFile) {
+            try {
+                const compressedFile = await compressImage(newAvatarFile);
+                const fileName = `avatars/${currentUser.uid}/${Date.now()}.jpg`;
+                avatarUrl = await uploadToStorage(compressedFile, fileName);
+            } catch (error) {
+                console.error('Ошибка загрузки аватара:', error);
+                showNotification('❌ Ошибка загрузки аватара');
+                return false;
+            }
+        }
+        
+        const updates = {};
+        if (newName && newName !== currentUser.name) updates.name = newName;
+        if (newBio !== undefined) updates.bio = newBio;
+        if (avatarUrl) updates.avatar = avatarUrl;
+        
+        if (Object.keys(updates).length > 0) {
+            await db.collection('users').doc(currentUser.uid).update(updates);
+            await loadData();
+            await refreshAll();
+            return true;
+        }
+        return false;
+    }
+
+    function openEditProfileModal() {
+        const profileUser = users.find(u => u.id === currentUser.uid);
+        if (!profileUser) return;
+        document.getElementById('editProfileName').value = profileUser.name || '';
+        document.getElementById('editProfileBio').value = profileUser.bio || '';
+        document.getElementById('editAvatarPreview').src = profileUser.avatar || 'https://via.placeholder.com/70?text=?';
+        document.getElementById('editProfileAvatar').value = '';
+        document.getElementById('editProfileModal').style.display = 'flex';
+    }
+    
+    function closeEditProfileModal() { 
+        document.getElementById('editProfileModal').style.display = 'none'; 
+    }
+
     // ========== ПОДПИСЧИКИ/ПОДПИСКИ ==========
     function showFollowers(userId) {
         const user = users.find(u => u.id === userId);
@@ -1245,376 +830,42 @@
         document.getElementById('usersListModal').style.display = 'flex';
     }
     
-    function closeUsersListModal() { document.getElementById('usersListModal').style.display = 'none'; }
-
-    // ========== РАНДОМНАЯ ФРАЗА ==========
-    const phrases = ["Делай каждый день", "Бебебе", "Гигамонстрящим пони вход запрещён", "кремируйте ее быстрее", "огурцы", "типо как yo! только новый"];
-    function setRandomPhrase() {
-        const subElement = document.getElementById('randomSub');
-        if (subElement) subElement.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    function closeUsersListModal() { 
+        document.getElementById('usersListModal').style.display = 'none'; 
     }
 
-    // ========== АДМИН ==========
-    const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
-    function isAdmin() { return currentUser && currentUser.isAdmin === true; }
-    
-    async function loadAdminStatus() {
-        if (!currentUser) return false;
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-        currentUser.isAdmin = userDoc.data()?.isAdmin === true;
-        return currentUser.isAdmin;
+    // ========== ФОТО ==========
+    function openImageModal(imageUrl) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        if (modal && modalImg && imageUrl) {
+            modalImg.src = imageUrl;
+            modal.style.display = 'flex';
+        }
     }
     
-    function openAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'flex'; document.getElementById('adminCodeInput').value = ''; document.getElementById('adminCodeError').textContent = ''; }
-    function closeAdminCodeModal() { document.getElementById('adminCodeModal').style.display = 'none'; }
-    
-    async function checkAdminCode() {
-        const enteredCode = document.getElementById('adminCodeInput').value.trim();
-        if (!enteredCode) { document.getElementById('adminCodeError').textContent = 'Введите код'; return; }
-        if (enteredCode === ADMIN_SECRET_CODE) {
-            await db.collection('users').doc(currentUser.uid).update({ isAdmin: true });
-            currentUser.isAdmin = true;
-            closeAdminCodeModal();
-            showNotification('✅ Вы администратор!');
-            await refreshAll();
-        } else { document.getElementById('adminCodeError').textContent = '❌ Неверный код'; }
-    }
-    
-    async function toggleVerification(targetUserId) {
-        if (!isAdmin()) { showNotification('❌ Только админ'); return; }
-        const userRef = db.collection('users').doc(targetUserId);
-        const userDoc = await userRef.get();
-        const isCurrentlyVerified = userDoc.data()?.verified === true;
-        await userRef.update({ verified: !isCurrentlyVerified });
-        showNotification(isCurrentlyVerified ? '⭐ Галочка убрана' : '✅ Галочка выдана!');
-        await loadData();
-        await refreshAll();
-    }
-
-    // ========== FIREBASE ==========
-    const firebaseConfig = {
-        apiKey: "AIzaSyAWk8l7q04m2keV5DoaMA4kIymf0ac9lQQ",
-        authDomain: "disciplina-8ac49.firebaseapp.com",
-        projectId: "disciplina-8ac49",
-        storageBucket: "disciplina-8ac49.firebasestorage.app",
-        messagingSenderId: "826961979878",
-        appId: "1:826961979878:web:3d3b62f747253e4fcd8e27"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    let currentUser = null;
-    let posts = [];
-    let users = [];
-    let gameStats = [];
-    let openComments = {};
-    let openMenus = {};
-    let openCommentMenus = {};
-    let viewingUserId = null;
-    let isLoginMode = false;
-    let currentEditComment = { postId: null, commentIndex: null };
-    let currentEditPostId = null;
-
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 2000);
-    }
-
-    function formatDate(date) {
-        if (!date) return 'только что';
-        const d = date.toDate ? date.toDate() : new Date(date);
-        const now = new Date();
-        const diff = Math.floor((now - d) / 1000);
-        if (diff < 60) return 'только что';
-        if (diff < 3600) return Math.floor(diff / 60) + ' мин';
-        if (diff < 86400) return Math.floor(diff / 3600) + ' ч';
-        return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
-    async function compressMedia(file, maxWidth = 900) {
-        return new Promise((resolve, reject) => {
-            if (!file) { resolve(null); return; }
-            if (file.type.startsWith('video/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-                return;
-            }
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        let width = img.width, height = img.height;
-                        if (width > maxWidth) { height = (height * maxWidth) / width; width = maxWidth; }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        let quality = 0.8;
-                        let result = canvas.toDataURL('image/jpeg', quality);
-                        while (result.length > 3.5 * 1024 * 1024 && quality > 0.5) {
-                            quality -= 0.1;
-                            result = canvas.toDataURL('image/jpeg', quality);
-                        }
-                        resolve(result);
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-                return;
-            }
-            resolve(null);
-        });
-    }
-
-    async function loadData() {
-        const usersSnapshot = await db.collection('users').get();
-        users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const postsSnapshot = await db.collection('posts').orderBy('date', 'desc').get();
-        posts = postsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const statsSnapshot = await db.collection('gameStats').get();
-        gameStats = statsSnapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() }));
-        if (currentUser) {
-            const userDoc = users.find(u => u.id === currentUser.uid);
-            if (userDoc) currentUser.isAdmin = userDoc.isAdmin === true;
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.getElementById('modalImage').src = '';
         }
     }
 
-    async function savePost(text, mediaDataUrl, mediaType) {
-        const postData = { userId: currentUser.uid, text: text, date: firebase.firestore.FieldValue.serverTimestamp(), likes: [], comments: [] };
-        if (mediaDataUrl) { postData.media = mediaDataUrl; postData.mediaType = mediaType; if (mediaType === 'image') postData.photo = mediaDataUrl; }
-        await db.collection('posts').add(postData);
-        await loadData();
-        await refreshAll();
-    }
-
-    async function toggleLike(postId, post) {
-        const likes = post.likes || [];
-        const index = likes.indexOf(currentUser.uid);
-        if (index === -1) likes.push(currentUser.uid);
-        else likes.splice(index, 1);
-        await db.collection('posts').doc(postId).update({ likes });
-        await loadData();
-        await refreshAll();
-    }
-
-    async function addComment(postId, commentText) {
-        if (!commentText || !commentText.trim()) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        const comments = post.comments || [];
-        comments.push({ userId: currentUser.uid, text: commentText.trim(), date: new Date().toISOString() });
-        await db.collection('posts').doc(postId).update({ comments });
-        await loadData();
-        openComments[postId] = true;
-        await refreshAll();
-        setTimeout(() => {
-            const input = document.getElementById(`comment-input-${postId}`);
-            if (input) input.value = '';
-        }, 100);
-    }
-    
-    async function deleteComment(postId, commentIndex) {
-        if (!confirm('Удалить комментарий?')) return;
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments) return;
-        post.comments.splice(commentIndex, 1);
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotification('🗑️ Комментарий удалён');
-    }
-    
-    function openEditCommentModal(postId, commentIndex, currentText) {
-        currentEditComment = { postId, commentIndex };
-        document.getElementById('editCommentText').value = currentText;
-        document.getElementById('editCommentModal').style.display = 'flex';
-    }
-    
-    async function saveCommentEdit() {
-        const { postId, commentIndex } = currentEditComment;
-        const newText = document.getElementById('editCommentText').value.trim();
-        if (!newText) { showNotification('❌ Пустой комментарий'); return; }
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments || !post.comments[commentIndex]) return;
-        post.comments[commentIndex].text = newText;
-        await db.collection('posts').doc(postId).update({ comments: post.comments });
-        await loadData();
-        await refreshAll();
-        showNotification('✏️ Обновлено');
-        closeEditCommentModal();
-    }
-    
-    function closeEditCommentModal() { document.getElementById('editCommentModal').style.display = 'none'; currentEditComment = { postId: null, commentIndex: null }; }
-
-    async function deletePost(postId) {
-        if (confirm('Удалить пост?')) { await db.collection('posts').doc(postId).delete(); await loadData(); await refreshAll(); showNotification('🗑️ Пост удалён'); }
-    }
-    
-    async function deletePostAsAdmin(postId) {
-        if (!isAdmin()) { showNotification('❌ Только админ'); return; }
-        if (confirm('Удалить чужой пост?')) { await db.collection('posts').doc(postId).delete(); await loadData(); await refreshAll(); showNotification('✅ Удалено'); }
-    }
-
-    function openEditPostModal(postId, currentText) { currentEditPostId = postId; document.getElementById('editPostText').value = currentText; document.getElementById('editPostModal').style.display = 'flex'; }
-    async function savePostEdit() {
-        if (!currentEditPostId) return;
-        const newText = document.getElementById('editPostText').value.trim();
-        if (!newText) { showNotification('❌ Пустой пост'); return; }
-        await db.collection('posts').doc(currentEditPostId).update({ text: newText });
-        await loadData(); await refreshAll(); showNotification('✅ Пост обновлён'); closeEditPostModal();
-    }
-    function closeEditPostModal() { document.getElementById('editPostModal').style.display = 'none'; currentEditPostId = null; }
-
-    async function toggleFollow(targetUserId) {
-        const currentUserDoc = users.find(u => u.id === currentUser.uid);
-        const following = currentUserDoc?.following || [];
-        const isFollowing = following.includes(targetUserId);
-        if (isFollowing) {
-            await db.collection('users').doc(currentUser.uid).update({ following: firebase.firestore.FieldValue.arrayRemove(targetUserId) });
-            await db.collection('users').doc(targetUserId).update({ followers: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) });
-        } else {
-            await db.collection('users').doc(currentUser.uid).update({ following: firebase.firestore.FieldValue.arrayUnion(targetUserId) });
-            await db.collection('users').doc(targetUserId).update({ followers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
-        }
-        await loadData();
-        await refreshAll();
-    }
-
-    async function updateUserProfile(newName, newBio, newAvatar) {
-        const updates = {};
-        if (newName && newName !== currentUser.name) updates.name = newName;
-        if (newBio !== undefined) updates.bio = newBio;
-        if (newAvatar) updates.avatar = newAvatar;
-        if (Object.keys(updates).length > 0) {
-            await db.collection('users').doc(currentUser.uid).update(updates);
-            await loadData();
-            await refreshAll();
-            return true;
-        }
-        return false;
-    }
-
-    function openEditProfileModal() {
-        const profileUser = users.find(u => u.id === currentUser.uid);
-        if (!profileUser) return;
-        document.getElementById('editProfileName').value = profileUser.name || '';
-        document.getElementById('editProfileBio').value = profileUser.bio || '';
-        document.getElementById('editAvatarPreview').src = profileUser.avatar || 'https://via.placeholder.com/70?text=?';
-        document.getElementById('editProfileAvatar').value = '';
-        document.getElementById('editProfileModal').style.display = 'flex';
-    }
-    function closeEditProfileModal() { document.getElementById('editProfileModal').style.display = 'none'; }
-
-    document.getElementById('editProfileAvatar')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => { document.getElementById('editAvatarPreview').src = ev.target.result; };
-            reader.readAsDataURL(file);
-        }
-    });
-    
-    document.getElementById('saveProfileEditBtn')?.addEventListener('click', async () => {
-        const newName = document.getElementById('editProfileName').value.trim();
-        const newBio = document.getElementById('editProfileBio').value.trim();
-        const avatarFile = document.getElementById('editProfileAvatar').files[0];
-        let avatarBase64 = null;
-        if (avatarFile) avatarBase64 = await compressMedia(avatarFile, 400);
-        await updateUserProfile(newName, newBio, avatarBase64);
-        closeEditProfileModal();
-        showNotification('✅ Профиль обновлён!');
-    });
-    document.getElementById('cancelProfileEditBtn')?.addEventListener('click', closeEditProfileModal);
-    document.getElementById('savePostEditBtn')?.addEventListener('click', savePostEdit);
-    document.getElementById('cancelPostEditBtn')?.addEventListener('click', closeEditPostModal);
-    document.getElementById('saveCommentEditBtn')?.addEventListener('click', saveCommentEdit);
-    document.getElementById('cancelCommentEditBtn')?.addEventListener('click', closeEditCommentModal);
-    document.getElementById('submitAdminCodeBtn')?.addEventListener('click', checkAdminCode);
-    document.getElementById('cancelAdminCodeBtn')?.addEventListener('click', closeAdminCodeModal);
-
-    function openSettings() { const modal = document.getElementById('settingsModal'); if (modal) modal.style.display = 'flex'; }
-    function closeSettings() { const modal = document.getElementById('settingsModal'); if (modal) modal.style.display = 'none'; }
-    function logoutUser() { closeSettings(); auth.signOut().then(() => { location.reload(); }); }
-    function toggleThemeGlobal() { document.body.classList.toggle('light-theme'); localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); closeSettings(); }
-
+    // ========== РЕНДЕР ==========
     function toggleCommentMenu(commentKey) {
         if (openCommentMenus[commentKey]) delete openCommentMenus[commentKey];
         else { openCommentMenus = {}; openCommentMenus[commentKey] = true; }
         refreshAll();
     }
 
-    function renderPostCard(post) {
-        const author = users.find(u => u.id === post.userId);
-        const isLiked = post.likes?.includes(currentUser.uid);
-        const isAuthor = post.userId === currentUser.uid;
-        const showComments = openComments[post.id] || false;
-        const showMenu = openMenus[post.id];
-        const comments = post.comments || [];
-        let mediaUrl = post.media || post.photo;
-        let mediaType = post.mediaType || (post.photo ? 'image' : null);
-        let mediaHtml = '';
-        if (mediaUrl) {
-            if (mediaType === 'video') mediaHtml = `<video class="post-video" controls onclick="event.stopPropagation()"><source src="${mediaUrl}"></video>`;
-            else mediaHtml = `<img src="${mediaUrl}" class="post-media" onclick="openImageModal('${mediaUrl}')">`;
-        }
-        return `
-            <div class="post" id="post-${post.id}">
-                <div class="post-header">
-                    <img class="post-avatar" src="${author?.avatar || 'https://via.placeholder.com/40'}" onclick="viewProfile('${post.userId}')">
-                    <div class="post-author-info">
-                        <button class="post-author" onclick="viewProfile('${post.userId}')">
-                            ${escapeHtml(author?.name || '?')}
-                            ${author?.verified ? '<span class="verified-badge"></span>' : ''}
-                            ${author?.isAdmin ? '<span class="admin-badge"></span>' : ''}
-                        </button>
-                    </div>
-                    <div class="post-menu">
-                        <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
-                        ${showMenu ? `
-                            <div class="menu-dropdown">
-                                ${isAuthor ? `<button onclick="editPost('${post.id}')">✏️ Редактировать</button><button onclick="deletePost('${post.id}')">🗑️ Удалить</button>` : ''}
-                                ${isAdmin() && !isAuthor ? `<button onclick="deletePostAsAdmin('${post.id}')" style="color:#ff4444;">⚠️ Удалить (админ)</button>` : ''}
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-                <div class="post-text">${escapeHtml(post.text)}</div>
-                ${mediaHtml}
-                <div class="post-footer">
-                    <div class="post-actions">
-                        <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', ${JSON.stringify(post).replace(/"/g, '&quot;')})">❤️ ${post.likes?.length || 0}</button>
-                        <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
-                    </div>
-                    <div class="post-time-footer">${formatDate(post.date)}</div>
-                </div>
-                ${showComments ? renderCommentsSection(post.id, comments) : ''}
-            </div>
-        `;
-    }
-
-    // КОММЕНТАРИИ С 3 ТОЧКАМИ
     function renderCommentsSection(postId, comments) {
         if (!comments || comments.length === 0) {
             return `
                 <div class="comments-area">
                     <div class="no-comments-text">💬 Напишите первый комментарий</div>
                     <div class="comment-input-wrapper">
-                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send" autofocus>
+                        <input type="text" id="comment-input-${postId}" placeholder="Написать комментарий..." enterkeyhint="send">
                         <button onclick="submitComment('${postId}')">→</button>
                     </div>
                 </div>
@@ -1661,12 +912,95 @@
         `;
     }
 
-    async function refreshAll() { await renderFeed(); await renderProfile(); renderGameTab(); }
+    // БЕЗОПАСНЫЙ РЕНДЕР ПОСТА - ИСПРАВЛЕНА XSS УЯЗВИМОСТЬ
+    function renderPostCard(post) {
+        const author = users.find(u => u.id === post.userId);
+        const isLiked = post.likes?.includes(currentUser.uid);
+        const isAuthor = post.userId === currentUser.uid;
+        const showComments = openComments[post.id] || false;
+        const showMenu = openMenus[post.id];
+        const comments = post.comments || [];
+        let mediaUrl = post.media || post.photo;
+        let mediaType = post.mediaType || (post.photo ? 'image' : null);
+        let mediaHtml = '';
+        if (mediaUrl) {
+            if (mediaType === 'video') mediaHtml = `<video class="post-video" controls onclick="event.stopPropagation()"><source src="${escapeHtml(mediaUrl)}"></video>`;
+            else mediaHtml = `<img src="${escapeHtml(mediaUrl)}" class="post-media" onclick="openImageModal('${escapeHtml(mediaUrl)}')">`;
+        }
+        return `
+            <div class="post" id="post-${post.id}">
+                <div class="post-header">
+                    <img class="post-avatar" src="${escapeHtml(author?.avatar || 'https://via.placeholder.com/40')}" onclick="viewProfile('${escapeHtml(post.userId)}')">
+                    <div class="post-author-info">
+                        <button class="post-author" onclick="viewProfile('${escapeHtml(post.userId)}')">
+                            ${escapeHtml(author?.name || '?')}
+                            ${author?.verified ? '<span class="verified-badge"></span>' : ''}
+                            ${author?.isAdmin ? '<span class="admin-badge"></span>' : ''}
+                        </button>
+                    </div>
+                    <div class="post-menu">
+                        <button class="menu-dots" onclick="event.stopPropagation(); toggleMenu('${post.id}')">⋮</button>
+                        ${showMenu ? `
+                            <div class="menu-dropdown">
+                                ${isAuthor ? `<button onclick="editPost('${post.id}')">✏️ Редактировать</button><button onclick="deletePost('${post.id}')">🗑️ Удалить</button>` : ''}
+                                ${isAdmin() && !isAuthor ? `<button onclick="deletePostAsAdmin('${post.id}')" style="color:#ff4444;">⚠️ Удалить (админ)</button>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="post-text">${escapeHtml(post.text)}</div>
+                ${mediaHtml}
+                <div class="post-footer">
+                    <div class="post-actions">
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${isLiked}">❤️ ${post.likes?.length || 0}</button>
+                        <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
+                    </div>
+                    <div class="post-time-footer">${formatDate(post.date)}</div>
+                </div>
+                ${showComments ? renderCommentsSection(post.id, comments) : ''}
+            </div>
+        `;
+    }
+
+    // Обработчик лайков через data-атрибуты (безопасно)
+    document.addEventListener('click', async (e) => {
+        const likeBtn = e.target.closest('.like-btn');
+        if (likeBtn && likeBtn.dataset.postId) {
+            e.preventDefault();
+            const postId = likeBtn.dataset.postId;
+            const post = posts.find(p => p.id === postId);
+            if (post) await toggleLike(postId, post);
+        }
+    });
+
+    async function refreshAll() { 
+        await renderFeed(); 
+        await renderProfile(); 
+        renderGameTab(); 
+    }
 
     async function renderFeed() {
         const container = document.getElementById('postsList');
-        if (!posts.length) { container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>'; return; }
+        if (!posts.length) { 
+            container.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">📭 Нет постов. Нажми +</div>'; 
+            return; 
+        }
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
+        
+        // Обновляем data-атрибуты для кнопок лайков после рендера
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            const postId = btn.closest('.post')?.id?.replace('post-', '');
+            if (postId) {
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    btn.dataset.postId = postId;
+                    const isLiked = post.likes?.includes(currentUser.uid);
+                    if (isLiked) btn.classList.add('liked');
+                    else btn.classList.remove('liked');
+                    btn.innerHTML = `❤️ ${post.likes?.length || 0}`;
+                }
+            }
+        });
     }
 
     async function renderProfile() {
@@ -1681,7 +1015,7 @@
         container.innerHTML = `
             <div class="profile-card">
                 ${isOwn ? `<button class="settings-btn" onclick="openSettings()">⚙️</button>` : ''}
-                <img src="${profileUser.avatar || 'https://via.placeholder.com/70?text=?'}" class="profile-avatar" onclick="viewProfile('${viewingUserId}')">
+                <img src="${escapeHtml(profileUser.avatar || 'https://via.placeholder.com/70?text=?')}" class="profile-avatar" onclick="viewProfile('${escapeHtml(viewingUserId)}')">
                 <div class="profile-name">
                     ${escapeHtml(profileUser.name)}
                     ${profileUser?.verified ? '<span class="verified-badge"></span>' : ''}
@@ -1689,8 +1023,8 @@
                 </div>
                 <p style="color:var(--text-secondary); margin-top: 6px; font-size: 13px;">${escapeHtml(profileUser.bio || 'Нет описания')}</p>
                 <div class="stats">
-                    <div class="stat-item" onclick="showFollowing('${viewingUserId}')"><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
-                    <div class="stat-item" onclick="showFollowers('${viewingUserId}')"><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
+                    <div class="stat-item" onclick="showFollowing('${escapeHtml(viewingUserId)}')"><div class="stat-value">${profileUser.following?.length || 0}</div><div class="stat-label">подписки</div></div>
+                    <div class="stat-item" onclick="showFollowers('${escapeHtml(viewingUserId)}')"><div class="stat-value">${profileUser.followers?.length || 0}</div><div class="stat-label">подписчики</div></div>
                     <div class="stat-item"><div class="stat-value">${userPosts.length}</div><div class="stat-label">посты</div></div>
                 </div>
                 <div class="stats" style="margin-top: 5px;">
@@ -1699,8 +1033,8 @@
                 </div>
                 <div class="profile-buttons">
                     ${!isOwn ? `
-                        ${isAdminUser ? `<button id="verifyUserBtn" class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${viewingUserId}')">${profileUser?.verified ? '🔹 Забрать' : '⭐ Выдать'}</button>` : ''}
-                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${viewingUserId}')">${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}</button>
+                        ${isAdminUser ? `<button id="verifyUserBtn" class="verify-user-btn ${profileUser?.verified ? 'unverify' : ''}" onclick="toggleVerification('${escapeHtml(viewingUserId)}')">${profileUser?.verified ? '🔹 Забрать' : '⭐ Выдать'}</button>` : ''}
+                        <button class="follow-btn ${profileUser.followers?.includes(currentUser.uid) ? 'following' : ''}" onclick="toggleFollow('${escapeHtml(viewingUserId)}')">${profileUser.followers?.includes(currentUser.uid) ? '✓ Подписан' : '+ Подписаться'}</button>
                     ` : `<button id="editProfileBtn" onclick="openEditProfileModal()">✏️ Редактировать</button>`}
                 </div>
             </div>
@@ -1710,17 +1044,42 @@
         const profilePostsContainer = document.getElementById('profilePosts');
         if (!userPosts.length) profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
         else profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
+        
+        // Обновляем data-атрибуты для лайков в профиле
+        document.querySelectorAll('#profilePosts .like-btn').forEach(btn => {
+            const postId = btn.closest('.post')?.id?.replace('post-', '');
+            if (postId) {
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    btn.dataset.postId = postId;
+                    const isLiked = post.likes?.includes(currentUser.uid);
+                    if (isLiked) btn.classList.add('liked');
+                    else btn.classList.remove('liked');
+                    btn.innerHTML = `❤️ ${post.likes?.length || 0}`;
+                }
+            }
+        });
     }
 
+    // ========== ИГРА ==========
     async function runGame() {
         const stats = gameStats.find(s => s.userId === currentUser.uid);
         const lastDate = stats?.lastAttemptDate?.toDate ? stats.lastAttemptDate.toDate() : null;
         const today = new Date(); today.setHours(0,0,0,0);
-        if (lastDate && lastDate >= today) { showNotification('Вы уже играли сегодня!'); return; }
+        if (lastDate && lastDate >= today) { 
+            showNotification('Вы уже играли сегодня!'); 
+            return; 
+        }
         const rolled = Math.floor(Math.random() * 16) - 5;
         const newTotal = (stats?.totalPoints || 0) + rolled;
         const newBest = Math.max(rolled, stats?.bestRoll || -5);
-        await db.collection('gameStats').doc(currentUser.uid).set({ userId: currentUser.uid, totalPoints: newTotal, bestRoll: newBest, lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(), lastRollValue: rolled });
+        await db.collection('gameStats').doc(currentUser.uid).set({ 
+            userId: currentUser.uid, 
+            totalPoints: newTotal, 
+            bestRoll: newBest, 
+            lastAttemptDate: firebase.firestore.FieldValue.serverTimestamp(), 
+            lastRollValue: rolled 
+        });
         await loadData();
         renderGameTab();
         showNotification(rolled >= 0 ? `🎉 +${rolled} очков! Всего: ${newTotal}` : `😢 ${rolled} очков. Всего: ${newTotal}`);
@@ -1750,11 +1109,50 @@
     async function renderLeaderboard() {
         const container = document.getElementById('leaderboardContainer');
         const data = [...gameStats].sort((a,b) => b.totalPoints - a.totalPoints).slice(0,20);
-        if (!data.length) { container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:30px;color:var(--text-secondary);">Пока нет участников</div></div>`; return; }
+        if (!data.length) { 
+            container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div><div style="text-align:center;padding:30px;color:var(--text-secondary);">Пока нет участников</div></div>`; 
+            return; 
+        }
         const usersMap = new Map(users.map(u => [u.id, u]));
-        container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>${data.map((item, idx) => { const user = usersMap.get(item.userId); return `<div class="leaderboard-item" onclick="viewProfile('${item.userId}')"><div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div><div class="leaderboard-name">${escapeHtml(user?.name || '?')}${user?.verified ? '<span class="verified-badge"></span>' : ''}${user?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div><div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div></div>`; }).join('')}</div>`;
+        container.innerHTML = `<div class="leaderboard"><div class="leaderboard-header"><div class="leaderboard-title">🏆 Лидерборд</div></div>${data.map((item, idx) => { 
+            const user = usersMap.get(item.userId); 
+            return `<div class="leaderboard-item" onclick="viewProfile('${escapeHtml(item.userId)}')"><div class="leaderboard-rank ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':''}">${idx+1}</div><div class="leaderboard-name">${escapeHtml(user?.name || '?')}${user?.verified ? '<span class="verified-badge"></span>' : ''}${user?.isAdmin ? '<span class="admin-badge"></span>' : ''}</div><div class="leaderboard-score" style="color:var(--accent);font-weight:bold;">${item.totalPoints}</div></div>`; 
+        }).join('')}</div>`;
     }
 
+    // ========== НАСТРОЙКИ ==========
+    const settingsModal = document.createElement('div');
+    settingsModal.id = 'settingsModal';
+    settingsModal.className = 'settings-modal';
+    settingsModal.innerHTML = `<div class="settings-modal-content"><h3>⚙️ Настройки</h3><div class="settings-item"><button id="settingsThemeBtn">🌓 Сменить тему</button></div><div class="settings-item"><button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать админом</button></div><div class="settings-item"><button id="settingsLogoutBtn">🚪 Выйти</button></div><div class="settings-item"><button id="settingsCloseBtn">✖️ Закрыть</button></div></div>`;
+    document.body.appendChild(settingsModal);
+    
+    function openSettings() { 
+        document.getElementById('settingsModal').style.display = 'flex'; 
+    }
+    function closeSettings() { 
+        document.getElementById('settingsModal').style.display = 'none'; 
+    }
+    function logoutUser() { 
+        closeSettings(); 
+        auth.signOut().then(() => { 
+            location.reload(); 
+        }); 
+    }
+    function toggleThemeGlobal() { 
+        document.body.classList.toggle('light-theme'); 
+        localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); 
+        closeSettings(); 
+    }
+    
+    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
+    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
+    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
+    settingsModal.addEventListener('click', (e) => { 
+        if (e.target === settingsModal) closeSettings(); 
+    });
+
+    // ========== ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ HTML ==========
     window.submitComment = async function(postId) {
         const input = document.getElementById(`comment-input-${postId}`);
         if (!input?.value?.trim()) return;
@@ -1763,78 +1161,102 @@
     window.deleteComment = deleteComment;
     window.openEditCommentModal = openEditCommentModal;
     window.toggleCommentMenu = toggleCommentMenu;
-    
-    function toggleComments(postId) {
+    window.toggleComments = function(postId) {
         openComments[postId] = !openComments[postId];
         refreshAll();
         if (openComments[postId]) setTimeout(() => {
             const input = document.getElementById(`comment-input-${postId}`);
             if (input) input.focus();
         }, 150);
-    }
-    
-    document.addEventListener('keypress', (e) => {
-        if (e.target?.id?.startsWith('comment-input-') && e.key === 'Enter') {
-            e.preventDefault();
-            submitComment(e.target.id.replace('comment-input-', ''));
-        }
-    });
-    
+    };
     window.toggleMenu = function(postId) {
         if (openMenus[postId]) delete openMenus[postId];
         else { openMenus = {}; openMenus[postId] = true; }
         refreshAll();
     };
-    document.addEventListener('click', (e) => { 
-        if (!e.target.closest('.post-menu')) { openMenus = {}; refreshAll(); }
-        if (!e.target.closest('.comment-menu')) { openCommentMenus = {}; refreshAll(); }
-    });
-    window.viewProfile = function(userId) { viewingUserId = userId; renderProfile(); document.querySelector('.tab[data-tab="profile"]').click(); };
+    window.viewProfile = function(userId) { 
+        viewingUserId = userId; 
+        renderProfile(); 
+        document.querySelector('.tab[data-tab="profile"]').click(); 
+    };
     window.toggleFollow = toggleFollow;
     window.toggleLike = toggleLike;
-    window.toggleComments = toggleComments;
     window.toggleVerification = toggleVerification;
     window.deletePost = deletePost;
     window.deletePostAsAdmin = deletePostAsAdmin;
-    window.editPost = function(postId) { openEditPostModal(postId, posts.find(p => p.id === postId).text); };
+    window.editPost = function(postId) { 
+        openEditPostModal(postId, posts.find(p => p.id === postId).text); 
+    };
     window.showFollowers = showFollowers;
     window.showFollowing = showFollowing;
     window.closeUsersListModal = closeUsersListModal;
-
-    const settingsModal = document.createElement('div');
-    settingsModal.id = 'settingsModal';
-    settingsModal.className = 'settings-modal';
-    settingsModal.innerHTML = `<div class="settings-modal-content"><h3>⚙️ Настройки</h3><div class="settings-item"><button id="settingsThemeBtn">🌓 Сменить тему</button></div><div class="settings-item"><button id="getAdminSettingsBtn" class="get-admin-settings-btn" onclick="openAdminCodeModal()">⭐ Стать админом</button></div><div class="settings-item"><button id="settingsLogoutBtn">🚪 Выйти</button></div><div class="settings-item"><button id="settingsCloseBtn">✖️ Закрыть</button></div></div>`;
-    document.body.appendChild(settingsModal);
-    document.getElementById('settingsThemeBtn')?.addEventListener('click', toggleThemeGlobal);
-    document.getElementById('settingsLogoutBtn')?.addEventListener('click', logoutUser);
-    document.getElementById('settingsCloseBtn')?.addEventListener('click', closeSettings);
-    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
     window.openSettings = openSettings;
     window.closeSettings = closeSettings;
+    window.openAdminCodeModal = openAdminCodeModal;
 
+    // ========== ОБРАБОТЧИКИ ==========
+    document.getElementById('editProfileAvatar')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => { 
+                document.getElementById('editAvatarPreview').src = ev.target.result; 
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    document.getElementById('saveProfileEditBtn')?.addEventListener('click', async () => {
+        const newName = document.getElementById('editProfileName').value.trim();
+        const newBio = document.getElementById('editProfileBio').value.trim();
+        const avatarFile = document.getElementById('editProfileAvatar').files[0];
+        await updateUserProfile(newName, newBio, avatarFile);
+        closeEditProfileModal();
+        showNotification('✅ Профиль обновлён!');
+    });
+    
+    document.getElementById('cancelProfileEditBtn')?.addEventListener('click', closeEditProfileModal);
+    document.getElementById('savePostEditBtn')?.addEventListener('click', savePostEdit);
+    document.getElementById('cancelPostEditBtn')?.addEventListener('click', closeEditPostModal);
+    document.getElementById('saveCommentEditBtn')?.addEventListener('click', saveCommentEdit);
+    document.getElementById('cancelCommentEditBtn')?.addEventListener('click', closeEditCommentModal);
+    document.getElementById('submitAdminCodeBtn')?.addEventListener('click', checkAdminCode);
+    document.getElementById('cancelAdminCodeBtn')?.addEventListener('click', closeAdminCodeModal);
     document.getElementById('closeUsersListBtn')?.addEventListener('click', closeUsersListModal);
-    document.getElementById('usersListModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('usersListModal')) closeUsersListModal(); });
+    document.getElementById('usersListModal')?.addEventListener('click', (e) => { 
+        if (e.target === document.getElementById('usersListModal')) closeUsersListModal(); 
+    });
 
-    // Восстановление пароля
+    // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
     const forgotBtn = document.getElementById('forgotPasswordBtn');
     const resetModalDiv = document.getElementById('resetPasswordModal');
     const confirmResetBtn = document.getElementById('confirmResetBtn');
     const cancelResetBtn = document.getElementById('cancelResetBtn');
-    if (forgotBtn) forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
-    if (cancelResetBtn) cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
+    
+    if (forgotBtn) {
+        forgotBtn.onclick = () => resetModalDiv.style.display = 'flex';
+    }
+    if (cancelResetBtn) {
+        cancelResetBtn.onclick = () => resetModalDiv.style.display = 'none';
+    }
     if (confirmResetBtn) {
         confirmResetBtn.onclick = async () => {
             const email = document.getElementById('resetEmail').value.trim();
-            if (!email) { document.getElementById('resetMessage').textContent = 'Введите email'; return; }
+            if (!email) { 
+                document.getElementById('resetMessage').textContent = 'Введите email'; 
+                return; 
+            }
             try {
                 await auth.sendPasswordResetEmail(email);
                 document.getElementById('resetMessage').textContent = '✅ Письмо отправлено!';
                 setTimeout(() => resetModalDiv.style.display = 'none', 2000);
-            } catch (error) { document.getElementById('resetMessage').textContent = '❌ ' + error.message; }
+            } catch (error) { 
+                document.getElementById('resetMessage').textContent = '❌ ' + error.message; 
+            }
         };
     }
 
+    // ========== АУТЕНТИФИКАЦИЯ ==========
     const authScreenDiv = document.getElementById('authScreen');
     const mainAppDiv = document.getElementById('mainApp');
     const submitBtn = document.getElementById('submitAuthBtn');
@@ -1853,18 +1275,33 @@
         }
     }
 
-    switchBtn.onclick = () => { isLoginMode = !isLoginMode; updateAuthButton(); authErrorDiv.textContent = ''; };
+    switchBtn.onclick = () => { 
+        isLoginMode = !isLoginMode; 
+        updateAuthButton(); 
+        authErrorDiv.textContent = ''; 
+    };
+    
     submitBtn.onclick = async () => {
         const name = document.getElementById('regName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
-        if (!email || !password) { authErrorDiv.textContent = 'Заполните email и пароль'; return; }
+        if (!email || !password) { 
+            authErrorDiv.textContent = 'Заполните email и пароль'; 
+            return; 
+        }
         try {
             if (!isLoginMode) {
-                if (!name) { authErrorDiv.textContent = 'Введите имя'; return; }
+                if (!name) { 
+                    authErrorDiv.textContent = 'Введите имя'; 
+                    return; 
+                }
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await db.collection('users').doc(userCredential.user.uid).set({ name, email, bio: '', avatar: null, followers: [], following: [], isAdmin: false, verified: false });
-                await db.collection('gameStats').doc(userCredential.user.uid).set({ userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null });
+                await db.collection('users').doc(userCredential.user.uid).set({ 
+                    name, email, bio: '', avatar: null, followers: [], following: [], isAdmin: false, verified: false 
+                });
+                await db.collection('gameStats').doc(userCredential.user.uid).set({ 
+                    userId: userCredential.user.uid, totalPoints: 0, bestRoll: -5, lastAttemptDate: null, lastRollValue: null 
+                });
                 currentUser = userCredential.user;
                 await loadData();
                 showMainApp();
@@ -1874,7 +1311,9 @@
                 await loadData();
                 showMainApp();
             }
-        } catch (error) { authErrorDiv.textContent = error.message; }
+        } catch (error) { 
+            authErrorDiv.textContent = error.message; 
+        }
     };
 
     async function showMainApp() {
@@ -1885,25 +1324,46 @@
         await refreshAll();
     }
 
+    // ========== ПОСТЫ ==========
     const postModal = document.getElementById('postModal');
     const fabBtn = document.getElementById('fabBtn');
-    fabBtn.onclick = () => { postModal.style.display = 'flex'; document.getElementById('modalPostText').value = ''; document.getElementById('modalPostMedia').value = ''; document.getElementById('fileNameDisplay').textContent = ''; };
-    document.getElementById('modalCancelBtn').onclick = () => { postModal.style.display = 'none'; };
-    postModal.onclick = (e) => { if (e.target === postModal) postModal.style.display = 'none'; };
+    
+    fabBtn.onclick = () => { 
+        postModal.style.display = 'flex'; 
+        document.getElementById('modalPostText').value = ''; 
+        document.getElementById('modalPostMedia').value = ''; 
+        document.getElementById('fileNameDisplay').textContent = ''; 
+    };
+    document.getElementById('modalCancelBtn').onclick = () => { 
+        postModal.style.display = 'none'; 
+    };
+    postModal.onclick = (e) => { 
+        if (e.target === postModal) postModal.style.display = 'none'; 
+    };
+    
     document.getElementById('modalPublishBtn').onclick = async () => {
         const text = document.getElementById('modalPostText').value.trim();
-        if (!text) { alert('Напишите текст'); return; }
+        if (!text) { 
+            alert('Напишите текст'); 
+            return; 
+        }
         const file = document.getElementById('modalPostMedia').files[0];
+        let mediaType = null;
         if (file) {
-            const compressed = await compressMedia(file);
-            const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-            await savePost(text, compressed, mediaType);
-        } else { await savePost(text, null, null); }
+            mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+        }
+        await savePost(text, file, mediaType);
         postModal.style.display = 'none';
         showNotification('Пост опубликован!');
     };
-    document.getElementById('modalPostMedia')?.addEventListener('change', (e) => { if (e.target.files[0]) document.getElementById('fileNameDisplay').textContent = `📎 ${e.target.files[0].name}`; });
+    
+    document.getElementById('modalPostMedia')?.addEventListener('change', (e) => { 
+        if (e.target.files[0]) {
+            document.getElementById('fileNameDisplay').textContent = `📎 ${e.target.files[0].name}`;
+        }
+    });
 
+    // ========== ТАБЫ ==========
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1912,20 +1372,70 @@
             document.getElementById('feedTab').classList.add('hidden');
             document.getElementById('gameTab').classList.add('hidden');
             document.getElementById('profileTab').classList.add('hidden');
-            if (tabName === 'feed') { document.getElementById('feedTab').classList.remove('hidden'); renderFeed(); }
-            else if (tabName === 'game') { document.getElementById('gameTab').classList.remove('hidden'); renderGameTab(); }
-            else { document.getElementById('profileTab').classList.remove('hidden'); renderProfile(); }
+            if (tabName === 'feed') { 
+                document.getElementById('feedTab').classList.remove('hidden'); 
+                renderFeed(); 
+            } else if (tabName === 'game') { 
+                document.getElementById('gameTab').classList.remove('hidden'); 
+                renderGameTab(); 
+            } else { 
+                document.getElementById('profileTab').classList.remove('hidden'); 
+                renderProfile(); 
+            }
         };
     });
 
-    document.getElementById('logoBtn').onclick = () => { viewingUserId = currentUser.uid; renderProfile(); document.querySelector('.tab[data-tab="profile"]').click(); };
-    document.getElementById('backBtn').onclick = () => { viewingUserId = currentUser.uid; renderProfile(); };
-    function initTheme() { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); }
+    document.getElementById('logoBtn').onclick = () => { 
+        viewingUserId = currentUser.uid; 
+        renderProfile(); 
+        document.querySelector('.tab[data-tab="profile"]').click(); 
+    };
+    document.getElementById('backBtn').onclick = () => { 
+        viewingUserId = currentUser.uid; 
+        renderProfile(); 
+    };
+
+    // ========== ЗАПУСК ==========
+    const phrases = ["Делай каждый день", "Бебебе", "Гигамонстрящим пони вход запрещён", "кремируйте ее быстрее", "огурцы", "типо как yo! только новый"];
+    function setRandomPhrase() {
+        const subElement = document.getElementById('randomSub');
+        if (subElement) subElement.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+    
+    function initTheme() { 
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); 
+    }
     
     setRandomPhrase();
     initTheme();
     
-    auth.onAuthStateChanged(async (user) => { if (user) { currentUser = user; await loadData(); await loadAdminStatus(); showMainApp(); } });
+    // Закрытие меню при клике вне
+    document.addEventListener('click', (e) => { 
+        if (!e.target.closest('.post-menu')) { 
+            openMenus = {}; 
+            refreshAll(); 
+        }
+        if (!e.target.closest('.comment-menu')) { 
+            openCommentMenus = {}; 
+            refreshAll(); 
+        }
+    });
+    
+    document.addEventListener('keypress', (e) => {
+        if (e.target?.id?.startsWith('comment-input-') && e.key === 'Enter') {
+            e.preventDefault();
+            submitComment(e.target.id.replace('comment-input-', ''));
+        }
+    });
+    
+    auth.onAuthStateChanged(async (user) => { 
+        if (user) { 
+            currentUser = user; 
+            await loadData(); 
+            await loadAdminStatus(); 
+            showMainApp(); 
+        } 
+    });
 </script>
 </body>
 </html>
