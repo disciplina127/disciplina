@@ -43,10 +43,12 @@
             --comment-hover: #f0f2f6;
         }
         body { background: var(--bg-primary); }
+        
         .verified-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #1DA1F2, #0D8BD9); color: white; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
         .verified-badge::before { content: "✓"; }
         .admin-badge { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border-radius: 50%; font-size: 8px; margin-left: 4px; cursor: pointer; }
         .admin-badge::before { content: "★"; }
+        
         .auth-screen { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #0a0c12 0%, #141820 100%); padding: 16px; }
         .auth-card { background: var(--bg-card); border-radius: 24px; padding: 24px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
         .auth-card h1 { text-align: center; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 34px; margin-bottom: 8px; }
@@ -58,16 +60,19 @@
         .forgot-btn { background: none; color: var(--accent); margin-top: 8px; font-size: 14px; padding: 8px; }
         .forgot-btn:hover { background: rgba(255, 87, 34, 0.1); }
         .error { color: var(--accent); font-size: 13px; margin-top: 10px; text-align: center; }
+        
         .main-app { display: none; max-width: 600px; margin: 0 auto; background: var(--bg-primary); min-height: 100vh; padding-bottom: 80px; }
         .header { background: var(--bg-secondary); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
         .logo { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #ff5722, #ff8a4c); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
         .header-actions { display: flex; gap: 10px; align-items: center; }
         .back-btn { background: var(--bg-input); width: auto; padding: 6px 14px; border-radius: 30px; color: var(--text-primary); font-size: 13px; border: none; }
+        
         .tabs { display: flex; background: var(--bg-secondary); gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
         .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text-secondary); border-radius: 30px; }
         .tab.active { background: var(--accent); color: white; }
         .content { padding: 12px; }
         .hidden { display: none; }
+        
         .post { background: var(--bg-card); border-radius: 16px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); }
         .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .post-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--border); cursor: pointer; }
@@ -85,6 +90,7 @@
         .like-btn, .comment-toggle-btn { cursor: pointer; background: none; border: none; padding: 6px 10px; border-radius: 30px; display: flex; align-items: center; gap: 5px; color: var(--text-secondary); font-size: 13px; }
         .like-btn.liked { color: var(--like); }
         .post-time-footer { font-size: 10px; color: var(--text-secondary); }
+        
         .comments-area { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
         .comment-item { background: var(--comment-bg); border-radius: 12px; padding: 10px; margin-bottom: 8px; position: relative; }
         .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
@@ -102,6 +108,7 @@
         .comment-input-wrapper input { flex: 1; background: transparent; border: none; padding: 10px 0; margin: 0; font-size: 14px; color: var(--text-primary); outline: none; }
         .comment-input-wrapper button { width: auto; padding: 6px 18px; margin: 0; border-radius: 25px; background: var(--accent); font-size: 13px; font-weight: 600; }
         .no-comments-text { text-align: center; color: var(--text-secondary); font-size: 12px; padding: 16px; }
+        
         .profile-card { background: var(--bg-card); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--border); margin-bottom: 16px; position: relative; }
         .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px; background: var(--border); border: 2px solid var(--accent); cursor: pointer; }
         .profile-name { margin-top: 6px; font-size: 18px; font-weight: 700; color: var(--text-primary); }
@@ -117,6 +124,7 @@
         .settings-item button { width: 100%; padding: 12px; font-size: 14px; font-weight: 600; border-radius: 12px; background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); }
         .get-admin-settings-btn { background: linear-gradient(135deg, #FFD700, #FFA500); color: #8B4513; border: none; }
         .profile-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+        
         .users-list-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2004; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .users-list-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); max-height: 80vh; display: flex; flex-direction: column; }
         .users-list-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; flex-shrink: 0; }
@@ -128,6 +136,7 @@
         .user-list-name { font-weight: 600; color: var(--text-primary); font-size: 14px; display: inline-flex; align-items: center; gap: 3px; }
         .user-list-bio { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
         .no-users { text-align: center; color: var(--text-secondary); padding: 30px; }
+        
         .edit-profile-modal, .edit-post-modal, .edit-comment-modal, .admin-code-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .edit-profile-content, .edit-post-content, .edit-comment-content, .admin-code-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 90%; max-width: 350px; border: 1px solid var(--border); }
         .edit-profile-content h3, .edit-post-content h3, .edit-comment-content h3, .admin-code-content h3 { color: var(--text-primary); margin-bottom: 16px; text-align: center; font-size: 18px; }
@@ -136,21 +145,26 @@
         .cancel-edit-btn { background: var(--bg-input); color: var(--text-primary); }
         .avatar-preview { text-align: center; margin-bottom: 12px; }
         .avatar-preview img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+        
         .image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; align-items: center; justify-content: center; cursor: pointer; }
         .image-modal img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 12px; }
         .image-modal-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; color: white; }
+        
         .upload-btn { position: relative; margin: 8px 0; }
         .upload-btn input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
         .upload-label { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); border-radius: 12px; padding: 10px; cursor: pointer; color: white; font-size: 13px; font-weight: 600; }
         .file-name { font-size: 11px; color: var(--accent); margin-top: 6px; display: block; text-align: center; }
+        
         .profile-posts-title { font-size: 14px; font-weight: 600; margin: 12px 0 10px 0; color: var(--text-primary); }
         .fab { position: fixed; bottom: 16px; right: 16px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; font-size: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 200; border: none; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: var(--bg-card); border-radius: 24px; padding: 20px; width: 100%; max-width: 380px; border: 1px solid var(--border); }
         .modal-content h3 { margin-bottom: 14px; color: var(--text-primary); font-size: 18px; text-align: center; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
         .modal-buttons button { flex: 1; }
         .cancel-modal { background: var(--bg-input); color: var(--text-primary); }
+        
         .game-card { background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
         .game-header { text-align: center; margin-bottom: 16px; }
         .game-icon { font-size: 40px; }
@@ -163,6 +177,7 @@
         .roll-button { font-size: 16px; padding: 12px; border-radius: 40px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
         .stat-card { background: var(--bg-input); border-radius: 14px; padding: 12px; text-align: center; }
+        
         .leaderboard { background: var(--bg-card); border-radius: 16px; padding: 12px; }
         .leaderboard-header { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .leaderboard-title { font-size: 16px; font-weight: bold; color: var(--text-primary); }
@@ -172,8 +187,10 @@
         .rank-2 { color: #c0c0c0; }
         .rank-3 { color: #cd7f32; }
         .leaderboard-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text-primary); display: inline-flex; align-items: center; gap: 3px; }
+        
         .follow-btn { background: var(--bg-input); color: var(--accent); border: 1px solid var(--accent); font-size: 13px; padding: 8px 14px; }
         .follow-btn.following { background: var(--accent); color: white; }
+        
         .reset-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
         .reset-modal-content { background: var(--bg-card); border-radius: 20px; padding: 20px; width: 90%; max-width: 320px; border: 1px solid var(--border); }
         .reset-modal-content h3 { color: var(--text-primary); margin-bottom: 14px; text-align: center; font-size: 18px; }
@@ -181,8 +198,41 @@
         .reset-buttons button { flex: 1; }
         .cancel-reset-btn { background: var(--bg-input); color: var(--text-primary); }
         .reset-message { font-size: 12px; margin-top: 10px; text-align: center; }
+        
         .notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 8px 16px; border-radius: 30px; font-size: 13px; z-index: 10000; animation: fadeInOut 2s ease; }
         @keyframes fadeInOut { 0% { opacity: 0; transform: translateX(-50%) translateY(20px); } 15% { opacity: 1; transform: translateX(-50%) translateY(0); } 85% { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+        
+        /* Индикатор загрузки */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: white;
+            font-size: 14px;
+        }
+        
         @media (max-width: 500px) {
             .content { padding: 8px; }
             .fab { width: 48px; height: 48px; font-size: 24px; bottom: 12px; right: 12px; }
@@ -262,6 +312,12 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Индикатор загрузки -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Загрузка медиа...</div>
 </div>
 
 <div id="imageModal" class="image-modal" onclick="closeImageModal()">
@@ -356,8 +412,6 @@
     let isLoginMode = false;
     let currentEditComment = { postId: null, commentIndex: null };
     let currentEditPostId = null;
-    
-    // Секретный код админа (лучше хранить в переменной окружения, но для демо так)
     const ADMIN_SECRET_CODE = "7G#v2!kP$mQ9";
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
@@ -367,6 +421,11 @@
         notification.textContent = message;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 2000);
+    }
+
+    function showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.style.display = show ? 'flex' : 'none';
     }
 
     function formatDate(date) {
@@ -385,13 +444,17 @@
         return str.replace(/[&<>]/g, (m) => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    // Загрузка файла в Firebase Storage
+    // Загрузка файла в Firebase Storage с индикатором
     async function uploadToStorage(file, path) {
         return new Promise((resolve, reject) => {
             const storageRef = storage.ref(path);
             const uploadTask = storageRef.put(file);
             
-            uploadTask.on('state_changed', null,
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload progress:', progress);
+                },
                 (error) => reject(error),
                 async () => {
                     const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
@@ -401,7 +464,7 @@
         });
     }
 
-    // Компрессия изображения (всё ещё нужна для предпросмотра и уменьшения размера)
+    // Компрессия изображения
     async function compressImage(file, maxWidth = 900) {
         return new Promise((resolve, reject) => {
             if (!file || !file.type.startsWith('image/')) {
@@ -429,10 +492,9 @@
                         quality -= 0.1;
                         result = canvas.toDataURL('image/jpeg', quality);
                     }
-                    // Конвертируем dataURL обратно в Blob для загрузки
                     fetch(result)
                         .then(res => res.blob())
-                        .then(blob => resolve(new File([blob], file.name, { type: 'image/jpeg' })));
+                        .then(blob => resolve(new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), { type: 'image/jpeg' })));
                 };
                 img.onerror = reject;
                 img.src = e.target.result;
@@ -510,13 +572,19 @@
         
         if (file) {
             try {
-                const compressedFile = mediaType === 'image' ? await compressImage(file) : file;
+                showLoading(true);
+                let fileToUpload = file;
+                if (mediaType === 'image') {
+                    fileToUpload = await compressImage(file);
+                }
                 const ext = file.name.split('.').pop();
-                const fileName = `${currentUser.uid}/${Date.now()}.${ext}`;
-                mediaUrl = await uploadToStorage(compressedFile, `posts/${fileName}`);
+                const fileName = `${currentUser.uid}/${Date.now()}.${mediaType === 'image' ? 'jpg' : ext}`;
+                mediaUrl = await uploadToStorage(fileToUpload, `posts/${fileName}`);
+                showLoading(false);
             } catch (error) {
                 console.error('Ошибка загрузки файла:', error);
-                showNotification('❌ Ошибка загрузки медиа');
+                showLoading(false);
+                showNotification('❌ Ошибка загрузки медиа: ' + error.message);
                 return;
             }
         }
@@ -536,16 +604,15 @@
         await db.collection('posts').add(postData);
         await loadData();
         await refreshAll();
+        showNotification('✅ Пост опубликован!');
     }
 
-    // Оптимистичное обновление лайка
     async function toggleLike(postId, post) {
         const wasLiked = post.likes?.includes(currentUser.uid);
         const newLikes = wasLiked 
             ? (post.likes || []).filter(id => id !== currentUser.uid)
             : [...(post.likes || []), currentUser.uid];
         
-        // Оптимистичное обновление UI
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].likes = newLikes;
@@ -555,7 +622,6 @@
         try {
             await db.collection('posts').doc(postId).update({ likes: newLikes });
         } catch (error) {
-            // Откат при ошибке
             const revertLikes = wasLiked 
                 ? [...(post.likes || []), currentUser.uid]
                 : (post.likes || []).filter(id => id !== currentUser.uid);
@@ -580,7 +646,6 @@
             date: new Date().toISOString() 
         });
         
-        // Оптимистичное обновление
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].comments = comments;
@@ -609,7 +674,6 @@
         const newComments = [...post.comments];
         newComments.splice(commentIndex, 1);
         
-        // Оптимистичное обновление
         const postIndex = posts.findIndex(p => p.id === postId);
         if (postIndex !== -1) {
             posts[postIndex].comments = newComments;
@@ -745,11 +809,14 @@
         
         if (newAvatarFile) {
             try {
+                showLoading(true);
                 const compressedFile = await compressImage(newAvatarFile);
                 const fileName = `avatars/${currentUser.uid}/${Date.now()}.jpg`;
                 avatarUrl = await uploadToStorage(compressedFile, fileName);
+                showLoading(false);
             } catch (error) {
                 console.error('Ошибка загрузки аватара:', error);
+                showLoading(false);
                 showNotification('❌ Ошибка загрузки аватара');
                 return false;
             }
@@ -912,7 +979,6 @@
         `;
     }
 
-    // БЕЗОПАСНЫЙ РЕНДЕР ПОСТА - ИСПРАВЛЕНА XSS УЯЗВИМОСТЬ
     function renderPostCard(post) {
         const author = users.find(u => u.id === post.userId);
         const isLiked = post.likes?.includes(currentUser.uid);
@@ -952,7 +1018,7 @@
                 ${mediaHtml}
                 <div class="post-footer">
                     <div class="post-actions">
-                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${isLiked}">❤️ ${post.likes?.length || 0}</button>
+                        <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">❤️ ${post.likes?.length || 0}</button>
                         <button class="comment-toggle-btn" onclick="toggleComments('${post.id}')">💬 ${comments.length}</button>
                     </div>
                     <div class="post-time-footer">${formatDate(post.date)}</div>
@@ -962,7 +1028,6 @@
         `;
     }
 
-    // Обработчик лайков через data-атрибуты (безопасно)
     document.addEventListener('click', async (e) => {
         const likeBtn = e.target.closest('.like-btn');
         if (likeBtn && likeBtn.dataset.postId) {
@@ -987,7 +1052,6 @@
         }
         container.innerHTML = posts.map(post => renderPostCard(post)).join('');
         
-        // Обновляем data-атрибуты для кнопок лайков после рендера
         document.querySelectorAll('.like-btn').forEach(btn => {
             const postId = btn.closest('.post')?.id?.replace('post-', '');
             if (postId) {
@@ -1045,7 +1109,6 @@
         if (!userPosts.length) profilePostsContainer.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:30px;">Нет постов</div>';
         else profilePostsContainer.innerHTML = userPosts.map(post => renderPostCard(post)).join('');
         
-        // Обновляем data-атрибуты для лайков в профиле
         document.querySelectorAll('#profilePosts .like-btn').forEach(btn => {
             const postId = btn.closest('.post')?.id?.replace('post-', '');
             if (postId) {
@@ -1354,7 +1417,6 @@
         }
         await savePost(text, file, mediaType);
         postModal.style.display = 'none';
-        showNotification('Пост опубликован!');
     };
     
     document.getElementById('modalPostMedia')?.addEventListener('change', (e) => { 
